@@ -1,10 +1,10 @@
-# Universal Harness API Specification
+# Open Harness API Specification
 
 Version: 0.1.0
 
 ## Overview
 
-The Universal Harness API provides a standardized interface for interacting with AI agent harnesses. This specification defines routes, operations, and behaviors that enable portability and interoperability across diverse harness implementations.
+The Open Harness API provides a standardized interface for interacting with AI agent harnesses. This specification defines routes, operations, and behaviors that enable portability and interoperability across diverse harness implementations.
 
 ---
 

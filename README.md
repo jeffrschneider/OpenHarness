@@ -1,6 +1,6 @@
 # OpenHarness
 
-A Universal API specification for AI agent harnesses.
+An open API specification for AI agent harnesses.
 
 ## Vision
 
@@ -19,7 +19,7 @@ The specification is designed to accommodate additional harnesses as the ecosyst
 
 ## Specification
 
-- [Universal Harness API](spec/UNIVERSAL_HARNESS_API.md) - Complete route-level API specification
+- [Open Harness API](spec/OPEN_HARNESS_API.md) - Complete route-level API specification
 - [Capability Manifest](spec/CAPABILITY_MANIFEST.md) - How harnesses declare their capabilities
 - [Harness Support Matrix](spec/HARNESS_SUPPORT_MATRIX.md) - Current capability coverage by harness
 
