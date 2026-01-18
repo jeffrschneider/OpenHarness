@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open Harness API</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --bg-secondary: #161b22;
+      --bg-tertiary: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --text-subtle: #6e7681;
+      --accent: #58a6ff;
+      --accent-emphasis: #1f6feb;
+      --success: #3fb950;
+      --warning: #d29922;
+      --danger: #f85149;
+      --purple: #a371f7;
+      --pink: #db61a2;
+      --coral: #ea6045;
+      --get: #3fb950;
+      --post: #58a6ff;
+      --put: #d29922;
+      --patch: #d29922;
+      --delete: #f85149;
+      --ws: #a371f7;
+      --sse: #db61a2;
+      --webhook: #ea6045;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Layout */
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border);
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 16px 0;
+    }
+
+    .sidebar-header {
+      padding: 0 16px 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+    }
+
+    .sidebar-header h1 {
+      font-size: 18px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sidebar-header .version {
+      font-size: 11px;
+      background: var(--accent-emphasis);
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-weight: 500;
+    }
+
+    .sidebar-header p {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .nav-section {
+      padding: 8px 0;
+    }
+
+    .nav-section-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      padding: 8px 16px 4px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      color: var(--text);
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+
+    .nav-item:hover {
+      background: var(--bg-tertiary);
+      text-decoration: none;
+    }
+
+    .nav-item.active {
+      background: var(--bg-tertiary);
+      border-left: 2px solid var(--accent);
+      padding-left: 14px;
+    }
+
+    .nav-item .count {
+      margin-left: auto;
+      font-size: 11px;
+      color: var(--text-subtle);
+      background: var(--bg-tertiary);
+      padding: 1px 6px;
+      border-radius: 10px;
+    }
+
+    /* Main content */
+    .main {
+      margin-left: 280px;
+      flex: 1;
+      padding: 24px 32px;
+      max-width: 1200px;
+    }
+
+    /* Header */
+    .header {
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header h1 {
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .header .meta {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .header .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-muted);
+      background: var(--bg-secondary);
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+
+    .header .meta-item code {
+      color: var(--accent);
+      font-family: 'SF Mono', 'Consolas', monospace;
+    }
+
+    /* Section */
+    .section {
+      margin-bottom: 48px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-header h2 {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .section-header .badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 500;
+    }
+
+    /* Capability card */
+    .capability {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .capability-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+
+    .capability-header:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .capability.expanded .capability-header {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .method {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 6px;
+      border-radius: 4px;
+      font-family: 'SF Mono', 'Consolas', monospace;
+      min-width: 52px;
+      text-align: center;
+    }
+
+    .method.get { background: rgba(63, 185, 80, 0.2); color: var(--get); }
+    .method.post { background: rgba(88, 166, 255, 0.2); color: var(--post); }
+    .method.put { background: rgba(210, 153, 34, 0.2); color: var(--put); }
+    .method.patch { background: rgba(210, 153, 34, 0.2); color: var(--patch); }
+    .method.delete { background: rgba(248, 81, 73, 0.2); color: var(--delete); }
+    .method.ws { background: rgba(163, 113, 247, 0.2); color: var(--ws); }
+    .method.sse { background: rgba(219, 97, 162, 0.2); color: var(--sse); }
+    .method.webhook { background: rgba(234, 96, 69, 0.2); color: var(--webhook); }
+
+    .capability-path {
+      font-family: 'SF Mono', 'Consolas', monospace;
+      font-size: 13px;
+      color: var(--text);
+      flex: 1;
+    }
+
+    .capability-path .param {
+      color: var(--accent);
+    }
+
+    .capability-name {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-left: auto;
+    }
+
+    .transport-badge {
+      font-size: 9px;
+      font-weight: 600;
+      padding: 2px 5px;
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .transport-badge.rest { background: var(--bg-tertiary); color: var(--text-muted); }
+    .transport-badge.sse { background: rgba(219, 97, 162, 0.2); color: var(--pink); }
+    .transport-badge.ws { background: rgba(163, 113, 247, 0.2); color: var(--purple); }
+    .transport-badge.multipart { background: rgba(88, 166, 255, 0.2); color: var(--accent); }
+    .transport-badge.binary { background: rgba(210, 153, 34, 0.2); color: var(--warning); }
+    .transport-badge.zip { background: rgba(63, 185, 80, 0.2); color: var(--success); }
+    .transport-badge.webhook { background: rgba(234, 96, 69, 0.2); color: var(--coral); }
+
+    .expand-icon {
+      color: var(--text-subtle);
+      transition: transform 0.2s;
+    }
+
+    .capability.expanded .expand-icon {
+      transform: rotate(90deg);
+    }
+
+    .capability-body {
+      display: none;
+      padding: 16px;
+    }
+
+    .capability.expanded .capability-body {
+      display: block;
+    }
+
+    .capability-section {
+      margin-bottom: 16px;
+    }
+
+    .capability-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .capability-section-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .capability-section p {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .capability-section ul {
+      font-size: 13px;
+      color: var(--text);
+      padding-left: 20px;
+    }
+
+    .capability-section li {
+      margin-bottom: 4px;
+    }
+
+    /* Code blocks */
+    pre {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px;
+      overflow-x: auto;
+      font-family: 'SF Mono', 'Consolas', monospace;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    code {
+      font-family: 'SF Mono', 'Consolas', monospace;
+    }
+
+    /* Syntax highlighting */
+    .kw { color: #ff7b72; }
+    .type { color: #79c0ff; }
+    .str { color: #a5d6ff; }
+    .num { color: #79c0ff; }
+    .comment { color: var(--text-subtle); font-style: italic; }
+    .prop { color: var(--text); }
+    .punct { color: var(--text-muted); }
+
+    /* Global types section */
+    .types-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 12px;
+    }
+
+    .type-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px;
+    }
+
+    .type-card h4 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent);
+      font-family: 'SF Mono', 'Consolas', monospace;
+      margin-bottom: 8px;
+    }
+
+    .type-card pre {
+      margin: 0;
+      border: none;
+      padding: 0;
+      background: transparent;
+    }
+
+    /* Stats bar */
+    .stats-bar {
+      display: flex;
+      gap: 24px;
+      padding: 16px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 24px;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Transport legend */
+    .transport-legend {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding: 12px 16px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 24px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--text-subtle);
+    }
+
+    /* Search */
+    .search-box {
+      padding: 8px 16px;
+      margin-bottom: 8px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 8px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .search-box input::placeholder {
+      color: var(--text-subtle);
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .sidebar {
+        display: none;
+      }
+      .main {
+        margin-left: 0;
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h1>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+          Open Harness
+          <span class="version">v0.2.0</span>
+        </h1>
+        <p>Universal AI Agent Harness API</p>
+      </div>
+
+      <div class="search-box">
+        <input type="text" placeholder="Search capabilities..." id="search" />
+      </div>
+
+      <nav class="nav-section">
+        <div class="nav-section-title">Overview</div>
+        <a class="nav-item" href="#introduction">Introduction</a>
+        <a class="nav-item" href="#transports">Transports</a>
+        <a class="nav-item" href="#types">Global Types</a>
+      </nav>
+
+      <nav class="nav-section">
+        <div class="nav-section-title">Domains</div>
+        <a class="nav-item" href="#harnesses">Harness Registry <span class="count">8</span></a>
+        <a class="nav-item" href="#agents">Agents <span class="count">8</span></a>
+        <a class="nav-item" href="#skills">Skills <span class="count">11</span></a>
+        <a class="nav-item" href="#mcp">MCP Servers <span class="count">9</span></a>
+        <a class="nav-item" href="#tools">Tools <span class="count">6</span></a>
+        <a class="nav-item" href="#execution">Execution <span class="count">11</span></a>
+        <a class="nav-item" href="#sessions">Sessions <span class="count">11</span></a>
+        <a class="nav-item" href="#memory">Memory <span class="count">11</span></a>
+        <a class="nav-item" href="#subagents">Subagents <span class="count">8</span></a>
+        <a class="nav-item" href="#files">Files <span class="count">10</span></a>
+        <a class="nav-item" href="#hooks">Hooks & Events <span class="count">9</span></a>
+        <a class="nav-item" href="#planning">Planning <span class="count">5</span></a>
+        <a class="nav-item" href="#conformance">Conformance <span class="count">6</span></a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="header" id="introduction">
+        <h1>Open Harness API</h1>
+        <p style="color: var(--text-muted); font-size: 15px; margin-top: 8px;">
+          A standardized interface for AI agent harnesses enabling interoperability across Claude Code, Goose, LangChain Deep Agent, Letta, and more.
+        </p>
+        <div class="meta">
+          <div class="meta-item">
+            <span>Base URL</span>
+            <code>https://api.openharness.org/v1</code>
+          </div>
+          <div class="meta-item">
+            <span>Auth</span>
+            <code>Bearer token</code>
+          </div>
+          <div class="meta-item">
+            <span>Format</span>
+            <code>MAPI v0.93</code>
+          </div>
+        </div>
+      </header>
+
+      <div class="stats-bar">
+        <div class="stat">
+          <div class="stat-value">13</div>
+          <div class="stat-label">Domains</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">107</div>
+          <div class="stat-label">Capabilities</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">50+</div>
+          <div class="stat-label">Types</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">6</div>
+          <div class="stat-label">Transports</div>
+        </div>
+      </div>
+
+      <section id="transports" class="section">
+        <div class="section-header">
+          <h2>Transport Protocols</h2>
+        </div>
+        <div class="transport-legend">
+          <div class="legend-item">
+            <span class="transport-badge rest">REST</span>
+            Standard HTTP request/response
+          </div>
+          <div class="legend-item">
+            <span class="transport-badge sse">SSE</span>
+            Server-Sent Events streaming
+          </div>
+          <div class="legend-item">
+            <span class="transport-badge ws">WS</span>
+            WebSocket bidirectional
+          </div>
+          <div class="legend-item">
+            <span class="transport-badge multipart">Multipart</span>
+            File upload (multipart/form-data)
+          </div>
+          <div class="legend-item">
+            <span class="transport-badge binary">Binary</span>
+            Binary file download
+          </div>
+          <div class="legend-item">
+            <span class="transport-badge zip">ZIP</span>
+            Bundled archive download
+          </div>
+          <div class="legend-item">
+            <span class="transport-badge webhook">Webhook</span>
+            Async callback notification
+          </div>
+        </div>
+      </section>
+
+      <!-- 1. Harness Registry -->
+      <section id="harnesses" class="section">
+        <div class="section-header">
+          <h2>1. Harness Registry</h2>
+          <span class="badge" style="background: var(--bg-tertiary); color: var(--text-muted);">8 capabilities</span>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method get">GET</span>
+            <span class="capability-path">/harnesses</span>
+            <span class="transport-badge rest">REST</span>
+            <span class="capability-name">harnesses.list</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Retrieves all registered harnesses with their current status and capabilities. Use this to discover available harnesses and their supported features before executing operations.</p>
+            </div>
+            <div class="capability-section">
+              <div class="capability-section-title">Input</div>
+              <pre><span class="kw">interface</span> <span class="type">ListHarnessesRequest</span> <span class="kw">extends</span> <span class="type">PaginationParams</span> <span class="punct">{</span>
+  <span class="prop">status</span><span class="punct">?:</span> <span class="type">HarnessStatus</span><span class="punct">;</span>        <span class="comment">// Filter by status</span>
+  <span class="prop">execution_type</span><span class="punct">?:</span> <span class="type">ExecutionType</span><span class="punct">;</span> <span class="comment">// Filter by type</span>
+<span class="punct">}</span></pre>
+            </div>
+            <div class="capability-section">
+              <div class="capability-section-title">Output</div>
+              <pre><span class="kw">interface</span> <span class="type">ListHarnessesResponse</span> <span class="kw">extends</span> <span class="type">PaginatedResponse</span><span class="punct">&lt;</span><span class="type">Harness</span><span class="punct">&gt;</span> <span class="punct">{}</span></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method get">GET</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span></span>
+            <span class="transport-badge rest">REST</span>
+            <span class="capability-name">harnesses.get</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Retrieves detailed information about a specific harness including its full capability manifest.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method post">POST</span>
+            <span class="capability-path">/harnesses</span>
+            <span class="transport-badge rest">REST</span>
+            <span class="capability-name">harnesses.register</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Registers a new harness with the Open Harness system. Typically used by harness vendors or administrators to add support for a new agent harness.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method patch">PATCH</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span></span>
+            <span class="transport-badge rest">REST</span>
+            <span class="capability-name">harnesses.update</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Updates configuration for an existing harness.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method delete">DELETE</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span></span>
+            <span class="transport-badge rest">REST</span>
+            <span class="capability-name">harnesses.unregister</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Removes a harness from the registry. This does not uninstall the harness itself, only removes it from Open Harness management.</p>
+            </div>
+            <div class="capability-section">
+              <div class="capability-section-title">Logic Constraints</div>
+              <ul>
+                <li>Cannot unregister a harness with active sessions or running executions</li>
+                <li>Credentials associated with this harness will be deleted</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method get">GET</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/capabilities</span>
+            <span class="transport-badge rest">REST</span>
+            <span class="capability-name">harnesses.capabilities</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Retrieves the full capability manifest for a harness. Use this to determine which operations are supported before attempting them.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method get">GET</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/health</span>
+            <span class="transport-badge rest">REST</span>
+            <span class="capability-name">harnesses.health</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Checks connectivity and health of a harness. Returns status information useful for monitoring and debugging.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method post">POST</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/validate-credentials</span>
+            <span class="transport-badge rest">REST</span>
+            <span class="capability-name">harnesses.validateCredentials</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Validates API credentials for a harness and optionally stores them for future use.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Agents -->
+      <section id="agents" class="section">
+        <div class="section-header">
+          <h2>2. Agents</h2>
+          <span class="badge" style="background: var(--bg-tertiary); color: var(--text-muted);">8 capabilities</span>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method get">GET</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/agents</span>
+            <span class="transport-badge rest">REST</span>
+            <span class="capability-name">agents.list</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Lists all agents deployed on a specific harness.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method post">POST</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/agents</span>
+            <span class="transport-badge multipart">Multipart</span>
+            <span class="capability-name">agents.create</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Creates and deploys a new agent on the harness. The agent bundle includes the AGENTS.md manifest and any supporting files.</p>
+            </div>
+            <div class="capability-section">
+              <div class="capability-section-title">Logic Constraints</div>
+              <ul>
+                <li>Agent name in AGENTS.md frontmatter must be unique on this harness</li>
+                <li>Maximum bundle size: 50MB</li>
+                <li>Files array preserves directory structure via filename paths</li>
+                <li>AGENTS.md is required at the root of the bundle</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method get">GET</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/agents/<span class="param">{agentId}</span></span>
+            <span class="transport-badge rest">REST</span>
+            <span class="capability-name">agents.get</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Retrieves the current state and configuration of an agent.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method patch">PATCH</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/agents/<span class="param">{agentId}</span></span>
+            <span class="transport-badge rest">REST</span>
+            <span class="capability-name">agents.update</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Updates agent configuration without redeploying the full bundle.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method delete">DELETE</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/agents/<span class="param">{agentId}</span></span>
+            <span class="transport-badge rest">REST</span>
+            <span class="capability-name">agents.delete</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Removes an agent from the harness.</p>
+            </div>
+            <div class="capability-section">
+              <div class="capability-section-title">Logic Constraints</div>
+              <ul>
+                <li>Cannot delete an agent with active sessions</li>
+                <li>Associated memory blocks will be deleted</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method post">POST</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/agents/<span class="param">{agentId}</span>/clone</span>
+            <span class="transport-badge rest">REST</span>
+            <span class="capability-name">agents.clone</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Creates a copy of an existing agent with a new name.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method get">GET</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/agents/<span class="param">{agentId}</span>/export</span>
+            <span class="transport-badge zip">ZIP</span>
+            <span class="capability-name">agents.export</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Downloads the complete agent bundle as a ZIP file, including AGENTS.md and all supporting files.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method post">POST</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/agents/import</span>
+            <span class="transport-badge multipart">Multipart</span>
+            <span class="capability-name">agents.import</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Imports an agent from a previously exported bundle or external source.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Skills -->
+      <section id="skills" class="section">
+        <div class="section-header">
+          <h2>3. Skills</h2>
+          <span class="badge" style="background: var(--bg-tertiary); color: var(--text-muted);">11 capabilities</span>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method get">GET</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/skills</span>
+            <span class="transport-badge rest">REST</span>
+            <span class="capability-name">skills.list</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Lists all skills installed or registered on the harness.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method post">POST</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/skills</span>
+            <span class="transport-badge multipart">Multipart</span>
+            <span class="capability-name">skills.register</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Registers or installs a skill on the harness. Skills consist of a SKILL.md manifest plus optional supporting files.</p>
+            </div>
+            <div class="capability-section">
+              <div class="capability-section-title">Logic Constraints</div>
+              <ul>
+                <li>Skill name in SKILL.md frontmatter must match root directory name</li>
+                <li>Maximum bundle size: 10MB</li>
+                <li>SKILL.md is required at the root</li>
+                <li>Binary assets should be in an assets/ subdirectory</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method get">GET</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/skills/<span class="param">{skillId}</span></span>
+            <span class="transport-badge rest">REST</span>
+            <span class="capability-name">skills.get</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Retrieves details about a specific skill.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method delete">DELETE</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/skills/<span class="param">{skillId}</span></span>
+            <span class="transport-badge rest">REST</span>
+            <span class="capability-name">skills.uninstall</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Uninstalls or unregisters a skill from the harness.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method get">GET</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/skills/<span class="param">{skillId}</span>/versions</span>
+            <span class="transport-badge rest">REST</span>
+            <span class="capability-name">skills.listVersions</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Lists all available versions of a skill.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method post">POST</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/skills/<span class="param">{skillId}</span>/rollback</span>
+            <span class="transport-badge rest">REST</span>
+            <span class="capability-name">skills.rollback</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Reverts a skill to a previous version.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method post">POST</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/skills/discover</span>
+            <span class="transport-badge rest">REST</span>
+            <span class="capability-name">skills.discover</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Discovers skills available on the harness that are not yet registered. Useful for finding built-in or auto-detected skills.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method post">POST</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/skills/validate</span>
+            <span class="transport-badge multipart">Multipart</span>
+            <span class="capability-name">skills.validate</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Validates a skill bundle without installing it. Returns any errors or warnings.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method get">GET</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/skills/<span class="param">{skillId}</span>/download</span>
+            <span class="transport-badge zip">ZIP</span>
+            <span class="capability-name">skills.download</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Downloads the complete skill bundle as a ZIP file.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method post">POST</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/skills/<span class="param">{skillId}</span>/upgrade</span>
+            <span class="transport-badge multipart">Multipart</span>
+            <span class="capability-name">skills.upgrade</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Upgrades an existing skill to a new version.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method patch">PATCH</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/skills/<span class="param">{skillId}</span></span>
+            <span class="transport-badge rest">REST</span>
+            <span class="capability-name">skills.update</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Updates skill metadata without uploading a new version.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. Execution (highlight section) -->
+      <section id="execution" class="section">
+        <div class="section-header">
+          <h2>6. Execution</h2>
+          <span class="badge" style="background: var(--bg-tertiary); color: var(--text-muted);">11 capabilities</span>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method post">POST</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/execute</span>
+            <span class="transport-badge rest">REST</span>
+            <span class="capability-name">execution.run</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Executes a task on the harness. Returns immediately with an execution ID; use the stream endpoint to follow progress.</p>
+            </div>
+            <div class="capability-section">
+              <div class="capability-section-title">Input</div>
+              <pre><span class="kw">interface</span> <span class="type">ExecuteRequest</span> <span class="punct">{</span>
+  <span class="prop">harnessId</span><span class="punct">:</span> <span class="type">HarnessId</span><span class="punct">;</span>        <span class="comment">// path parameter</span>
+  <span class="prop">message</span><span class="punct">:</span> <span class="type">string</span><span class="punct">;</span>            <span class="comment">// 1-100000 chars</span>
+  <span class="prop">agent_id</span><span class="punct">?:</span> <span class="type">AgentId</span><span class="punct">;</span>         <span class="comment">// Use specific agent</span>
+  <span class="prop">skills</span><span class="punct">?:</span> <span class="type">SkillId</span><span class="punct">[];</span>          <span class="comment">// Skills to enable</span>
+  <span class="prop">model</span><span class="punct">?:</span> <span class="type">string</span><span class="punct">;</span>             <span class="comment">// Override default model</span>
+  <span class="prop">max_tokens</span><span class="punct">?:</span> <span class="type">number</span><span class="punct">;</span>        <span class="comment">// 1-200000</span>
+  <span class="prop">temperature</span><span class="punct">?:</span> <span class="type">number</span><span class="punct">;</span>       <span class="comment">// 0.0-1.0</span>
+<span class="punct">}</span></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability expanded" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method post">POST</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/execute/stream</span>
+            <span class="transport-badge sse">SSE</span>
+            <span class="capability-name">execution.stream</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Executes a task with streaming response. Use this for real-time feedback during execution.</p>
+            </div>
+            <div class="capability-section">
+              <div class="capability-section-title">Logic Constraints</div>
+              <ul>
+                <li>Client should handle reconnection using <code>Last-Event-ID</code> header</li>
+                <li>Stream may include multiple tool calls before completion</li>
+                <li><code>done</code> event signals stream completion</li>
+              </ul>
+            </div>
+            <div class="capability-section">
+              <div class="capability-section-title">Output (SSE Events)</div>
+              <pre><span class="kw">type</span> <span class="type">ExecutionEvent</span> <span class="punct">=</span>
+  <span class="punct">|</span> <span class="punct">{</span> <span class="prop">type</span><span class="punct">:</span> <span class="str">"text"</span><span class="punct">;</span> <span class="prop">content</span><span class="punct">:</span> <span class="type">string</span> <span class="punct">}</span>
+  <span class="punct">|</span> <span class="punct">{</span> <span class="prop">type</span><span class="punct">:</span> <span class="str">"thinking"</span><span class="punct">;</span> <span class="prop">content</span><span class="punct">:</span> <span class="type">string</span> <span class="punct">}</span>
+  <span class="punct">|</span> <span class="punct">{</span> <span class="prop">type</span><span class="punct">:</span> <span class="str">"tool_call_start"</span><span class="punct">;</span> <span class="prop">id</span><span class="punct">:</span> <span class="type">string</span><span class="punct">;</span> <span class="prop">name</span><span class="punct">:</span> <span class="type">string</span> <span class="punct">}</span>
+  <span class="punct">|</span> <span class="punct">{</span> <span class="prop">type</span><span class="punct">:</span> <span class="str">"tool_call_delta"</span><span class="punct">;</span> <span class="prop">id</span><span class="punct">:</span> <span class="type">string</span><span class="punct">;</span> <span class="prop">input_delta</span><span class="punct">:</span> <span class="type">object</span> <span class="punct">}</span>
+  <span class="punct">|</span> <span class="punct">{</span> <span class="prop">type</span><span class="punct">:</span> <span class="str">"tool_call_end"</span><span class="punct">;</span> <span class="prop">id</span><span class="punct">:</span> <span class="type">string</span> <span class="punct">}</span>
+  <span class="punct">|</span> <span class="punct">{</span> <span class="prop">type</span><span class="punct">:</span> <span class="str">"tool_result"</span><span class="punct">;</span> <span class="prop">id</span><span class="punct">:</span> <span class="type">string</span><span class="punct">;</span> <span class="prop">success</span><span class="punct">:</span> <span class="type">boolean</span> <span class="punct">}</span>
+  <span class="punct">|</span> <span class="punct">{</span> <span class="prop">type</span><span class="punct">:</span> <span class="str">"artifact"</span><span class="punct">;</span> <span class="prop">id</span><span class="punct">:</span> <span class="type">string</span><span class="punct">;</span> <span class="prop">name</span><span class="punct">:</span> <span class="type">string</span><span class="punct">;</span> <span class="prop">mime_type</span><span class="punct">:</span> <span class="type">string</span> <span class="punct">}</span>
+  <span class="punct">|</span> <span class="punct">{</span> <span class="prop">type</span><span class="punct">:</span> <span class="str">"progress"</span><span class="punct">;</span> <span class="prop">percentage</span><span class="punct">:</span> <span class="type">number</span><span class="punct">;</span> <span class="prop">step</span><span class="punct">:</span> <span class="type">string</span> <span class="punct">}</span>
+  <span class="punct">|</span> <span class="punct">{</span> <span class="prop">type</span><span class="punct">:</span> <span class="str">"error"</span><span class="punct">;</span> <span class="prop">code</span><span class="punct">:</span> <span class="type">string</span><span class="punct">;</span> <span class="prop">message</span><span class="punct">:</span> <span class="type">string</span> <span class="punct">}</span>
+  <span class="punct">|</span> <span class="punct">{</span> <span class="prop">type</span><span class="punct">:</span> <span class="str">"done"</span><span class="punct">;</span> <span class="prop">usage</span><span class="punct">:</span> <span class="type">UsageStats</span> <span class="punct">};</span></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method get">GET</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/executions/<span class="param">{executionId}</span>/stream</span>
+            <span class="transport-badge sse">SSE</span>
+            <span class="capability-name">execution.attachStream</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Attaches to an existing execution's event stream. Use <code>Last-Event-ID</code> header to resume from a specific point.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method post">POST</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/executions/<span class="param">{executionId}</span>/cancel</span>
+            <span class="transport-badge rest">REST</span>
+            <span class="capability-name">execution.cancel</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Cancels a running execution.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method get">GET</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/executions/<span class="param">{executionId}</span>/artifacts/<span class="param">{artifactId}</span></span>
+            <span class="transport-badge binary">Binary</span>
+            <span class="capability-name">execution.downloadArtifact</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Downloads a specific artifact generated by an execution.</p>
+            </div>
+            <div class="capability-section">
+              <div class="capability-section-title">Logic Constraints</div>
+              <ul>
+                <li>Content-Type header matches the artifact's MIME type</li>
+                <li>Content-Disposition header contains original filename</li>
+                <li>Large files use chunked transfer encoding</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. Sessions -->
+      <section id="sessions" class="section">
+        <div class="section-header">
+          <h2>7. Sessions</h2>
+          <span class="badge" style="background: var(--bg-tertiary); color: var(--text-muted);">11 capabilities</span>
+        </div>
+
+        <div class="capability expanded" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method ws">WS</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/sessions/<span class="param">{sessionId}</span>/connect</span>
+            <span class="transport-badge ws">WebSocket</span>
+            <span class="capability-name">sessions.connect</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Establishes a WebSocket connection for real-time interactive communication with a session.</p>
+            </div>
+            <div class="capability-section">
+              <div class="capability-section-title">Client Messages</div>
+              <pre><span class="kw">type</span> <span class="type">ClientMessage</span> <span class="punct">=</span>
+  <span class="punct">|</span> <span class="punct">{</span> <span class="prop">type</span><span class="punct">:</span> <span class="str">"message"</span><span class="punct">;</span> <span class="prop">id</span><span class="punct">:</span> <span class="type">string</span><span class="punct">;</span> <span class="prop">content</span><span class="punct">:</span> <span class="type">string</span> <span class="punct">}</span>
+  <span class="punct">|</span> <span class="punct">{</span> <span class="prop">type</span><span class="punct">:</span> <span class="str">"stdin"</span><span class="punct">;</span> <span class="prop">id</span><span class="punct">:</span> <span class="type">string</span><span class="punct">;</span> <span class="prop">data</span><span class="punct">:</span> <span class="type">string</span> <span class="punct">}</span>
+  <span class="punct">|</span> <span class="punct">{</span> <span class="prop">type</span><span class="punct">:</span> <span class="str">"cancel"</span><span class="punct">;</span> <span class="prop">execution_id</span><span class="punct">:</span> <span class="type">string</span> <span class="punct">};</span></pre>
+            </div>
+            <div class="capability-section">
+              <div class="capability-section-title">Server Messages</div>
+              <pre><span class="kw">type</span> <span class="type">ServerMessage</span> <span class="punct">=</span>
+  <span class="punct">|</span> <span class="punct">{</span> <span class="prop">type</span><span class="punct">:</span> <span class="str">"text"</span><span class="punct">;</span> <span class="prop">id</span><span class="punct">:</span> <span class="type">string</span><span class="punct">;</span> <span class="prop">content</span><span class="punct">:</span> <span class="type">string</span> <span class="punct">}</span>
+  <span class="punct">|</span> <span class="punct">{</span> <span class="prop">type</span><span class="punct">:</span> <span class="str">"tool_call"</span><span class="punct">;</span> <span class="prop">id</span><span class="punct">:</span> <span class="type">string</span><span class="punct">;</span> <span class="prop">tool</span><span class="punct">:</span> <span class="type">string</span> <span class="punct">}</span>
+  <span class="punct">|</span> <span class="punct">{</span> <span class="prop">type</span><span class="punct">:</span> <span class="str">"stdout"</span><span class="punct">;</span> <span class="prop">id</span><span class="punct">:</span> <span class="type">string</span><span class="punct">;</span> <span class="prop">data</span><span class="punct">:</span> <span class="type">string</span> <span class="punct">}</span>
+  <span class="punct">|</span> <span class="punct">{</span> <span class="prop">type</span><span class="punct">:</span> <span class="str">"prompt"</span><span class="punct">;</span> <span class="prop">id</span><span class="punct">:</span> <span class="type">string</span><span class="punct">;</span> <span class="prop">prompt</span><span class="punct">:</span> <span class="type">string</span> <span class="punct">}</span>
+  <span class="punct">|</span> <span class="punct">{</span> <span class="prop">type</span><span class="punct">:</span> <span class="str">"done"</span><span class="punct">;</span> <span class="prop">id</span><span class="punct">:</span> <span class="type">string</span><span class="punct">;</span> <span class="prop">usage</span><span class="punct">:</span> <span class="type">UsageStats</span> <span class="punct">};</span></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method post">POST</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/sessions</span>
+            <span class="transport-badge rest">REST</span>
+            <span class="capability-name">sessions.create</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Creates a new interactive session.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method post">POST</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/sessions/<span class="param">{sessionId}</span>/message/stream</span>
+            <span class="transport-badge sse">SSE</span>
+            <span class="capability-name">sessions.sendMessageStream</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Sends a message to a session with streaming response.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method post">POST</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/sessions/<span class="param">{sessionId}</span>/fork</span>
+            <span class="transport-badge rest">REST</span>
+            <span class="capability-name">sessions.fork</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Creates a copy of a session with its history, allowing experimentation from a specific point.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 11. Hooks & Events -->
+      <section id="hooks" class="section">
+        <div class="section-header">
+          <h2>11. Hooks & Events</h2>
+          <span class="badge" style="background: var(--bg-tertiary); color: var(--text-muted);">9 capabilities</span>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method get">GET</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/events/stream</span>
+            <span class="transport-badge sse">SSE</span>
+            <span class="capability-name">hooks.streamEvents</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Subscribes to real-time events from the harness.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability expanded" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method webhook">WEBHOOK</span>
+            <span class="capability-path">{callback_url}</span>
+            <span class="transport-badge webhook">Webhook</span>
+            <span class="capability-name">webhooks.executionCompleted</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Notifies when an execution completes.</p>
+            </div>
+            <div class="capability-section">
+              <div class="capability-section-title">Payload</div>
+              <pre><span class="kw">interface</span> <span class="type">ExecutionCompletedWebhook</span> <span class="punct">{</span>
+  <span class="prop">event</span><span class="punct">:</span> <span class="str">"execution.completed"</span><span class="punct">;</span>
+  <span class="prop">execution_id</span><span class="punct">:</span> <span class="type">ExecutionId</span><span class="punct">;</span>
+  <span class="prop">harness_id</span><span class="punct">:</span> <span class="type">HarnessId</span><span class="punct">;</span>
+  <span class="prop">status</span><span class="punct">:</span> <span class="type">ExecutionStatus</span><span class="punct">;</span>
+  <span class="prop">artifacts</span><span class="punct">:</span> <span class="type">ArtifactSummary</span><span class="punct">[];</span>
+  <span class="prop">signature</span><span class="punct">:</span> <span class="type">string</span><span class="punct">;</span>     <span class="comment">// HMAC-SHA256</span>
+<span class="punct">}</span></pre>
+            </div>
+            <div class="capability-section">
+              <div class="capability-section-title">Logic Constraints</div>
+              <ul>
+                <li>Signature: HMAC-SHA256 of raw body using webhook secret</li>
+                <li>Header: <code>X-OpenHarness-Signature: sha256=&lt;signature&gt;</code></li>
+                <li>Timeout: 30 seconds</li>
+                <li>Retry: exponential backoff (1min, 5min, 30min, 2hr)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="capability" onclick="this.classList.toggle('expanded')">
+          <div class="capability-header">
+            <span class="method post">POST</span>
+            <span class="capability-path">/harnesses/<span class="param">{harnessId}</span>/webhooks</span>
+            <span class="transport-badge rest">REST</span>
+            <span class="capability-name">webhooks.register</span>
+            <svg class="expand-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div class="capability-body">
+            <div class="capability-section">
+              <div class="capability-section-title">Intention</div>
+              <p>Registers a webhook endpoint to receive async notifications.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Additional sections placeholder -->
+      <section id="mcp" class="section">
+        <div class="section-header">
+          <h2>4. MCP Servers</h2>
+          <span class="badge" style="background: var(--bg-tertiary); color: var(--text-muted);">9 capabilities</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 13px;">MCP server lifecycle and tool discovery. Connect, disconnect, and query tools/resources/prompts from Model Context Protocol servers.</p>
+      </section>
+
+      <section id="tools" class="section">
+        <div class="section-header">
+          <h2>5. Tools</h2>
+          <span class="badge" style="background: var(--bg-tertiary); color: var(--text-muted);">6 capabilities</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 13px;">Unified tool management across skills, MCP, and built-ins. Register custom tools and invoke them directly.</p>
+      </section>
+
+      <section id="memory" class="section">
+        <div class="section-header">
+          <h2>8. Memory</h2>
+          <span class="badge" style="background: var(--bg-tertiary); color: var(--text-muted);">11 capabilities</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 13px;">Persistent memory operations across sessions. Manage memory blocks, search content, and export/import snapshots.</p>
+      </section>
+
+      <section id="subagents" class="section">
+        <div class="section-header">
+          <h2>9. Subagents</h2>
+          <span class="badge" style="background: var(--bg-tertiary); color: var(--text-muted);">8 capabilities</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 13px;">Spawn, manage, and communicate with subagents. Delegate tasks with streaming progress.</p>
+      </section>
+
+      <section id="files" class="section">
+        <div class="section-header">
+          <h2>10. Files</h2>
+          <span class="badge" style="background: var(--bg-tertiary); color: var(--text-muted);">10 capabilities</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 13px;">File system operations and artifact management. Read, write, search, and batch upload/download files.</p>
+      </section>
+
+      <section id="planning" class="section">
+        <div class="section-header">
+          <h2>12. Planning</h2>
+          <span class="badge" style="background: var(--bg-tertiary); color: var(--text-muted);">5 capabilities</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 13px;">Built-in planning and task management. Track todo lists and task status during execution.</p>
+      </section>
+
+      <section id="conformance" class="section">
+        <div class="section-header">
+          <h2>13. Conformance</h2>
+          <span class="badge" style="background: var(--bg-tertiary); color: var(--text-muted);">6 capabilities</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 13px;">Test harness conformance and diagnose issues. Run conformance tests, check certification status, and stream logs.</p>
+      </section>
+
+      <footer style="margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 12px;">
+        <p>Open Harness API v0.2.0 &middot; Format: MAPI v0.93 &middot; <a href="https://github.com/jeffrschneider/OpenHarness">GitHub</a></p>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // Search functionality
+    document.getElementById('search').addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase();
+      document.querySelectorAll('.capability').forEach(cap => {
+        const text = cap.textContent.toLowerCase();
+        cap.style.display = text.includes(query) ? 'block' : 'none';
+      });
+    });
+
+    // Active nav item
+    const sections = document.querySelectorAll('.section[id]');
+    const navItems = document.querySelectorAll('.nav-item[href^="#"]');
+
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        if (scrollY >= sectionTop - 100) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      navItems.forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('href') === '#' + current) {
+          item.classList.add('active');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
