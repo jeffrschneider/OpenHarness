@@ -19,9 +19,21 @@ The specification is designed to accommodate additional harnesses as the ecosyst
 
 ## Specification
 
-- [Open Harness API](spec/OPEN_HARNESS_API.md) - Complete route-level API specification
+- [Open Harness API (MAPI)](spec/openharness.mapi.md) - Machine & human readable spec in MAPI format
+- [Open Harness API (Markdown)](spec/OPEN_HARNESS_API.md) - Route-level API specification
 - [Capability Manifest](spec/CAPABILITY_MANIFEST.md) - How harnesses declare their capabilities
 - [Harness Support Matrix](spec/HARNESS_SUPPORT_MATRIX.md) - Current capability coverage by harness
+
+## Format
+
+The specification uses [MAPI (Markdown API)](https://markdownapi.org/) v0.93, a format designed for simultaneous comprehension by humans, LLMs, and tooling. MAPI natively supports:
+
+- HTTP REST endpoints
+- Server-Sent Events (SSE) streaming
+- WebSocket bidirectional communication
+- Multipart file uploads
+- Binary downloads
+- Webhooks
 
 ## Design Principles
 
