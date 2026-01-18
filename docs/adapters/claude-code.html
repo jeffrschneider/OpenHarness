@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/svg+xml" href="../favicon.svg">
-  <title>Letta Adapter - Open Harness</title>
+  <title>Claude Code Adapter - Open Harness</title>
   <style>
     :root {
       --bg: #0d1117;
@@ -20,6 +20,7 @@
       --warning: #d29922;
       --danger: #f85149;
       --purple: #a371f7;
+      --orange: #f0883e;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -150,11 +151,6 @@
       background: var(--bg-tertiary);
       color: var(--accent);
       border-color: var(--border);
-    }
-
-    .adapter-subnav-link.planned {
-      color: var(--text-subtle);
-      font-style: italic;
     }
 
     /* Layout */
@@ -405,7 +401,7 @@
         <a href="../index.html" class="top-nav-link">API Reference</a>
         <a href="../profiles.html" class="top-nav-link">Profiles</a>
         <a href="../matrix.html" class="top-nav-link">Compatibility</a>
-        <a href="letta.html" class="top-nav-link active">Adapters</a>
+        <a href="claude-code.html" class="top-nav-link active">Adapters</a>
       </div>
       <div class="top-nav-right">
         <a href="https://github.com/jeffrschneider/OpenHarness" class="github-link" target="_blank">
@@ -422,10 +418,10 @@
   <nav class="adapter-subnav">
     <div class="adapter-subnav-inner">
       <span class="adapter-subnav-label">Adapters:</span>
-      <a href="letta.html" class="adapter-subnav-link active">Letta</a>
+      <a href="letta.html" class="adapter-subnav-link">Letta</a>
       <a href="goose.html" class="adapter-subnav-link">Goose</a>
       <a href="deepagent.html" class="adapter-subnav-link">Langchain Deep Agents</a>
-      <a href="claude-code.html" class="adapter-subnav-link">Claude Code</a>
+      <a href="claude-code.html" class="adapter-subnav-link active">Claude Code</a>
     </div>
   </nav>
 
@@ -437,60 +433,64 @@
         <a href="#installation" class="sidebar-link">Installation</a>
         <a href="#quick-start" class="sidebar-link">Quick Start</a>
         <a href="#capabilities" class="sidebar-link">Capabilities</a>
-        <a href="#memory" class="sidebar-link">Memory Management</a>
+        <a href="#tools" class="sidebar-link">Built-in Tools</a>
         <a href="#streaming" class="sidebar-link">Streaming</a>
-        <a href="#agents" class="sidebar-link">Agent Lifecycle</a>
+        <a href="#mcp" class="sidebar-link">MCP Integration</a>
         <a href="#configuration" class="sidebar-link">Configuration</a>
-        <a href="#features" class="sidebar-link">Letta Features</a>
       </div>
     </aside>
 
     <!-- Main Content -->
     <main class="main">
       <div class="page-header">
-        <h1>Letta Adapter</h1>
-        <div class="package">openharness-letta (Python)</div>
-        <p>Stateful agents with persistent memory, inner monologue, and self-editing capabilities.</p>
+        <h1>Claude Code Adapter</h1>
+        <div class="package">openharness-claude-code (Python)</div>
+        <p>Full-featured CLI agent wrapping the Claude Agent SDK with skills, hooks, MCP integration, and subagent capabilities.</p>
         <div class="badge-row">
           <span class="badge success">Available</span>
           <span class="badge accent">v0.1.0</span>
-          <span class="badge purple">Memory-First</span>
+          <span class="badge purple">Claude Agent SDK</span>
         </div>
       </div>
 
       <!-- Installation -->
       <section id="installation">
         <h2>Installation</h2>
-        <pre class="code-block"><code>pip install openharness-letta</code></pre>
-        <p>This will install both <code>openharness</code> (the Python SDK) and <code>letta-client</code> (the official Letta SDK).</p>
+        <pre class="code-block"><code>pip install openharness-claude-code</code></pre>
+
+        <h3>Prerequisites</h3>
+        <p>Claude Code CLI must be installed and authenticated:</p>
+        <pre class="code-block"><code><span class="comment"># Install Claude Code CLI</span>
+npm install -g @anthropic-ai/claude-code
+
+<span class="comment"># Authenticate (follow prompts)</span>
+claude auth login</code></pre>
       </section>
 
       <!-- Quick Start -->
       <section id="quick-start">
         <h2>Quick Start</h2>
-        <pre class="code-block"><code><span class="keyword">from</span> openharness_letta <span class="keyword">import</span> LettaAdapter
-<span class="keyword">from</span> openharness_letta.types <span class="keyword">import</span> LettaAgentConfig, MemoryBlock
+        <pre class="code-block"><code><span class="keyword">from</span> openharness_claude_code <span class="keyword">import</span> ClaudeCodeAdapter, ClaudeCodeConfig
 <span class="keyword">from</span> openharness.types <span class="keyword">import</span> ExecuteRequest
 
-<span class="comment"># Connect to Letta cloud</span>
-adapter = <span class="function">LettaAdapter</span>(api_key=<span class="string">"letta-..."</span>)
+<span class="comment"># Create adapter with configuration</span>
+config = <span class="function">ClaudeCodeConfig</span>(
+    cwd=<span class="string">"/path/to/project"</span>,
+    model=<span class="string">"sonnet"</span>,
+    permission_mode=<span class="string">"acceptEdits"</span>,
+)
+adapter = <span class="function">ClaudeCodeAdapter</span>(config)
 
-<span class="comment"># Or connect to local Letta server</span>
-adapter = <span class="function">LettaAdapter</span>(base_url=<span class="string">"http://localhost:8283"</span>)
+<span class="comment"># Execute a prompt with streaming</span>
+<span class="keyword">async for</span> event <span class="keyword">in</span> adapter.<span class="function">execute_stream</span>(
+    <span class="function">ExecuteRequest</span>(message=<span class="string">"Explain this codebase"</span>)
+):
+    <span class="keyword">if</span> event.type == <span class="string">"text"</span>:
+        <span class="keyword">print</span>(event.content, end=<span class="string">""</span>)
 
-<span class="comment"># Create an agent with memory</span>
-agent_id = <span class="keyword">await</span> adapter.<span class="function">create_agent</span>(<span class="function">LettaAgentConfig</span>(
-    name=<span class="string">"my-assistant"</span>,
-    model=<span class="string">"openai/gpt-4o-mini"</span>,
-    memory_blocks=[
-        <span class="function">MemoryBlock</span>(label=<span class="string">"human"</span>, value=<span class="string">"Name: Alice"</span>),
-        <span class="function">MemoryBlock</span>(label=<span class="string">"persona"</span>, value=<span class="string">"I am a helpful assistant."</span>),
-    ],
-))
-
-<span class="comment"># Execute a prompt</span>
+<span class="comment"># Or execute synchronously</span>
 result = <span class="keyword">await</span> adapter.<span class="function">execute</span>(
-    <span class="function">ExecuteRequest</span>(message=<span class="string">"Hello!"</span>, agent_id=agent_id)
+    <span class="function">ExecuteRequest</span>(message=<span class="string">"What does the main function do?"</span>)
 )
 <span class="keyword">print</span>(result.output)</code></pre>
       </section>
@@ -499,8 +499,8 @@ result = <span class="keyword">await</span> adapter.<span class="function">execu
       <section id="capabilities">
         <h2>Capabilities</h2>
         <div class="info-box purple">
-          <h4>Memory-First Architecture</h4>
-          <p>Letta's unique architecture centers on persistent memory blocks that survive across conversations. Agents can read and modify their own memory, enabling true long-term learning and personalization.</p>
+          <h4>Full Claude Code Feature Set</h4>
+          <p>This adapter wraps the Claude Agent SDK, giving you access to Claude Code's complete capabilities including built-in tools, MCP servers, skills, hooks, and subagent spawning via the Task tool.</p>
         </div>
 
         <h3>Supported</h3>
@@ -509,18 +509,16 @@ result = <span class="keyword">await</span> adapter.<span class="function">execu
             <tr><th>Domain</th><th>Capability</th><th>Notes</th></tr>
           </thead>
           <tbody>
-            <tr><td>Agents</td><td><code>create_agent()</code></td><td>Full lifecycle with memory blocks</td></tr>
-            <tr><td>Agents</td><td><code>get_agent()</code></td><td>Retrieve agent details</td></tr>
-            <tr><td>Agents</td><td><code>list_agents()</code></td><td>List all agents</td></tr>
-            <tr><td>Agents</td><td><code>delete_agent()</code></td><td>Delete agent and memory</td></tr>
-            <tr><td>Execution</td><td><code>execute()</code></td><td>Sync execution with memory</td></tr>
-            <tr><td>Execution</td><td><code>execute_stream()</code></td><td>Streaming with events</td></tr>
-            <tr><td>Memory</td><td><code>memory.get_blocks()</code></td><td>List all memory blocks</td></tr>
-            <tr><td>Memory</td><td><code>memory.update_block()</code></td><td>Update block content</td></tr>
-            <tr><td>Memory</td><td><code>memory.add_block()</code></td><td>Add new memory block</td></tr>
-            <tr><td>Memory</td><td><code>memory.delete_block()</code></td><td>Remove memory block</td></tr>
-            <tr><td>Tools</td><td><code>list_tools()</code></td><td>List registered tools</td></tr>
-            <tr><td>Tools</td><td><code>register_tool()</code></td><td>Register custom tools</td></tr>
+            <tr><td>Execution</td><td><code>execute()</code></td><td>Sync execution</td></tr>
+            <tr><td>Execution</td><td><code>execute_stream()</code></td><td>Streaming execution</td></tr>
+            <tr><td>Tools</td><td>12 built-in tools</td><td>Read, Write, Edit, Bash, Glob, Grep, etc.</td></tr>
+            <tr><td>MCP</td><td><code>mcp_servers</code> config</td><td>stdio and SSE servers</td></tr>
+            <tr><td>Files</td><td>File operations</td><td>Via Read, Write, Edit, Glob, Grep tools</td></tr>
+            <tr><td>Hooks</td><td>SDK hooks system</td><td>Event-driven customization</td></tr>
+            <tr><td>Planning</td><td><code>TodoWrite</code> tool</td><td>Task management</td></tr>
+            <tr><td>Subagents</td><td><code>Task</code> tool</td><td>Spawn specialized agents</td></tr>
+            <tr><td>Skills</td><td>Skills system</td><td>Reusable agent capabilities</td></tr>
+            <tr><td>Models</td><td>Model switching</td><td>sonnet, opus, haiku</td></tr>
           </tbody>
         </table>
 
@@ -530,57 +528,43 @@ result = <span class="keyword">await</span> adapter.<span class="function">execu
             <tr><th>Domain</th><th>Reason</th><th>Workaround</th></tr>
           </thead>
           <tbody>
-            <tr><td>Sessions</td><td>Agents maintain state</td><td>Use agents for persistent conversations</td></tr>
-            <tr><td>MCP</td><td>Not in Letta</td><td>Register tools directly</td></tr>
-            <tr><td>Skills</td><td>Not in Letta</td><td>Register tools</td></tr>
-            <tr><td>Subagents</td><td>Not supported</td><td>Create separate agents</td></tr>
-            <tr><td>Files</td><td>Limited support</td><td>Use archival memory</td></tr>
-            <tr><td>Hooks</td><td>Not supported</td><td>Wrap adapter methods</td></tr>
+            <tr><td>Agents</td><td>No explicit CRUD</td><td>SDK manages internally</td></tr>
+            <tr><td>Sessions</td><td>SDK handles internally</td><td>Pass context in prompts</td></tr>
+            <tr><td>Memory</td><td>No persistent memory</td><td>Use external storage</td></tr>
+            <tr><td>Custom Tools</td><td>Uses MCP</td><td>Configure via <code>mcp_servers</code></td></tr>
           </tbody>
         </table>
       </section>
 
-      <!-- Memory Management -->
-      <section id="memory">
-        <h2>Memory Management</h2>
-        <p>Letta's memory system is organized into "blocks" - persistent storage that the agent can read from and write to during conversations.</p>
+      <!-- Built-in Tools -->
+      <section id="tools">
+        <h2>Built-in Tools</h2>
+        <p>Claude Code provides 12 built-in tools for file operations, web access, and agent orchestration:</p>
 
-        <h3>Standard Memory Blocks</h3>
-        <ul>
-          <li><strong>human</strong> - Information about the user (name, preferences, history)</li>
-          <li><strong>persona</strong> - The agent's personality, instructions, and self-description</li>
-          <li><strong>system</strong> - System-level instructions (optional)</li>
-        </ul>
+        <table>
+          <thead>
+            <tr><th>Tool</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>Read</code></td><td>Read file contents from filesystem</td></tr>
+            <tr><td><code>Write</code></td><td>Write content to a file</td></tr>
+            <tr><td><code>Edit</code></td><td>Edit file by replacing text</td></tr>
+            <tr><td><code>Bash</code></td><td>Execute bash commands</td></tr>
+            <tr><td><code>Glob</code></td><td>Find files matching glob patterns</td></tr>
+            <tr><td><code>Grep</code></td><td>Search file contents with regex</td></tr>
+            <tr><td><code>WebSearch</code></td><td>Search the web for information</td></tr>
+            <tr><td><code>WebFetch</code></td><td>Fetch and process URL content</td></tr>
+            <tr><td><code>Task</code></td><td>Launch sub-agents for complex tasks</td></tr>
+            <tr><td><code>TodoWrite</code></td><td>Manage task lists for planning</td></tr>
+            <tr><td><code>NotebookEdit</code></td><td>Edit Jupyter notebook cells</td></tr>
+            <tr><td><code>AskUserQuestion</code></td><td>Ask user questions during execution</td></tr>
+          </tbody>
+        </table>
 
-        <h3>Working with Memory</h3>
-        <pre class="code-block"><code><span class="comment"># Get the memory manager</span>
-memory = adapter.memory
-
-<span class="comment"># View current memory blocks</span>
-blocks = <span class="keyword">await</span> memory.<span class="function">get_blocks</span>(agent_id)
-<span class="keyword">for</span> block <span class="keyword">in</span> blocks:
-    <span class="keyword">print</span>(<span class="string">f"</span>{block.label}<span class="string">: </span>{block.value[:50]}<span class="string">..."</span>)
-
-<span class="comment"># Update a memory block</span>
-<span class="keyword">await</span> memory.<span class="function">update_block</span>(
-    agent_id,
-    <span class="string">"human"</span>,
-    <span class="string">"Name: Alice\nPreferences: Concise responses\nExpertise: Python"</span>
-)
-
-<span class="comment"># Add a custom memory block</span>
-<span class="keyword">await</span> memory.<span class="function">add_block</span>(
-    agent_id,
-    <span class="function">MemoryBlock</span>(
-        label=<span class="string">"project"</span>,
-        value=<span class="string">"Working on OpenHarness - a universal API for AI harnesses"</span>
-    )
-)</code></pre>
-
-        <div class="info-box">
-          <h4>Self-Editing Memory</h4>
-          <p>Letta agents can modify their own memory during conversations. When the agent learns something about the user or updates its own understanding, it can persist this to memory blocks automatically.</p>
-        </div>
+        <h3>Listing Tools</h3>
+        <pre class="code-block"><code>tools = <span class="keyword">await</span> adapter.<span class="function">list_tools</span>()
+<span class="keyword">for</span> tool <span class="keyword">in</span> tools:
+    <span class="keyword">print</span>(<span class="string">f"</span>{tool.name}<span class="string">: </span>{tool.description}<span class="string">"</span>)</code></pre>
       </section>
 
       <!-- Streaming -->
@@ -589,7 +573,7 @@ blocks = <span class="keyword">await</span> memory.<span class="function">get_bl
         <pre class="code-block"><code><span class="keyword">from</span> openharness.types <span class="keyword">import</span> ExecuteRequest
 
 <span class="keyword">async for</span> event <span class="keyword">in</span> adapter.<span class="function">execute_stream</span>(
-    <span class="function">ExecuteRequest</span>(message=<span class="string">"Explain recursion step by step"</span>, agent_id=agent_id)
+    <span class="function">ExecuteRequest</span>(message=<span class="string">"Refactor this function"</span>)
 ):
     <span class="keyword">if</span> event.type == <span class="string">"text"</span>:
         <span class="keyword">print</span>(event.content, end=<span class="string">""</span>)
@@ -597,8 +581,10 @@ blocks = <span class="keyword">await</span> memory.<span class="function">get_bl
         <span class="keyword">print</span>(<span class="string">f"[Thinking: </span>{event.thinking}<span class="string">]"</span>)
     <span class="keyword">elif</span> event.type == <span class="string">"tool_call_start"</span>:
         <span class="keyword">print</span>(<span class="string">f"\n[Tool: </span>{event.name}<span class="string">]"</span>)
+    <span class="keyword">elif</span> event.type == <span class="string">"tool_result"</span>:
+        <span class="keyword">print</span>(<span class="string">f"[Result: </span>{event.output[:100]}<span class="string">...]"</span>)
     <span class="keyword">elif</span> event.type == <span class="string">"done"</span>:
-        <span class="keyword">print</span>(<span class="string">f"\n\nTokens: </span>{event.usage.total_tokens}<span class="string">"</span>)</code></pre>
+        <span class="keyword">print</span>(<span class="string">f"\n[Tokens: </span>{event.usage.total_tokens}<span class="string">]"</span>)</code></pre>
 
         <h3>Event Types</h3>
         <table>
@@ -607,105 +593,78 @@ blocks = <span class="keyword">await</span> memory.<span class="function">get_bl
           </thead>
           <tbody>
             <tr><td><code>text</code></td><td>Text content chunk</td></tr>
-            <tr><td><code>thinking</code></td><td>Agent's inner monologue</td></tr>
+            <tr><td><code>thinking</code></td><td>Model's thinking/reasoning</td></tr>
             <tr><td><code>tool_call_start</code></td><td>Tool invocation beginning</td></tr>
             <tr><td><code>tool_result</code></td><td>Tool execution result</td></tr>
             <tr><td><code>tool_call_end</code></td><td>Tool invocation complete</td></tr>
             <tr><td><code>error</code></td><td>Error occurred</td></tr>
-            <tr><td><code>done</code></td><td>Execution complete with usage stats</td></tr>
+            <tr><td><code>done</code></td><td>Execution complete (includes usage stats)</td></tr>
           </tbody>
         </table>
       </section>
 
-      <!-- Agent Lifecycle -->
-      <section id="agents">
-        <h2>Agent Lifecycle</h2>
-        <pre class="code-block"><code><span class="keyword">from</span> openharness_letta.types <span class="keyword">import</span> LettaAgentConfig, MemoryBlock
+      <!-- MCP Integration -->
+      <section id="mcp">
+        <h2>MCP Integration</h2>
+        <p>Add custom tools via Model Context Protocol servers:</p>
 
-<span class="comment"># Create an agent</span>
-config = <span class="function">LettaAgentConfig</span>(
-    name=<span class="string">"coding-assistant"</span>,
-    model=<span class="string">"openai/gpt-4o"</span>,
-    memory_blocks=[
-        <span class="function">MemoryBlock</span>(label=<span class="string">"human"</span>, value=<span class="string">"Developer working on Python projects"</span>),
-        <span class="function">MemoryBlock</span>(label=<span class="string">"persona"</span>, value=<span class="string">"Expert Python developer assistant"</span>),
-    ],
-    tools=[<span class="string">"web_search"</span>],
-    include_base_tools=<span class="keyword">True</span>,
+        <pre class="code-block"><code>config = <span class="function">ClaudeCodeConfig</span>(
+    cwd=<span class="string">"/my/project"</span>,
+    mcp_servers={
+        <span class="comment"># stdio server (local subprocess)</span>
+        <span class="string">"filesystem"</span>: {
+            <span class="string">"command"</span>: <span class="string">"npx"</span>,
+            <span class="string">"args"</span>: [<span class="string">"-y"</span>, <span class="string">"@anthropic-ai/mcp-server-filesystem"</span>, <span class="string">"/tmp"</span>],
+        },
+        <span class="comment"># SSE server (remote)</span>
+        <span class="string">"database"</span>: {
+            <span class="string">"uri"</span>: <span class="string">"https://my-mcp-server.com/sse"</span>,
+        },
+    },
 )
-
-agent_id = <span class="keyword">await</span> adapter.<span class="function">create_agent</span>(config)
-
-<span class="comment"># Get agent details</span>
-agent = <span class="keyword">await</span> adapter.<span class="function">get_agent</span>(agent_id)
-<span class="keyword">print</span>(agent[<span class="string">"name"</span>], agent[<span class="string">"model"</span>])
-
-<span class="comment"># List all agents</span>
-agents = <span class="keyword">await</span> adapter.<span class="function">list_agents</span>()
-<span class="keyword">for</span> a <span class="keyword">in</span> agents:
-    <span class="keyword">print</span>(a[<span class="string">"id"</span>], a[<span class="string">"name"</span>])
-
-<span class="comment"># Delete agent when done</span>
-<span class="keyword">await</span> adapter.<span class="function">delete_agent</span>(agent_id)</code></pre>
+adapter = <span class="function">ClaudeCodeAdapter</span>(config)</code></pre>
       </section>
 
       <!-- Configuration -->
       <section id="configuration">
         <h2>Configuration</h2>
 
-        <h3>Adapter Options</h3>
-        <pre class="code-block"><code>adapter = <span class="function">LettaAdapter</span>(
-    api_key=<span class="string">"letta-..."</span>,        <span class="comment"># Letta cloud API key</span>
-    base_url=<span class="string">"http://..."</span>,      <span class="comment"># Local server URL (alternative)</span>
-    timeout=60.0,                <span class="comment"># Request timeout in seconds</span>
+        <h3>ClaudeCodeConfig Options</h3>
+        <pre class="code-block"><code>config = <span class="function">ClaudeCodeConfig</span>(
+    model=<span class="string">"sonnet"</span>,               <span class="comment"># Model: sonnet, opus, haiku</span>
+    cwd=<span class="string">"/path/to/project"</span>,       <span class="comment"># Working directory</span>
+    system_prompt=<span class="string">"Be helpful"</span>,   <span class="comment"># Custom system prompt</span>
+    allowed_tools=[<span class="string">"Read"</span>, <span class="string">"Write"</span>],  <span class="comment"># Restrict to specific tools</span>
+    permission_mode=<span class="string">"acceptEdits"</span>,   <span class="comment"># Permission mode</span>
+    mcp_servers={...},            <span class="comment"># MCP server configuration</span>
+    max_turns=10,                 <span class="comment"># Maximum agent turns</span>
+    env={<span class="string">"DEBUG"</span>: <span class="string">"true"</span>},        <span class="comment"># Environment variables</span>
 )</code></pre>
 
-        <h3>Agent Configuration</h3>
-        <pre class="code-block"><code><span class="keyword">class</span> <span class="type">LettaAgentConfig</span>:
-    name: <span class="type">str</span> | <span class="type">None</span> = <span class="keyword">None</span>
-    model: <span class="type">str</span> = <span class="string">"openai/gpt-4o-mini"</span>
-    embedding_model: <span class="type">str</span> = <span class="string">"openai/text-embedding-ada-002"</span>
-    memory_blocks: <span class="type">list</span>[MemoryBlock] = []
-    tools: <span class="type">list</span>[<span class="type">str</span>] = []
-    system_prompt: <span class="type">str</span> | <span class="type">None</span> = <span class="keyword">None</span>
-    include_base_tools: <span class="type">bool</span> = <span class="keyword">True</span>
-    metadata: <span class="type">dict</span>[<span class="type">str</span>, Any] = {}</code></pre>
+        <h3>Permission Modes</h3>
+        <table>
+          <thead>
+            <tr><th>Mode</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>default</code></td><td>Prompt for all tool executions</td></tr>
+            <tr><td><code>acceptEdits</code></td><td>Auto-accept file edits, prompt for commands</td></tr>
+            <tr><td><code>plan</code></td><td>Plan only, no execution</td></tr>
+            <tr><td><code>bypassPermissions</code></td><td>Execute all tools without prompts (use with caution)</td></tr>
+          </tbody>
+        </table>
 
-        <h3>Environment Variables</h3>
-        <ul>
-          <li><code>LETTA_API_KEY</code> - Letta cloud API key</li>
-        </ul>
-      </section>
-
-      <!-- Letta Features -->
-      <section id="features">
-        <h2>Letta-Specific Features</h2>
-
-        <h3>Inner Monologue</h3>
-        <p>Letta agents have an "inner monologue" - their thinking process is visible. This is included in streaming events by default:</p>
-        <pre class="code-block"><code><span class="keyword">async for</span> event <span class="keyword">in</span> adapter.<span class="function">execute_stream</span>(request, include_thinking=<span class="keyword">True</span>):
-    <span class="keyword">if</span> event.type == <span class="string">"thinking"</span>:
-        <span class="keyword">print</span>(<span class="string">f"Agent thinking: </span>{event.thinking}<span class="string">"</span>)</code></pre>
-
-        <h3>Archival Memory</h3>
-        <p>For long-term storage beyond the context window, Letta provides archival memory with semantic search. This allows agents to store and retrieve information that doesn't fit in the active memory blocks.</p>
-
-        <h3>Multi-Model Support</h3>
-        <p>Letta supports multiple model providers:</p>
-        <ul>
-          <li><code>openai/gpt-4o</code>, <code>openai/gpt-4o-mini</code></li>
-          <li><code>anthropic/claude-3-opus</code>, <code>anthropic/claude-3-sonnet</code></li>
-          <li>Many more via Letta's provider integrations</li>
-        </ul>
-
-        <h3>Running Letta Locally</h3>
-        <pre class="code-block"><code><span class="comment"># Install Letta server</span>
-pip install letta
-
-<span class="comment"># Start the server</span>
-letta server
-
-<span class="comment"># Server starts at http://localhost:8283</span></code></pre>
+        <h3>Available Models</h3>
+        <table>
+          <thead>
+            <tr><th>Model</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>sonnet</code></td><td>Claude Sonnet - balanced performance</td></tr>
+            <tr><td><code>opus</code></td><td>Claude Opus - maximum capability</td></tr>
+            <tr><td><code>haiku</code></td><td>Claude Haiku - fast and efficient</td></tr>
+          </tbody>
+        </table>
       </section>
     </main>
   </div>
