@@ -222,37 +222,5 @@ class TestSubagentManagement:
         assert len(subagents) == 2
 
 
-# Integration tests (require deepagents package)
-@pytest.mark.skip(reason="Requires deepagents package")
-class TestDeepAgentIntegration:
-    """Integration tests for Deep Agent adapter."""
-
-    @pytest.mark.asyncio
-    async def test_execute(self):
-        """Test basic execution."""
-        from openharness.types import ExecuteRequest
-
-        adapter = DeepAgentAdapter()
-
-        result = await adapter.execute(
-            ExecuteRequest(message="Say hello")
-        )
-
-        assert result.output is not None
-        assert len(result.output) > 0
-
-    @pytest.mark.asyncio
-    async def test_execute_stream(self):
-        """Test streaming execution."""
-        from openharness.types import ExecuteRequest
-
-        adapter = DeepAgentAdapter()
-
-        events = []
-        async for event in adapter.execute_stream(
-            ExecuteRequest(message="Count to 3")
-        ):
-            events.append(event)
-
-        assert len(events) > 0
-        assert any(e.type == "done" for e in events)
+# Integration tests are in test_integration.py
+# Run with: SKIP_INTEGRATION_TESTS=0 pytest tests/test_integration.py -v -s

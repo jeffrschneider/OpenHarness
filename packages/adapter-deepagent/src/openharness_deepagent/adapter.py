@@ -482,6 +482,7 @@ class DeepAgentAdapter(HarnessAdapter):
                 id="write_todos",
                 name="write_todos",
                 description="Create or update the task list for complex workflows",
+                source="builtin",
                 input_schema={
                     "type": "object",
                     "properties": {
@@ -496,12 +497,14 @@ class DeepAgentAdapter(HarnessAdapter):
                 id="read_todos",
                 name="read_todos",
                 description="View the current todo/task list",
+                source="builtin",
                 input_schema={"type": "object", "properties": {}},
             ),
             Tool(
                 id="ls",
                 name="ls",
                 description="List directory contents",
+                source="builtin",
                 input_schema={
                     "type": "object",
                     "properties": {
@@ -514,6 +517,7 @@ class DeepAgentAdapter(HarnessAdapter):
                 id="read_file",
                 name="read_file",
                 description="Read file contents with optional pagination",
+                source="builtin",
                 input_schema={
                     "type": "object",
                     "properties": {
@@ -528,6 +532,7 @@ class DeepAgentAdapter(HarnessAdapter):
                 id="write_file",
                 name="write_file",
                 description="Create or overwrite a file",
+                source="builtin",
                 input_schema={
                     "type": "object",
                     "properties": {
@@ -541,6 +546,7 @@ class DeepAgentAdapter(HarnessAdapter):
                 id="edit_file",
                 name="edit_file",
                 description="Edit file with exact string replacements",
+                source="builtin",
                 input_schema={
                     "type": "object",
                     "properties": {
@@ -555,6 +561,7 @@ class DeepAgentAdapter(HarnessAdapter):
                 id="glob",
                 name="glob",
                 description="Find files matching a pattern",
+                source="builtin",
                 input_schema={
                     "type": "object",
                     "properties": {
@@ -567,6 +574,7 @@ class DeepAgentAdapter(HarnessAdapter):
                 id="grep",
                 name="grep",
                 description="Search for text patterns in files",
+                source="builtin",
                 input_schema={
                     "type": "object",
                     "properties": {
@@ -580,6 +588,7 @@ class DeepAgentAdapter(HarnessAdapter):
                 id="execute",
                 name="execute",
                 description="Execute sandboxed shell commands",
+                source="builtin",
                 input_schema={
                     "type": "object",
                     "properties": {
@@ -592,6 +601,7 @@ class DeepAgentAdapter(HarnessAdapter):
                 id="task",
                 name="task",
                 description="Delegate work to a subagent",
+                source="builtin",
                 input_schema={
                     "type": "object",
                     "properties": {
@@ -611,6 +621,7 @@ class DeepAgentAdapter(HarnessAdapter):
                         id=tool_func.__name__,
                         name=tool_func.__name__,
                         description=tool_func.__doc__ or "",
+                        source="custom",
                         input_schema={},
                     )
                 )
