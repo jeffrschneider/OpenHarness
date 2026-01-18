@@ -1,0 +1,52 @@
+{
+  "name": "@openharness/client",
+  "version": "0.1.0",
+  "description": "TypeScript client for the Open Harness API - unified interface for AI agent harnesses",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [
+    "openharness",
+    "ai",
+    "agent",
+    "harness",
+    "claude",
+    "goose",
+    "langchain",
+    "letta",
+    "sdk"
+  ],
+  "author": "Jeff Schneider",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jeffrschneider/OpenHarness.git",
+    "directory": "packages/client"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
