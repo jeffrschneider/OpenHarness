@@ -21,3 +21,4 @@ venv/
 # Build
 dist/
 build/
+.venv-py312/
