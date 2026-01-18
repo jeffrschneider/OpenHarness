@@ -100,55 +100,5 @@ class TestLettaAgentConfig:
         assert config.tools == ["web_search"]
 
 
-# Integration tests (require running Letta server)
-@pytest.mark.skip(reason="Requires running Letta server")
-class TestLettaIntegration:
-    """Integration tests for Letta adapter."""
-
-    @pytest.fixture
-    def adapter(self):
-        """Create adapter for testing."""
-        return LettaAdapter(base_url="http://localhost:8283")
-
-    @pytest.mark.asyncio
-    async def test_create_and_delete_agent(self, adapter):
-        """Test agent creation and deletion."""
-        agent_id = await adapter.create_agent(
-            LettaAgentConfig(name="test-agent")
-        )
-
-        assert agent_id is not None
-
-        # Clean up
-        await adapter.delete_agent(agent_id)
-
-    @pytest.mark.asyncio
-    async def test_list_agents(self, adapter):
-        """Test listing agents."""
-        agents = await adapter.list_agents()
-
-        assert isinstance(agents, list)
-
-    @pytest.mark.asyncio
-    async def test_execute(self, adapter):
-        """Test prompt execution."""
-        from openharness.types import ExecuteRequest
-
-        # Create agent
-        agent_id = await adapter.create_agent(
-            LettaAgentConfig(name="test-agent")
-        )
-
-        try:
-            result = await adapter.execute(
-                ExecuteRequest(
-                    message="Say hello",
-                    agent_id=agent_id,
-                )
-            )
-
-            assert result.output is not None
-            assert len(result.output) > 0
-
-        finally:
-            await adapter.delete_agent(agent_id)
+# Integration tests are in test_integration.py
+# Run with: SKIP_INTEGRATION_TESTS=0 pytest tests/test_integration.py -v -s
