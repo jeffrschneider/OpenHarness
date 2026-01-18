@@ -101,6 +101,7 @@ class LettaAdapter(HarnessAdapter):
         self._client: Any = None  # Letta client, lazy initialized
         self._memory_manager: MemoryBlockManager | None = None
         self._agent_cache: dict[str, Any] = {}
+        self._default_agent_id: str | None = None  # Auto-created agent for demos
 
     def _ensure_client(self) -> Any:
         """Ensure Letta client is initialized."""
@@ -124,6 +125,20 @@ class LettaAdapter(HarnessAdapter):
             self._memory_manager = MemoryBlockManager(self._client)
 
         return self._client
+
+    async def _ensure_agent(self) -> str:
+        """Ensure a default agent exists for simple executions."""
+        if self._default_agent_id is None:
+            # Create a default agent for demo/simple usage
+            config = LettaAgentConfig(
+                name="openharness-default-agent",
+                memory_blocks=[
+                    MemoryBlock(label="human", value="The user is interacting via Open Harness."),
+                    MemoryBlock(label="persona", value="I am a helpful AI assistant."),
+                ],
+            )
+            self._default_agent_id = await self.create_agent(config)
+        return self._default_agent_id
 
     @property
     def id(self) -> str:
@@ -222,16 +237,25 @@ class LettaAdapter(HarnessAdapter):
                 {"label": "persona", "value": "I am a helpful AI assistant."},
             ]
 
-        agent = client.agents.create(
-            name=config.name,
-            model=config.model,
-            embedding_model=config.embedding_model,
-            memory_blocks=memory_blocks,
-            tools=config.tools if config.tools else None,
-            system=config.system_prompt,
-            include_base_tools=config.include_base_tools,
-            metadata=config.metadata if config.metadata else None,
-        )
+        # Build create kwargs - only include non-None values
+        create_kwargs = {
+            "name": config.name,
+            "memory_blocks": memory_blocks,
+        }
+        if config.model:
+            create_kwargs["model"] = config.model
+        if config.embedding_model:
+            create_kwargs["embedding_config"] = {"embedding_model": config.embedding_model}
+        if config.tools:
+            create_kwargs["tools"] = config.tools
+        if config.system_prompt:
+            create_kwargs["system"] = config.system_prompt
+        if config.include_base_tools is not None:
+            create_kwargs["include_base_tools"] = config.include_base_tools
+        if config.metadata:
+            create_kwargs["metadata"] = config.metadata
+
+        agent = client.agents.create(**create_kwargs)
 
         self._agent_cache[agent.id] = agent
         return agent.id
@@ -302,12 +326,14 @@ class LettaAdapter(HarnessAdapter):
         """
         client = self._ensure_client()
 
-        if not request.agent_id:
-            raise ValueError("agent_id is required for Letta execution")
+        # Use provided agent_id or auto-create one
+        agent_id = request.agent_id
+        if not agent_id:
+            agent_id = await self._ensure_agent()
 
         # Send message
         response = client.agents.messages.create(
-            agent_id=request.agent_id,
+            agent_id=agent_id,
             messages=[{"role": "user", "content": request.message}],
         )
 
@@ -380,13 +406,15 @@ class LettaAdapter(HarnessAdapter):
         """
         client = self._ensure_client()
 
-        if not request.agent_id:
-            raise ValueError("agent_id is required for Letta execution")
+        # Use provided agent_id or auto-create one
+        agent_id = request.agent_id
+        if not agent_id:
+            agent_id = await self._ensure_agent()
 
         try:
             # Use Letta's streaming API
             stream = client.agents.messages.stream(
-                agent_id=request.agent_id,
+                agent_id=agent_id,
                 messages=[{"role": "user", "content": request.message}],
             )
 

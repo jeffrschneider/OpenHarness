@@ -101,6 +101,7 @@ class GooseAdapter(HarnessAdapter):
         self._timeout = timeout
         self._client: GooseClient | None = None
         self._active_sessions: dict[str, GooseSession] = {}
+        self._default_session_id: str | None = None  # Auto-created session for demos
 
     def _ensure_client(self) -> GooseClient:
         """Ensure client is initialized."""
@@ -110,6 +111,13 @@ class GooseAdapter(HarnessAdapter):
                 timeout=self._timeout,
             )
         return self._client
+
+    async def _ensure_session(self) -> str:
+        """Ensure a default session exists for simple executions."""
+        if self._default_session_id is None:
+            # Create a default session for demo/simple usage
+            self._default_session_id = await self.start_session()
+        return self._default_session_id
 
     @property
     def id(self) -> str:
@@ -321,8 +329,10 @@ class GooseAdapter(HarnessAdapter):
         Returns:
             Complete execution result
         """
-        if not request.session_id:
-            raise ValueError("session_id is required for Goose execution")
+        # Use provided session_id or auto-create one
+        session_id = request.session_id
+        if not session_id:
+            session_id = await self._ensure_session()
 
         # Collect all events from stream
         output_parts: list[str] = []
@@ -349,7 +359,7 @@ class GooseAdapter(HarnessAdapter):
             output="".join(output_parts),
             tool_calls=tool_calls,
             usage=None,  # Goose doesn't provide token counts
-            metadata={"session_id": request.session_id},
+            metadata={"session_id": session_id},
         )
 
     async def execute_stream(
@@ -369,12 +379,14 @@ class GooseAdapter(HarnessAdapter):
         """
         client = self._ensure_client()
 
-        if not request.session_id:
-            raise ValueError("session_id is required for Goose execution")
+        # Use provided session_id or auto-create one
+        session_id = request.session_id
+        if not session_id:
+            session_id = await self._ensure_session()
 
         # Build chat request
         chat_request = ChatRequest(
-            session_id=request.session_id,
+            session_id=session_id,
             user_message=GooseMessage(
                 role=MessageRole.USER,
                 content=request.message,
