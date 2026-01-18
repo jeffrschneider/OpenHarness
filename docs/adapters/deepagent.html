@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deep Agent Adapter - Open Harness</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --bg-secondary: #161b22;
+      --bg-tertiary: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --text-subtle: #6e7681;
+      --accent: #58a6ff;
+      --accent-emphasis: #1f6feb;
+      --success: #3fb950;
+      --warning: #d29922;
+      --danger: #f85149;
+      --purple: #a371f7;
+      --cyan: #79c0ff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Top Navigation */
+    .top-nav {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .top-nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      height: 56px;
+      gap: 32px;
+    }
+
+    .top-nav-brand {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .top-nav-brand:hover { text-decoration: none; }
+    .top-nav-brand .logo { font-size: 24px; }
+
+    .top-nav-links {
+      display: flex;
+      gap: 4px;
+    }
+
+    .top-nav-link {
+      padding: 8px 16px;
+      border-radius: 6px;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+
+    .top-nav-link:hover {
+      background: var(--bg-tertiary);
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .top-nav-link.active {
+      background: var(--bg-tertiary);
+      color: var(--text);
+    }
+
+    .top-nav-right {
+      margin-left: auto;
+    }
+
+    .github-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .github-link:hover { color: var(--text); text-decoration: none; }
+
+    /* Layout */
+    .layout {
+      display: flex;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 240px;
+      padding: 24px 0;
+      position: sticky;
+      top: 56px;
+      height: calc(100vh - 56px);
+      overflow-y: auto;
+      border-right: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .sidebar-section {
+      margin-bottom: 24px;
+    }
+
+    .sidebar-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      padding: 0 16px 8px;
+    }
+
+    .sidebar-link {
+      display: block;
+      padding: 6px 16px;
+      color: var(--text-muted);
+      font-size: 13px;
+      transition: all 0.1s;
+    }
+
+    .sidebar-link:hover {
+      color: var(--text);
+      background: var(--bg-tertiary);
+      text-decoration: none;
+    }
+
+    .sidebar-link.active {
+      color: var(--accent);
+      border-left: 2px solid var(--accent);
+      padding-left: 14px;
+    }
+
+    /* Main Content */
+    .main {
+      flex: 1;
+      padding: 32px 48px;
+      max-width: 900px;
+    }
+
+    .page-header {
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .page-header .package {
+      font-family: 'SF Mono', monospace;
+      font-size: 14px;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .page-header p {
+      color: var(--text-muted);
+    }
+
+    .badge-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .badge {
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-weight: 500;
+    }
+
+    .badge.success { background: rgba(63, 185, 80, 0.15); color: var(--success); }
+    .badge.accent { background: rgba(88, 166, 255, 0.15); color: var(--accent); }
+    .badge.cyan { background: rgba(121, 192, 255, 0.15); color: var(--cyan); }
+
+    /* Sections */
+    section {
+      margin-bottom: 48px;
+    }
+
+    section h2 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    section h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 24px 0 12px;
+    }
+
+    section p {
+      margin-bottom: 16px;
+      color: var(--text-muted);
+    }
+
+    /* Code */
+    code {
+      font-family: 'SF Mono', 'Consolas', monospace;
+      font-size: 13px;
+      background: var(--bg-tertiary);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    pre {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      overflow-x: auto;
+      margin-bottom: 16px;
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+    }
+
+    .code-block .comment { color: var(--text-subtle); }
+    .code-block .keyword { color: var(--purple); }
+    .code-block .string { color: var(--success); }
+    .code-block .function { color: var(--accent); }
+    .code-block .type { color: var(--warning); }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: var(--bg-tertiary);
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .status-supported { color: var(--success); }
+    .status-unsupported { color: var(--danger); }
+
+    /* Lists */
+    ul, ol {
+      margin-bottom: 16px;
+      padding-left: 24px;
+    }
+
+    li {
+      margin-bottom: 8px;
+      color: var(--text-muted);
+    }
+
+    /* Info boxes */
+    .info-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .info-box.warning {
+      border-left-color: var(--warning);
+    }
+
+    .info-box.cyan {
+      border-left-color: var(--cyan);
+    }
+
+    .info-box h4 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .info-box p {
+      margin-bottom: 0;
+      font-size: 13px;
+    }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 24px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <div class="top-nav-inner">
+      <a href="../portal.html" class="top-nav-brand">
+        <span class="logo">&#9881;</span>
+        Open Harness
+      </a>
+      <div class="top-nav-links">
+        <a href="../portal.html" class="top-nav-link">Home</a>
+        <a href="../index.html" class="top-nav-link">API Reference</a>
+        <a href="../matrix.html" class="top-nav-link">Compatibility</a>
+        <a href="deepagent.html" class="top-nav-link active">Adapters</a>
+      </div>
+      <div class="top-nav-right">
+        <a href="https://github.com/jeffrschneider/OpenHarness" class="github-link" target="_blank">
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-title">Available Adapters</div>
+        <a href="anthropic-agent.html" class="sidebar-link">Anthropic Agent SDK</a>
+        <a href="letta.html" class="sidebar-link">Letta</a>
+        <a href="goose.html" class="sidebar-link">Goose</a>
+        <a href="deepagent.html" class="sidebar-link active">Deep Agent</a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-title">Planned</div>
+        <span class="sidebar-link" style="color: var(--text-subtle);">Claude Code</span>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-title">On This Page</div>
+        <a href="#installation" class="sidebar-link">Installation</a>
+        <a href="#quick-start" class="sidebar-link">Quick Start</a>
+        <a href="#capabilities" class="sidebar-link">Capabilities</a>
+        <a href="#planning" class="sidebar-link">Planning & Todos</a>
+        <a href="#subagents" class="sidebar-link">Subagents</a>
+        <a href="#files" class="sidebar-link">File System</a>
+        <a href="#streaming" class="sidebar-link">Streaming</a>
+        <a href="#configuration" class="sidebar-link">Configuration</a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+      <div class="page-header">
+        <h1>Deep Agent Adapter</h1>
+        <div class="package">openharness-deepagent (Python)</div>
+        <p>Sophisticated AI agents with planning, subagents, and file system capabilities.</p>
+        <div class="badge-row">
+          <span class="badge success">Available</span>
+          <span class="badge accent">v0.1.0</span>
+          <span class="badge cyan">LangGraph</span>
+        </div>
+      </div>
+
+      <!-- Installation -->
+      <section id="installation">
+        <h2>Installation</h2>
+        <pre class="code-block"><code>pip install openharness-deepagent
+
+<span class="comment"># With MCP support</span>
+pip install openharness-deepagent[mcp]</code></pre>
+        <p><strong>Note:</strong> Deep Agents requires Python 3.11+.</p>
+      </section>
+
+      <!-- Quick Start -->
+      <section id="quick-start">
+        <h2>Quick Start</h2>
+        <pre class="code-block"><code><span class="keyword">from</span> openharness_deepagent <span class="keyword">import</span> DeepAgentAdapter
+<span class="keyword">from</span> openharness_deepagent.types <span class="keyword">import</span> DeepAgentConfig
+<span class="keyword">from</span> openharness.types <span class="keyword">import</span> ExecuteRequest
+
+<span class="comment"># Create adapter with configuration</span>
+adapter = <span class="function">DeepAgentAdapter</span>(<span class="function">DeepAgentConfig</span>(
+    model=<span class="string">"anthropic:claude-sonnet-4-5-20250929"</span>,
+    system_prompt=<span class="string">"You are an expert researcher and analyst."</span>,
+))
+
+<span class="comment"># Execute a prompt</span>
+result = <span class="keyword">await</span> adapter.<span class="function">execute</span>(
+    <span class="function">ExecuteRequest</span>(message=<span class="string">"Research the latest trends in AI agents"</span>)
+)
+<span class="keyword">print</span>(result.output)</code></pre>
+      </section>
+
+      <!-- Capabilities -->
+      <section id="capabilities">
+        <h2>Capabilities</h2>
+        <div class="info-box cyan">
+          <h4>Built on LangGraph</h4>
+          <p>Deep Agents are compiled LangGraph StateGraph objects, providing powerful state management, streaming, and extensibility through the LangChain ecosystem.</p>
+        </div>
+
+        <h3>Supported</h3>
+        <table>
+          <thead>
+            <tr><th>Domain</th><th>Capability</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Execution</td><td><code>execute()</code></td><td>Sync execution</td></tr>
+            <tr><td>Execution</td><td><code>execute_stream()</code></td><td>Async streaming</td></tr>
+            <tr><td>Planning</td><td><code>write_todos</code></td><td>Task decomposition</td></tr>
+            <tr><td>Planning</td><td><code>read_todos</code></td><td>View task list</td></tr>
+            <tr><td>Subagents</td><td><code>task</code> tool</td><td>Delegate to specialized agents</td></tr>
+            <tr><td>Files</td><td><code>ls</code>, <code>read_file</code>, <code>write_file</code></td><td>Full file operations</td></tr>
+            <tr><td>Files</td><td><code>edit_file</code></td><td>Exact replacements</td></tr>
+            <tr><td>Files</td><td><code>glob</code>, <code>grep</code></td><td>Search files</td></tr>
+            <tr><td>Execution</td><td><code>execute</code> tool</td><td>Sandboxed shell commands</td></tr>
+            <tr><td>Tools</td><td><code>list_tools()</code></td><td>Built-in + custom</td></tr>
+            <tr><td>MCP</td><td>Via langchain-mcp-adapters</td><td>MCP tool integration</td></tr>
+            <tr><td>Models</td><td>Multi-model</td><td>Any LangChain model</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Not Supported</h3>
+        <table>
+          <thead>
+            <tr><th>Domain</th><th>Reason</th><th>Workaround</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Sessions</td><td>Stateless by default</td><td>Use file backends for persistence</td></tr>
+            <tr><td>Agents</td><td>Uses invocation model</td><td>Create adapter instances</td></tr>
+            <tr><td>Hooks</td><td>Not supported</td><td>Use middleware</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Planning -->
+      <section id="planning">
+        <h2>Planning & Todos</h2>
+        <p>Deep Agents include built-in planning tools for task decomposition:</p>
+
+        <pre class="code-block"><code><span class="keyword">from</span> openharness_deepagent.types <span class="keyword">import</span> DeepAgentConfig
+
+adapter = <span class="function">DeepAgentAdapter</span>(<span class="function">DeepAgentConfig</span>(
+    system_prompt=<span class="string">"""
+    You are a methodical researcher. For complex tasks:
+    1. Use write_todos to create a task list
+    2. Work through each task systematically
+    3. Update todos as you complete them
+    """</span>
+))
+
+<span class="comment"># The agent will automatically use write_todos and read_todos</span>
+result = <span class="keyword">await</span> adapter.<span class="function">execute</span>(
+    <span class="function">ExecuteRequest</span>(message=<span class="string">"Research and summarize the top 5 AI frameworks"</span>)
+)</code></pre>
+
+        <h3>Built-in Planning Tools</h3>
+        <table>
+          <thead>
+            <tr><th>Tool</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>write_todos</code></td><td>Create or update task lists for workflows</td></tr>
+            <tr><td><code>read_todos</code></td><td>View current task list and status</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Subagents -->
+      <section id="subagents">
+        <h2>Subagents</h2>
+        <p>Delegate specialized work to subagents for context isolation:</p>
+
+        <pre class="code-block"><code><span class="keyword">from</span> openharness_deepagent.types <span class="keyword">import</span> DeepAgentConfig, SubagentConfig
+
+adapter = <span class="function">DeepAgentAdapter</span>(<span class="function">DeepAgentConfig</span>(
+    model=<span class="string">"anthropic:claude-sonnet-4-5-20250929"</span>,
+    subagents=[
+        <span class="function">SubagentConfig</span>(
+            name=<span class="string">"code-reviewer"</span>,
+            description=<span class="string">"Reviews code for bugs and improvements"</span>,
+            system_prompt=<span class="string">"You are an expert code reviewer."</span>,
+        ),
+        <span class="function">SubagentConfig</span>(
+            name=<span class="string">"researcher"</span>,
+            description=<span class="string">"Performs in-depth technical research"</span>,
+            system_prompt=<span class="string">"You are an expert researcher."</span>,
+            model=<span class="string">"openai:gpt-4o"</span>,  <span class="comment"># Different model</span>
+        ),
+    ],
+))
+
+<span class="comment"># Agent can delegate using the task tool</span>
+result = <span class="keyword">await</span> adapter.<span class="function">execute</span>(
+    <span class="function">ExecuteRequest</span>(message=<span class="string">"Review this code and research best practices"</span>)
+)</code></pre>
+
+        <div class="info-box">
+          <h4>Context Isolation</h4>
+          <p>Subagents run with isolated context, keeping the main agent's context clean and allowing specialized handling of specific tasks.</p>
+        </div>
+      </section>
+
+      <!-- File System -->
+      <section id="files">
+        <h2>File System</h2>
+        <p>Deep Agents have comprehensive file system tools:</p>
+
+        <pre class="code-block"><code><span class="keyword">from</span> openharness_deepagent.types <span class="keyword">import</span> DeepAgentConfig, BackendType
+
+<span class="comment"># Use filesystem backend for real disk access</span>
+adapter = <span class="function">DeepAgentAdapter</span>(<span class="function">DeepAgentConfig</span>(
+    backend_type=<span class="type">BackendType</span>.FILESYSTEM,
+    backend_root_dir=<span class="string">"/path/to/workspace"</span>,
+))
+
+<span class="comment"># Agent can now use file tools</span>
+result = <span class="keyword">await</span> adapter.<span class="function">execute</span>(
+    <span class="function">ExecuteRequest</span>(message=<span class="string">"Read the README.md and summarize it"</span>)
+)</code></pre>
+
+        <h3>Built-in File Tools</h3>
+        <table>
+          <thead>
+            <tr><th>Tool</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>ls</code></td><td>List directory contents</td></tr>
+            <tr><td><code>read_file</code></td><td>Read file with optional pagination</td></tr>
+            <tr><td><code>write_file</code></td><td>Create or overwrite files</td></tr>
+            <tr><td><code>edit_file</code></td><td>Edit with exact string replacements</td></tr>
+            <tr><td><code>glob</code></td><td>Find files matching patterns</td></tr>
+            <tr><td><code>grep</code></td><td>Search text patterns in files</td></tr>
+            <tr><td><code>execute</code></td><td>Run sandboxed shell commands</td></tr>
+          </tbody>
+        </table>
+
+        <h3>File Backends</h3>
+        <table>
+          <thead>
+            <tr><th>Backend</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>STATE</code></td><td>Ephemeral, in-memory (default)</td></tr>
+            <tr><td><code>FILESYSTEM</code></td><td>Real disk access</td></tr>
+            <tr><td><code>STORE</code></td><td>Persistent via LangGraph Store</td></tr>
+            <tr><td><code>COMPOSITE</code></td><td>Route paths to different backends</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Streaming -->
+      <section id="streaming">
+        <h2>Streaming</h2>
+        <pre class="code-block"><code><span class="keyword">from</span> openharness.types <span class="keyword">import</span> ExecuteRequest
+
+<span class="keyword">async for</span> event <span class="keyword">in</span> adapter.<span class="function">execute_stream</span>(
+    <span class="function">ExecuteRequest</span>(message=<span class="string">"Write a Python script to analyze data"</span>)
+):
+    <span class="keyword">if</span> event.type == <span class="string">"text"</span>:
+        <span class="keyword">print</span>(event.content, end=<span class="string">""</span>)
+    <span class="keyword">elif</span> event.type == <span class="string">"thinking"</span>:
+        <span class="keyword">print</span>(<span class="string">f"[Thinking: </span>{event.thinking}<span class="string">]"</span>)
+    <span class="keyword">elif</span> event.type == <span class="string">"tool_call_start"</span>:
+        <span class="keyword">print</span>(<span class="string">f"\n[Tool: </span>{event.name}<span class="string">]"</span>)
+    <span class="keyword">elif</span> event.type == <span class="string">"progress"</span>:
+        <span class="keyword">print</span>(<span class="string">f"[Progress: </span>{event.step}<span class="string">]"</span>)
+    <span class="keyword">elif</span> event.type == <span class="string">"done"</span>:
+        <span class="keyword">print</span>(<span class="string">"\n[Complete]"</span>)</code></pre>
+
+        <h3>Event Types</h3>
+        <table>
+          <thead>
+            <tr><th>Event</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>text</code></td><td>Text content chunk</td></tr>
+            <tr><td><code>thinking</code></td><td>Agent reasoning (if enabled)</td></tr>
+            <tr><td><code>tool_call_start</code></td><td>Tool invocation beginning</td></tr>
+            <tr><td><code>tool_result</code></td><td>Tool execution result</td></tr>
+            <tr><td><code>tool_call_end</code></td><td>Tool invocation complete</td></tr>
+            <tr><td><code>progress</code></td><td>Task completion progress</td></tr>
+            <tr><td><code>error</code></td><td>Error occurred</td></tr>
+            <tr><td><code>done</code></td><td>Execution complete</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Configuration -->
+      <section id="configuration">
+        <h2>Configuration</h2>
+
+        <h3>DeepAgentConfig Options</h3>
+        <pre class="code-block"><code><span class="keyword">from</span> openharness_deepagent.types <span class="keyword">import</span> (
+    DeepAgentConfig,
+    SubagentConfig,
+    BackendType,
+    InterruptConfig,
+)
+
+config = <span class="function">DeepAgentConfig</span>(
+    <span class="comment"># Model (default: claude-sonnet-4-5-20250929)</span>
+    model=<span class="string">"anthropic:claude-sonnet-4-5-20250929"</span>,
+
+    <span class="comment"># Custom system prompt (appends to default)</span>
+    system_prompt=<span class="string">"You are an expert assistant."</span>,
+
+    <span class="comment"># Custom tools</span>
+    tools=[my_tool_function],
+
+    <span class="comment"># Subagents</span>
+    subagents=[
+        <span class="function">SubagentConfig</span>(
+            name=<span class="string">"researcher"</span>,
+            description=<span class="string">"Research specialist"</span>,
+        ),
+    ],
+
+    <span class="comment"># File backend</span>
+    backend_type=<span class="type">BackendType</span>.FILESYSTEM,
+    backend_root_dir=<span class="string">"/workspace"</span>,
+
+    <span class="comment"># Human-in-the-loop interrupts</span>
+    interrupt_on=[
+        <span class="function">InterruptConfig</span>(
+            tool_name=<span class="string">"execute"</span>,
+            allowed_decisions=[<span class="string">"approve"</span>, <span class="string">"reject"</span>],
+        ),
+    ],
+)</code></pre>
+
+        <h3>Supported Models</h3>
+        <p>Deep Agents supports any LangChain model:</p>
+        <ul>
+          <li><code>anthropic:claude-sonnet-4-5-20250929</code> (default)</li>
+          <li><code>anthropic:claude-opus-4-20250514</code></li>
+          <li><code>openai:gpt-4o</code></li>
+          <li><code>google:gemini-1.5-pro</code></li>
+          <li><code>ollama:llama3.2</code> (local)</li>
+        </ul>
+      </section>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <p>Open Harness is open source. <a href="https://github.com/jeffrschneider/OpenHarness" target="_blank">View on GitHub</a></p>
+  </footer>
+</body>
+</html>

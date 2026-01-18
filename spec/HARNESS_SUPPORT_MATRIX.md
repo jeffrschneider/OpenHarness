@@ -19,10 +19,10 @@ This document tracks the current capability coverage across target harnesses and
 | Adapter | Package | Status | Notes |
 |---------|---------|:------:|-------|
 | Anthropic Agent SDK | `@openharness/adapter-anthropic-agent` | ✅ | Tool use, streaming, conversations |
+| Letta | `openharness-letta` (Python) | ✅ | Memory blocks, streaming, agents |
+| Goose | `openharness-goose` (Python) | ✅ | MCP, sessions, multi-model |
+| LangChain Deep Agent | `openharness-deepagent` (Python) | ✅ | Planning, subagents, files |
 | Claude Code CLI | - | 🎯 | No public API |
-| Goose | - | 🎯 | Planned |
-| LangChain Deep Agent | - | 🎯 | Planned |
-| Letta | - | 🎯 | Planned |
 
 ---
 
