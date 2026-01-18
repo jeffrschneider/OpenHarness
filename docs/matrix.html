@@ -46,7 +46,7 @@
     }
 
     .top-nav-inner {
-      max-width: 1400px;
+      max-width: 1200px;
       margin: 0 auto;
       display: flex;
       align-items: center;
@@ -107,7 +107,7 @@
 
     /* Main Content */
     .container {
-      max-width: 1400px;
+      max-width: 900px;
       margin: 0 auto;
       padding: 32px 24px;
     }
@@ -131,7 +131,7 @@
     .legend {
       display: flex;
       gap: 24px;
-      margin-bottom: 24px;
+      margin-bottom: 32px;
       flex-wrap: wrap;
     }
 
@@ -175,27 +175,28 @@
       border-radius: 8px;
       overflow: hidden;
       margin-bottom: 16px;
+      table-layout: fixed;
     }
 
     th, td {
-      padding: 12px 16px;
-      text-align: left;
+      padding: 10px 12px;
+      text-align: center;
       border-bottom: 1px solid var(--border);
+    }
+
+    th:first-child,
+    td:first-child {
+      text-align: left;
+      width: 140px;
     }
 
     th {
       background: var(--bg-tertiary);
       font-weight: 600;
-      font-size: 12px;
+      font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: var(--text-muted);
-    }
-
-    th:not(:first-child),
-    td:not(:first-child) {
-      text-align: center;
-      width: 120px;
     }
 
     tr:last-child td {
@@ -211,96 +212,6 @@
     .status-unsupported { color: var(--danger); }
     .status-planned { color: var(--text-subtle); }
 
-    /* Adapter Cards */
-    .adapter-cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 24px;
-      margin-top: 16px;
-    }
-
-    .adapter-card {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 24px;
-    }
-
-    .adapter-card h4 {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .adapter-card .package {
-      font-size: 12px;
-      color: var(--accent);
-      font-family: 'SF Mono', monospace;
-      margin-bottom: 16px;
-    }
-
-    .adapter-card h5 {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin: 16px 0 8px;
-    }
-
-    .adapter-card ul {
-      list-style: none;
-      font-size: 13px;
-    }
-
-    .adapter-card li {
-      padding: 4px 0;
-      color: var(--text-muted);
-    }
-
-    .adapter-card li::before {
-      content: "•";
-      margin-right: 8px;
-    }
-
-    .adapter-card .strengths li::before {
-      content: "✓";
-      color: var(--success);
-    }
-
-    .adapter-card .limitations li::before {
-      content: "✗";
-      color: var(--danger);
-    }
-
-    /* Stats */
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      margin-bottom: 32px;
-    }
-
-    .stat-card {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 20px;
-      text-align: center;
-    }
-
-    .stat-value {
-      font-size: 32px;
-      font-weight: 700;
-      color: var(--accent);
-    }
-
-    .stat-label {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-
     /* Footer */
     .footer {
       border-top: 1px solid var(--border);
@@ -309,14 +220,6 @@
       color: var(--text-muted);
       font-size: 13px;
       margin-top: 48px;
-    }
-
-    code {
-      background: var(--bg-tertiary);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 12px;
-      font-family: 'SF Mono', Monaco, monospace;
     }
   </style>
 </head>
@@ -331,7 +234,7 @@
       <div class="top-nav-links">
         <a href="portal.html" class="top-nav-link">Home</a>
         <a href="index.html" class="top-nav-link">API Reference</a>
-        <a href="openharness.mapi.md" class="top-nav-link">MAPI Spec</a>
+        <a href="profiles.html" class="top-nav-link">Profiles</a>
         <a href="matrix.html" class="top-nav-link active">Compatibility</a>
         <a href="adapters/anthropic-agent.html" class="top-nav-link">Adapters</a>
       </div>
@@ -349,7 +252,7 @@
   <div class="container">
     <div class="page-header">
       <h1>Compatibility Matrix</h1>
-      <p>Capability coverage across harnesses and adapters</p>
+      <p>Capability support across harnesses and adapters</p>
     </div>
 
     <!-- Legend -->
@@ -366,10 +269,6 @@
         <span class="legend-icon status-unsupported">&#10008;</span>
         Not supported
       </div>
-      <div class="legend-item">
-        <span class="legend-icon status-planned">&#127919;</span>
-        Planned
-      </div>
     </div>
 
     <!-- Domain-Level Support -->
@@ -382,7 +281,7 @@
             <th>Anthropic</th>
             <th>Letta</th>
             <th>Goose</th>
-            <th>Langchain Deep Agents</th>
+            <th>Deep Agents</th>
           </tr>
         </thead>
         <tbody>
@@ -486,7 +385,7 @@
             <th>Anthropic</th>
             <th>Letta</th>
             <th>Goose</th>
-            <th>Langchain Deep Agents</th>
+            <th>Deep Agents</th>
           </tr>
         </thead>
         <tbody>
@@ -519,7 +418,7 @@
             <td><span class="status-supported">&#10004;</span></td>
           </tr>
           <tr>
-            <td>Extended Thinking</td>
+            <td>Thinking</td>
             <td><span class="status-supported">&#10004;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
             <td><span class="status-unsupported">&#10008;</span></td>
@@ -536,7 +435,7 @@
             <th>Anthropic</th>
             <th>Letta</th>
             <th>Goose</th>
-            <th>Langchain Deep Agents</th>
+            <th>Deep Agents</th>
           </tr>
         </thead>
         <tbody>
@@ -571,92 +470,6 @@
         </tbody>
       </table>
 
-      <h3>Agents (Letta only)</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Operation</th>
-            <th>Anthropic</th>
-            <th>Letta</th>
-            <th>Goose</th>
-            <th>Langchain Deep Agents</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Create</td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-          </tr>
-          <tr>
-            <td>Get</td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-          </tr>
-          <tr>
-            <td>List</td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-          </tr>
-          <tr>
-            <td>Delete</td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h3>Memory (Letta)</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Operation</th>
-            <th>Anthropic</th>
-            <th>Letta</th>
-            <th>Goose</th>
-            <th>Langchain Deep Agents</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>List Blocks</td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-          </tr>
-          <tr>
-            <td>Get Block</td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-          </tr>
-          <tr>
-            <td>Update Block</td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-          </tr>
-          <tr>
-            <td>Archive Search</td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-          </tr>
-        </tbody>
-      </table>
-
       <h3>Sessions</h3>
       <table>
         <thead>
@@ -665,7 +478,7 @@
             <th>Anthropic</th>
             <th>Letta</th>
             <th>Goose</th>
-            <th>Langchain Deep Agents</th>
+            <th>Deep Agents</th>
           </tr>
         </thead>
         <tbody>
@@ -692,115 +505,6 @@
           </tr>
         </tbody>
       </table>
-    </div>
-
-    <!-- Harness Profiles -->
-    <div class="section">
-      <h2>Harness Profiles</h2>
-      <div class="adapter-cards">
-        <div class="adapter-card">
-          <h4>Anthropic Agent SDK</h4>
-          <div class="package">openharness-anthropic-agent</div>
-          <h5>Strengths</h5>
-          <ul class="strengths">
-            <li>Direct Anthropic Messages API access</li>
-            <li>Native streaming with async generators</li>
-            <li>Tool use with automatic agentic loop</li>
-            <li>Extended thinking support</li>
-            <li>In-memory conversation history</li>
-          </ul>
-          <h5>Limitations</h5>
-          <ul class="limitations">
-            <li>Single provider (Anthropic only)</li>
-            <li>No persistent memory</li>
-            <li>No MCP support</li>
-            <li>No file operations</li>
-          </ul>
-        </div>
-
-        <div class="adapter-card">
-          <h4>Letta</h4>
-          <div class="package">openharness-letta</div>
-          <h5>Strengths</h5>
-          <ul class="strengths">
-            <li>Memory-first architecture</li>
-            <li>Full agent lifecycle (CRUD)</li>
-            <li>Memory blocks with semantic search</li>
-            <li>Archival memory persistence</li>
-            <li>Cloud API support</li>
-          </ul>
-          <h5>Limitations</h5>
-          <ul class="limitations">
-            <li>No subagent delegation</li>
-            <li>Limited file operations</li>
-            <li>No hooks system</li>
-          </ul>
-        </div>
-
-        <div class="adapter-card">
-          <h4>Goose</h4>
-          <div class="package">openharness-goose</div>
-          <h5>Strengths</h5>
-          <ul class="strengths">
-            <li>MCP-first architecture</li>
-            <li>Multi-model support (25+ providers)</li>
-            <li>Local CLI + Cloud REST API modes</li>
-            <li>Working directory context</li>
-            <li>Native skills via MCP extensions</li>
-          </ul>
-          <h5>Limitations</h5>
-          <ul class="limitations">
-            <li>Stateless execution (no sessions)</li>
-            <li>Tools via config only</li>
-            <li>No persistent memory</li>
-          </ul>
-        </div>
-
-        <div class="adapter-card">
-          <h4>Langchain Deep Agents</h4>
-          <div class="package">openharness-deepagent</div>
-          <h5>Strengths</h5>
-          <ul class="strengths">
-            <li>Built-in planning/todos</li>
-            <li>Native subagent delegation</li>
-            <li>Flexible filesystem backends</li>
-            <li>Multi-model via LangChain</li>
-            <li>File operations (read, write, glob, grep)</li>
-          </ul>
-          <h5>Limitations</h5>
-          <ul class="limitations">
-            <li>No native skills API</li>
-            <li>Stateless by default</li>
-            <li>No hooks system</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <!-- Coverage Stats -->
-    <div class="section">
-      <h2>Coverage Statistics</h2>
-      <div class="stats-row">
-        <div class="stat-card">
-          <div class="stat-value">33%</div>
-          <div class="stat-label">Anthropic Agent SDK</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value">58%</div>
-          <div class="stat-label">Letta</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value">42%</div>
-          <div class="stat-label">Goose</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value">50%</div>
-          <div class="stat-label">Langchain Deep Agents</div>
-        </div>
-      </div>
-      <p style="text-align: center; color: var(--text-muted); font-size: 13px;">
-        Coverage = (Supported + 0.5 &times; Partial) / Total Operations
-      </p>
     </div>
   </div>
 
