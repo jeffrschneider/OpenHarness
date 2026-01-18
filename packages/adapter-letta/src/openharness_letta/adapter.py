@@ -244,8 +244,8 @@ class LettaAdapter(HarnessAdapter):
         }
         if config.model:
             create_kwargs["model"] = config.model
-        if config.embedding_model:
-            create_kwargs["embedding_config"] = {"embedding_model": config.embedding_model}
+        # Note: embedding_config requires additional fields (endpoint_type, dim)
+        # Only include if fully configured by user
         if config.tools:
             create_kwargs["tools"] = config.tools
         if config.system_prompt:
