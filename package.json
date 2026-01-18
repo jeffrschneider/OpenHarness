@@ -1,0 +1,16 @@
+{
+  "name": "openharness",
+  "private": true,
+  "description": "Open Harness - Universal API for AI Agent Harnesses",
+  "scripts": {
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "clean": "pnpm -r exec rm -rf dist"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
