@@ -141,27 +141,19 @@ class DeepAgentAdapter(HarnessAdapter):
 
     def _build_backend(self) -> Any:
         """Build the appropriate file backend."""
-        try:
-            from deepagents.backends import (
-                FilesystemBackend,
-                StateBackend,
-                StoreBackend,
-            )
-        except ImportError:
-            # Return None to use default
-            return None
+        # Let Deep Agents use its default backend
+        # StateBackend now requires a runtime which is provided internally
+        if self._config.backend_type == BackendType.FILESYSTEM:
+            try:
+                from deepagents.backends import FilesystemBackend
+                root_dir = self._config.backend_root_dir or "/tmp/deepagent"
+                return FilesystemBackend(root_dir=root_dir)
+            except ImportError:
+                return None
 
-        if self._config.backend_type == BackendType.STATE:
-            return StateBackend()
-        elif self._config.backend_type == BackendType.FILESYSTEM:
-            root_dir = self._config.backend_root_dir or "/tmp/deepagent"
-            return FilesystemBackend(root_dir=root_dir)
-        elif self._config.backend_type == BackendType.STORE:
-            from langgraph.store.memory import InMemoryStore
-
-            return StoreBackend(store=InMemoryStore())
-        else:
-            return StateBackend()
+        # For STATE, STORE, and COMPOSITE, use default (None)
+        # Deep Agents will create the appropriate backend internally
+        return None
 
     @property
     def id(self) -> str:
