@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compatibility Matrix - Open Harness</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --bg-secondary: #161b22;
+      --bg-tertiary: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --text-subtle: #6e7681;
+      --accent: #58a6ff;
+      --accent-emphasis: #1f6feb;
+      --success: #3fb950;
+      --warning: #d29922;
+      --danger: #f85149;
+      --purple: #a371f7;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Top Navigation */
+    .top-nav {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .top-nav-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      height: 56px;
+      gap: 32px;
+    }
+
+    .top-nav-brand {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .top-nav-brand:hover { text-decoration: none; }
+    .top-nav-brand .logo { font-size: 24px; }
+
+    .top-nav-links {
+      display: flex;
+      gap: 4px;
+    }
+
+    .top-nav-link {
+      padding: 8px 16px;
+      border-radius: 6px;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+
+    .top-nav-link:hover {
+      background: var(--bg-tertiary);
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .top-nav-link.active {
+      background: var(--bg-tertiary);
+      color: var(--text);
+    }
+
+    .top-nav-right {
+      margin-left: auto;
+    }
+
+    .github-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .github-link:hover { color: var(--text); text-decoration: none; }
+
+    /* Main Content */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+
+    .page-header {
+      margin-bottom: 32px;
+    }
+
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      color: var(--text-muted);
+      font-size: 16px;
+    }
+
+    /* Legend */
+    .legend {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .legend-icon {
+      font-size: 16px;
+    }
+
+    /* Tables */
+    .section {
+      margin-bottom: 48px;
+    }
+
+    .section h2 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 24px 0 12px;
+      color: var(--text-muted);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: var(--bg-tertiary);
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+
+    th:not(:first-child),
+    td:not(:first-child) {
+      text-align: center;
+      width: 120px;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .status-supported { color: var(--success); }
+    .status-partial { color: var(--warning); }
+    .status-unsupported { color: var(--danger); }
+    .status-planned { color: var(--text-subtle); }
+
+    /* Adapter Cards */
+    .adapter-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 24px;
+      margin-top: 16px;
+    }
+
+    .adapter-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+    }
+
+    .adapter-card h4 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .adapter-card .package {
+      font-size: 12px;
+      color: var(--accent);
+      font-family: 'SF Mono', monospace;
+      margin-bottom: 16px;
+    }
+
+    .adapter-card h5 {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 16px 0 8px;
+    }
+
+    .adapter-card ul {
+      list-style: none;
+      font-size: 13px;
+    }
+
+    .adapter-card li {
+      padding: 4px 0;
+      color: var(--text-muted);
+    }
+
+    .adapter-card li::before {
+      content: "•";
+      margin-right: 8px;
+    }
+
+    .adapter-card .strengths li::before {
+      content: "✓";
+      color: var(--success);
+    }
+
+    .adapter-card .limitations li::before {
+      content: "✗";
+      color: var(--danger);
+    }
+
+    /* Stats */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 24px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+      margin-top: 48px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <div class="top-nav-inner">
+      <a href="portal.html" class="top-nav-brand">
+        <span class="logo">&#9881;</span>
+        Open Harness
+      </a>
+      <div class="top-nav-links">
+        <a href="portal.html" class="top-nav-link">Home</a>
+        <a href="index.html" class="top-nav-link">API Reference</a>
+        <a href="matrix.html" class="top-nav-link active">Compatibility</a>
+        <a href="adapters/anthropic-agent.html" class="top-nav-link">Adapters</a>
+      </div>
+      <div class="top-nav-right">
+        <a href="https://github.com/jeffrschneider/OpenHarness" class="github-link" target="_blank">
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <h1>Compatibility Matrix</h1>
+      <p>Capability coverage across harnesses and adapters</p>
+    </div>
+
+    <!-- Legend -->
+    <div class="legend">
+      <div class="legend-item">
+        <span class="legend-icon status-supported">&#10004;</span>
+        Native support
+      </div>
+      <div class="legend-item">
+        <span class="legend-icon status-partial">&#9888;</span>
+        Partial support
+      </div>
+      <div class="legend-item">
+        <span class="legend-icon status-unsupported">&#10008;</span>
+        Not supported
+      </div>
+      <div class="legend-item">
+        <span class="legend-icon status-planned">&#127919;</span>
+        Planned
+      </div>
+    </div>
+
+    <!-- Adapter Status -->
+    <div class="section">
+      <h2>Adapter Availability</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Adapter</th>
+            <th>Package</th>
+            <th>Status</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Anthropic Agent SDK</td>
+            <td><code>@openharness/adapter-anthropic-agent</code></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td>Tool use, streaming, conversations</td>
+          </tr>
+          <tr>
+            <td>Claude Code CLI</td>
+            <td>-</td>
+            <td><span class="status-planned">&#127919;</span></td>
+            <td>No public API</td>
+          </tr>
+          <tr>
+            <td>Goose</td>
+            <td>-</td>
+            <td><span class="status-planned">&#127919;</span></td>
+            <td>Planned</td>
+          </tr>
+          <tr>
+            <td>LangChain Deep Agent</td>
+            <td>-</td>
+            <td><span class="status-planned">&#127919;</span></td>
+            <td>Planned</td>
+          </tr>
+          <tr>
+            <td>Letta</td>
+            <td>-</td>
+            <td><span class="status-planned">&#127919;</span></td>
+            <td>Planned</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Domain-Level Support -->
+    <div class="section">
+      <h2>Domain-Level Support</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Domain</th>
+            <th>Anthropic Agent</th>
+            <th>Claude Code</th>
+            <th>Goose</th>
+            <th>Deep Agent</th>
+            <th>Letta</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Agents</strong></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+          </tr>
+          <tr>
+            <td><strong>Skills</strong></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+          </tr>
+          <tr>
+            <td><strong>Tools</strong></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+          </tr>
+          <tr>
+            <td><strong>MCP</strong></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+          </tr>
+          <tr>
+            <td><strong>Execution</strong></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+          </tr>
+          <tr>
+            <td><strong>Sessions</strong></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+          </tr>
+          <tr>
+            <td><strong>Memory</strong></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+          </tr>
+          <tr>
+            <td><strong>Subagents</strong></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+          </tr>
+          <tr>
+            <td><strong>Files</strong></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+          </tr>
+          <tr>
+            <td><strong>Hooks</strong></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+          </tr>
+          <tr>
+            <td><strong>Planning</strong></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+          </tr>
+          <tr>
+            <td><strong>Models</strong></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Detailed Operations -->
+    <div class="section">
+      <h2>Detailed Operations</h2>
+
+      <h3>Execution</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Operation</th>
+            <th>Anthropic Agent</th>
+            <th>Claude Code</th>
+            <th>Goose</th>
+            <th>Deep Agent</th>
+            <th>Letta</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Sync</td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+          </tr>
+          <tr>
+            <td>Stream</td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+          </tr>
+          <tr>
+            <td>Cancel</td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+          </tr>
+          <tr>
+            <td>Tool Calls</td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+          </tr>
+          <tr>
+            <td>Extended Thinking</td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+          </tr>
+          <tr>
+            <td>Artifacts</td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Tools</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Operation</th>
+            <th>Anthropic Agent</th>
+            <th>Claude Code</th>
+            <th>Goose</th>
+            <th>Deep Agent</th>
+            <th>Letta</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Register</td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+          </tr>
+          <tr>
+            <td>Unregister</td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+          </tr>
+          <tr>
+            <td>List</td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+          </tr>
+          <tr>
+            <td>Invoke</td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Sessions</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Operation</th>
+            <th>Anthropic Agent</th>
+            <th>Claude Code</th>
+            <th>Goose</th>
+            <th>Deep Agent</th>
+            <th>Letta</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Create</td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+          </tr>
+          <tr>
+            <td>Resume</td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+          </tr>
+          <tr>
+            <td>History</td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+          </tr>
+          <tr>
+            <td>Delete</td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+          </tr>
+          <tr>
+            <td>Fork</td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>MCP</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Operation</th>
+            <th>Anthropic Agent</th>
+            <th>Claude Code</th>
+            <th>Goose</th>
+            <th>Deep Agent</th>
+            <th>Letta</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Connect</td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+          </tr>
+          <tr>
+            <td>Disconnect</td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+          </tr>
+          <tr>
+            <td>List Tools</td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
+          </tr>
+          <tr>
+            <td>Resources</td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+          </tr>
+          <tr>
+            <td>Prompts</td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Harness Profiles -->
+    <div class="section">
+      <h2>Harness Profiles</h2>
+      <div class="adapter-cards">
+        <div class="adapter-card">
+          <h4>Anthropic Agent SDK</h4>
+          <div class="package">@openharness/adapter-anthropic-agent</div>
+          <h5>Strengths</h5>
+          <ul class="strengths">
+            <li>Direct Anthropic Messages API access</li>
+            <li>Native streaming with async generators</li>
+            <li>Tool use with automatic agentic loop</li>
+            <li>Extended thinking support</li>
+            <li>Cancellation via AbortSignal</li>
+          </ul>
+          <h5>Limitations</h5>
+          <ul class="limitations">
+            <li>In-memory only (no persistence)</li>
+            <li>Single provider (Anthropic)</li>
+            <li>No MCP support built-in</li>
+            <li>No file operations</li>
+          </ul>
+        </div>
+
+        <div class="adapter-card">
+          <h4>Claude Code (CLI)</h4>
+          <div class="package">Planned</div>
+          <h5>Strengths</h5>
+          <ul class="strengths">
+            <li>Native skills with API registration</li>
+            <li>Full MCP support</li>
+            <li>Comprehensive hooks system</li>
+            <li>Strong file operations</li>
+          </ul>
+          <h5>Limitations</h5>
+          <ul class="limitations">
+            <li>No public programmatic API</li>
+            <li>Single provider (Anthropic)</li>
+            <li>Agent lifecycle management</li>
+          </ul>
+        </div>
+
+        <div class="adapter-card">
+          <h4>Goose</h4>
+          <div class="package">Planned</div>
+          <h5>Strengths</h5>
+          <ul class="strengths">
+            <li>MCP-first architecture</li>
+            <li>Multi-model support (25+ providers)</li>
+            <li>Strong session management</li>
+            <li>Native skills support</li>
+          </ul>
+          <h5>Limitations</h5>
+          <ul class="limitations">
+            <li>No subagent spawning</li>
+            <li>Persistent memory limited</li>
+            <li>Skill versioning API</li>
+          </ul>
+        </div>
+
+        <div class="adapter-card">
+          <h4>LangChain Deep Agent</h4>
+          <div class="package">Planned</div>
+          <h5>Strengths</h5>
+          <ul class="strengths">
+            <li>Built-in planning/todos</li>
+            <li>Native subagent delegation</li>
+            <li>Flexible filesystem backends</li>
+            <li>Multi-model support</li>
+          </ul>
+          <h5>Limitations</h5>
+          <ul class="limitations">
+            <li>Skills API (uses tools)</li>
+            <li>Full MCP integration</li>
+            <li>Hooks system</li>
+          </ul>
+        </div>
+
+        <div class="adapter-card">
+          <h4>Letta</h4>
+          <div class="package">Planned</div>
+          <h5>Strengths</h5>
+          <ul class="strengths">
+            <li>Memory-first architecture</li>
+            <li>Full agent lifecycle API</li>
+            <li>Cross-session persistence</li>
+            <li>Multi-model support</li>
+          </ul>
+          <h5>Limitations</h5>
+          <ul class="limitations">
+            <li>Native skills support</li>
+            <li>Subagent delegation</li>
+            <li>File operations</li>
+            <li>MCP integration</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Coverage Stats -->
+    <div class="section">
+      <h2>Coverage Statistics</h2>
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-value">24%</div>
+          <div class="stat-label">Anthropic Agent SDK</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">59%</div>
+          <div class="stat-label">Claude Code</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">51%</div>
+          <div class="stat-label">Goose</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">47%</div>
+          <div class="stat-label">Deep Agent</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">51%</div>
+          <div class="stat-label">Letta</div>
+        </div>
+      </div>
+      <p style="text-align: center; color: var(--text-muted); font-size: 13px;">
+        Coverage = (Supported + 0.5 &times; Partial) / Total Operations
+      </p>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>Open Harness is open source. <a href="https://github.com/jeffrschneider/OpenHarness" target="_blank">View on GitHub</a></p>
+  </footer>
+</body>
+</html>

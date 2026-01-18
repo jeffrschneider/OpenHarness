@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anthropic Agent SDK Adapter - Open Harness</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --bg-secondary: #161b22;
+      --bg-tertiary: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --text-subtle: #6e7681;
+      --accent: #58a6ff;
+      --accent-emphasis: #1f6feb;
+      --success: #3fb950;
+      --warning: #d29922;
+      --danger: #f85149;
+      --purple: #a371f7;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Top Navigation */
+    .top-nav {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .top-nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      height: 56px;
+      gap: 32px;
+    }
+
+    .top-nav-brand {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .top-nav-brand:hover { text-decoration: none; }
+    .top-nav-brand .logo { font-size: 24px; }
+
+    .top-nav-links {
+      display: flex;
+      gap: 4px;
+    }
+
+    .top-nav-link {
+      padding: 8px 16px;
+      border-radius: 6px;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+
+    .top-nav-link:hover {
+      background: var(--bg-tertiary);
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .top-nav-link.active {
+      background: var(--bg-tertiary);
+      color: var(--text);
+    }
+
+    .top-nav-right {
+      margin-left: auto;
+    }
+
+    .github-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .github-link:hover { color: var(--text); text-decoration: none; }
+
+    /* Layout */
+    .layout {
+      display: flex;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 240px;
+      padding: 24px 0;
+      position: sticky;
+      top: 56px;
+      height: calc(100vh - 56px);
+      overflow-y: auto;
+      border-right: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .sidebar-section {
+      margin-bottom: 24px;
+    }
+
+    .sidebar-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      padding: 0 16px 8px;
+    }
+
+    .sidebar-link {
+      display: block;
+      padding: 6px 16px;
+      color: var(--text-muted);
+      font-size: 13px;
+      transition: all 0.1s;
+    }
+
+    .sidebar-link:hover {
+      color: var(--text);
+      background: var(--bg-tertiary);
+      text-decoration: none;
+    }
+
+    .sidebar-link.active {
+      color: var(--accent);
+      border-left: 2px solid var(--accent);
+      padding-left: 14px;
+    }
+
+    /* Main Content */
+    .main {
+      flex: 1;
+      padding: 32px 48px;
+      max-width: 900px;
+    }
+
+    .page-header {
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .page-header .package {
+      font-family: 'SF Mono', monospace;
+      font-size: 14px;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .page-header p {
+      color: var(--text-muted);
+    }
+
+    .badge-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .badge {
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-weight: 500;
+    }
+
+    .badge.success { background: rgba(63, 185, 80, 0.15); color: var(--success); }
+    .badge.accent { background: rgba(88, 166, 255, 0.15); color: var(--accent); }
+
+    /* Sections */
+    section {
+      margin-bottom: 48px;
+    }
+
+    section h2 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    section h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 24px 0 12px;
+    }
+
+    section p {
+      margin-bottom: 16px;
+      color: var(--text-muted);
+    }
+
+    /* Code */
+    code {
+      font-family: 'SF Mono', 'Consolas', monospace;
+      font-size: 13px;
+      background: var(--bg-tertiary);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    pre {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      overflow-x: auto;
+      margin-bottom: 16px;
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+    }
+
+    .code-block .comment { color: var(--text-subtle); }
+    .code-block .keyword { color: var(--purple); }
+    .code-block .string { color: var(--success); }
+    .code-block .function { color: var(--accent); }
+    .code-block .type { color: var(--warning); }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: var(--bg-tertiary);
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .status-supported { color: var(--success); }
+    .status-unsupported { color: var(--danger); }
+
+    /* Lists */
+    ul, ol {
+      margin-bottom: 16px;
+      padding-left: 24px;
+    }
+
+    li {
+      margin-bottom: 8px;
+      color: var(--text-muted);
+    }
+
+    /* Info boxes */
+    .info-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .info-box.warning {
+      border-left-color: var(--warning);
+    }
+
+    .info-box h4 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .info-box p {
+      margin-bottom: 0;
+      font-size: 13px;
+    }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 24px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <div class="top-nav-inner">
+      <a href="../portal.html" class="top-nav-brand">
+        <span class="logo">&#9881;</span>
+        Open Harness
+      </a>
+      <div class="top-nav-links">
+        <a href="../portal.html" class="top-nav-link">Home</a>
+        <a href="../index.html" class="top-nav-link">API Reference</a>
+        <a href="../matrix.html" class="top-nav-link">Compatibility</a>
+        <a href="anthropic-agent.html" class="top-nav-link active">Adapters</a>
+      </div>
+      <div class="top-nav-right">
+        <a href="https://github.com/jeffrschneider/OpenHarness" class="github-link" target="_blank">
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-title">Available Adapters</div>
+        <a href="anthropic-agent.html" class="sidebar-link active">Anthropic Agent SDK</a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-title">Planned</div>
+        <span class="sidebar-link" style="color: var(--text-subtle);">Claude Code</span>
+        <span class="sidebar-link" style="color: var(--text-subtle);">Goose</span>
+        <span class="sidebar-link" style="color: var(--text-subtle);">LangChain Deep Agent</span>
+        <span class="sidebar-link" style="color: var(--text-subtle);">Letta</span>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-title">On This Page</div>
+        <a href="#installation" class="sidebar-link">Installation</a>
+        <a href="#quick-start" class="sidebar-link">Quick Start</a>
+        <a href="#capabilities" class="sidebar-link">Capabilities</a>
+        <a href="#tools" class="sidebar-link">Tool Registration</a>
+        <a href="#streaming" class="sidebar-link">Streaming</a>
+        <a href="#conversations" class="sidebar-link">Conversations</a>
+        <a href="#configuration" class="sidebar-link">Configuration</a>
+        <a href="#behavior" class="sidebar-link">API Behavior</a>
+        <a href="#extending" class="sidebar-link">Extending</a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+      <div class="page-header">
+        <h1>Anthropic Agent SDK Adapter</h1>
+        <div class="package">@openharness/adapter-anthropic-agent</div>
+        <p>Direct access to Claude with tool use, streaming, and multi-turn conversations.</p>
+        <div class="badge-row">
+          <span class="badge success">Available</span>
+          <span class="badge accent">v0.1.0</span>
+        </div>
+      </div>
+
+      <!-- Installation -->
+      <section id="installation">
+        <h2>Installation</h2>
+        <pre class="code-block"><code>npm install @openharness/adapter-anthropic-agent</code></pre>
+      </section>
+
+      <!-- Quick Start -->
+      <section id="quick-start">
+        <h2>Quick Start</h2>
+        <pre class="code-block"><code><span class="keyword">import</span> { AnthropicAgentAdapter } <span class="keyword">from</span> <span class="string">"@openharness/adapter-anthropic-agent"</span>;
+
+<span class="keyword">const</span> adapter = <span class="keyword">new</span> <span class="function">AnthropicAgentAdapter</span>({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+});
+
+<span class="comment">// Simple execution</span>
+<span class="keyword">const</span> result = <span class="keyword">await</span> adapter.<span class="function">execute</span>({
+  message: <span class="string">"What is 2 + 2?"</span>,
+});
+
+console.<span class="function">log</span>(result.output);</code></pre>
+      </section>
+
+      <!-- Capabilities -->
+      <section id="capabilities">
+        <h2>Capabilities</h2>
+        <p>This adapter implements a subset of the Open Harness API focused on core execution capabilities.</p>
+
+        <h3>Supported</h3>
+        <table>
+          <thead>
+            <tr><th>Domain</th><th>Capability</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Execution</td><td><code>execute()</code></td><td>Sync execution with agentic loop</td></tr>
+            <tr><td>Execution</td><td><code>executeStream()</code></td><td>Async generator streaming</td></tr>
+            <tr><td>Execution</td><td>Cancel</td><td>Via <code>AbortSignal</code></td></tr>
+            <tr><td>Execution</td><td>Extended Thinking</td><td><code>enableThinking</code> config</td></tr>
+            <tr><td>Tools</td><td><code>registerTool()</code></td><td>Register custom handlers</td></tr>
+            <tr><td>Tools</td><td><code>listTools()</code></td><td>List registered tools</td></tr>
+            <tr><td>Tools</td><td><code>invokeTool()</code></td><td>Direct invocation</td></tr>
+            <tr><td>Sessions</td><td><code>createConversation()</code></td><td>In-memory state</td></tr>
+            <tr><td>Sessions</td><td><code>sendMessage()</code></td><td>With history</td></tr>
+            <tr><td>Sessions</td><td><code>sendMessageStream()</code></td><td>Streaming with history</td></tr>
+            <tr><td>Models</td><td>Model switching</td><td>Per-request via options</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Not Supported</h3>
+        <table>
+          <thead>
+            <tr><th>Domain</th><th>Reason</th><th>Workaround</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Agents</td><td>SDK is stateless</td><td>External state management</td></tr>
+            <tr><td>Skills</td><td>Not in SDK scope</td><td>Register tools directly</td></tr>
+            <tr><td>MCP</td><td>Requires separate package</td><td>Add MCP tools manually</td></tr>
+            <tr><td>Memory</td><td>SDK is stateless</td><td>External database</td></tr>
+            <tr><td>Subagents</td><td>Requires orchestration</td><td>Build custom orchestrator</td></tr>
+            <tr><td>Files</td><td>Not in SDK scope</td><td>Register file tools</td></tr>
+            <tr><td>Hooks</td><td>Requires orchestration</td><td>Wrap adapter methods</td></tr>
+            <tr><td>Planning</td><td>Not in SDK scope</td><td>Build custom layer</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Tool Registration -->
+      <section id="tools">
+        <h2>Tool Registration</h2>
+        <pre class="code-block"><code>adapter.<span class="function">registerTool</span>({
+  name: <span class="string">"get_weather"</span>,
+  description: <span class="string">"Get the current weather for a location"</span>,
+  inputSchema: {
+    type: <span class="string">"object"</span>,
+    properties: {
+      location: { type: <span class="string">"string"</span>, description: <span class="string">"City name"</span> },
+    },
+    required: [<span class="string">"location"</span>],
+  },
+  handler: <span class="keyword">async</span> (input) => {
+    <span class="keyword">const</span> location = input.location <span class="keyword">as</span> <span class="type">string</span>;
+    <span class="comment">// Your weather API logic here</span>
+    <span class="keyword">return</span> {
+      success: <span class="keyword">true</span>,
+      output: { temp: 72, condition: <span class="string">"sunny"</span>, location },
+    };
+  },
+});
+
+<span class="comment">// Execute with tools (agentic loop handles tool calls automatically)</span>
+<span class="keyword">const</span> result = <span class="keyword">await</span> adapter.<span class="function">execute</span>({
+  message: <span class="string">"What's the weather in San Francisco?"</span>,
+});</code></pre>
+      </section>
+
+      <!-- Streaming -->
+      <section id="streaming">
+        <h2>Streaming</h2>
+        <pre class="code-block"><code><span class="keyword">for await</span> (<span class="keyword">const</span> event <span class="keyword">of</span> adapter.<span class="function">executeStream</span>({
+  message: <span class="string">"Write a haiku about programming"</span>,
+})) {
+  <span class="keyword">switch</span> (event.type) {
+    <span class="keyword">case</span> <span class="string">"text"</span>:
+      process.stdout.<span class="function">write</span>(event.content);
+      <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">"tool_call_start"</span>:
+      console.<span class="function">log</span>(<span class="string">`\nUsing tool: ${event.name}`</span>);
+      <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">"tool_result"</span>:
+      console.<span class="function">log</span>(<span class="string">`Tool result:`</span>, event.output);
+      <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">"done"</span>:
+      console.<span class="function">log</span>(<span class="string">`\n\nTokens: ${event.usage.total_tokens}`</span>);
+      <span class="keyword">break</span>;
+  }
+}</code></pre>
+
+        <h3>Event Types</h3>
+        <table>
+          <thead>
+            <tr><th>Event</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>text</code></td><td>Text content chunk</td></tr>
+            <tr><td><code>tool_call_start</code></td><td>Tool invocation beginning</td></tr>
+            <tr><td><code>tool_call_delta</code></td><td>Partial tool input (JSON streaming)</td></tr>
+            <tr><td><code>tool_call_end</code></td><td>Tool invocation complete</td></tr>
+            <tr><td><code>tool_result</code></td><td>Tool execution result</td></tr>
+            <tr><td><code>progress</code></td><td>Iteration progress</td></tr>
+            <tr><td><code>error</code></td><td>Error occurred</td></tr>
+            <tr><td><code>done</code></td><td>Execution complete with usage stats</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Conversations -->
+      <section id="conversations">
+        <h2>Conversation Management</h2>
+        <div class="info-box warning">
+          <h4>In-Memory Only</h4>
+          <p>Conversations are stored in-memory and lost on process restart. For persistence, serialize <code>conversation.messages</code> to your database.</p>
+        </div>
+
+        <pre class="code-block"><code><span class="comment">// Create a conversation</span>
+<span class="keyword">const</span> conversation = adapter.<span class="function">createConversation</span>({
+  systemPrompt: <span class="string">"You are a helpful coding assistant."</span>,
+});
+
+<span class="comment">// Send messages in the conversation</span>
+<span class="keyword">const</span> response1 = <span class="keyword">await</span> adapter.<span class="function">sendMessage</span>(
+  conversation.id,
+  <span class="string">"What's a good way to handle errors in TypeScript?"</span>
+);
+
+<span class="keyword">const</span> response2 = <span class="keyword">await</span> adapter.<span class="function">sendMessage</span>(
+  conversation.id,
+  <span class="string">"Can you show me an example?"</span>
+);
+
+<span class="comment">// Stream a message in the conversation</span>
+<span class="keyword">for await</span> (<span class="keyword">const</span> event <span class="keyword">of</span> adapter.<span class="function">sendMessageStream</span>(
+  conversation.id,
+  <span class="string">"Now explain async/await"</span>
+)) {
+  <span class="keyword">if</span> (event.type === <span class="string">"text"</span>) {
+    process.stdout.<span class="function">write</span>(event.content);
+  }
+}</code></pre>
+      </section>
+
+      <!-- Configuration -->
+      <section id="configuration">
+        <h2>Configuration</h2>
+        <pre class="code-block"><code><span class="keyword">interface</span> <span class="type">AnthropicAgentConfig</span> {
+  <span class="comment">// Anthropic API key (or use ANTHROPIC_API_KEY env var)</span>
+  apiKey?: <span class="type">string</span>;
+
+  <span class="comment">// Model (default: "claude-sonnet-4-20250514")</span>
+  model?: <span class="type">string</span>;
+
+  <span class="comment">// Max tokens (default: 4096)</span>
+  maxTokens?: <span class="type">number</span>;
+
+  <span class="comment">// Base URL for API (useful for proxies)</span>
+  baseUrl?: <span class="type">string</span>;
+
+  <span class="comment">// Default system prompt</span>
+  systemPrompt?: <span class="type">string</span>;
+
+  <span class="comment">// Custom Anthropic client</span>
+  client?: <span class="type">Anthropic</span>;
+
+  <span class="comment">// Enable extended thinking (default: false)</span>
+  enableThinking?: <span class="type">boolean</span>;
+
+  <span class="comment">// Thinking budget (default: 10000)</span>
+  thinkingBudget?: <span class="type">number</span>;
+}</code></pre>
+
+        <h3>Execution Options</h3>
+        <p>Per-request options can override adapter defaults:</p>
+        <pre class="code-block"><code><span class="keyword">const</span> result = <span class="keyword">await</span> adapter.<span class="function">execute</span>({
+  message: <span class="string">"Explain quantum computing"</span>,
+}, {
+  model: <span class="string">"claude-opus-4-20250514"</span>,
+  maxTokens: 8192,
+  temperature: 0.7,
+  maxIterations: 5,  <span class="comment">// Max tool use iterations (default: 10)</span>
+  abortSignal: controller.signal,
+});</code></pre>
+      </section>
+
+      <!-- API Behavior -->
+      <section id="behavior">
+        <h2>API Behavior</h2>
+
+        <h3>Agentic Loop</h3>
+        <p>The adapter implements an automatic agentic loop for tool use:</p>
+        <ol>
+          <li>User message is sent to Claude</li>
+          <li>If Claude requests tool use, the adapter automatically invokes the registered handler</li>
+          <li>Tool results are sent back to Claude</li>
+          <li>Loop continues until Claude produces a final text response or <code>maxIterations</code> is reached</li>
+        </ol>
+        <p>This differs from raw SDK usage where you must manually handle tool calls.</p>
+
+        <h3>Token Usage</h3>
+        <pre class="code-block"><code><span class="comment">// Sync execution</span>
+<span class="keyword">const</span> result = <span class="keyword">await</span> adapter.<span class="function">execute</span>({ message: <span class="string">"Hello"</span> });
+console.<span class="function">log</span>(result.usage);
+<span class="comment">// { inputTokens: 10, outputTokens: 50, totalTokens: 60, durationMs: 1234 }</span>
+
+<span class="comment">// Streaming - usage is in the final "done" event</span>
+<span class="keyword">for await</span> (<span class="keyword">const</span> event <span class="keyword">of</span> adapter.<span class="function">executeStream</span>({ message: <span class="string">"Hello"</span> })) {
+  <span class="keyword">if</span> (event.type === <span class="string">"done"</span>) {
+    console.<span class="function">log</span>(event.usage);
+  }
+}</code></pre>
+      </section>
+
+      <!-- Extending -->
+      <section id="extending">
+        <h2>Extending the Adapter</h2>
+
+        <h3>Adding MCP Support</h3>
+        <pre class="code-block"><code><span class="keyword">import</span> { Client } <span class="keyword">from</span> <span class="string">"@anthropic-ai/mcp"</span>;
+
+<span class="comment">// Connect to MCP server</span>
+<span class="keyword">const</span> mcp = <span class="keyword">new</span> <span class="function">Client</span>();
+<span class="keyword">await</span> mcp.<span class="function">connect</span>(<span class="string">"npx -y @anthropic-ai/mcp-server-filesystem /tmp"</span>);
+
+<span class="comment">// Get tools from MCP server</span>
+<span class="keyword">const</span> mcpTools = <span class="keyword">await</span> mcp.<span class="function">listTools</span>();
+
+<span class="comment">// Register MCP tools with the adapter</span>
+<span class="keyword">for</span> (<span class="keyword">const</span> tool <span class="keyword">of</span> mcpTools) {
+  adapter.<span class="function">registerTool</span>({
+    name: tool.name,
+    description: tool.description,
+    inputSchema: tool.inputSchema,
+    handler: <span class="keyword">async</span> (input) => {
+      <span class="keyword">const</span> result = <span class="keyword">await</span> mcp.<span class="function">callTool</span>(tool.name, input);
+      <span class="keyword">return</span> { success: <span class="keyword">true</span>, output: result };
+    },
+  });
+}</code></pre>
+
+        <h3>Adding File Operations</h3>
+        <pre class="code-block"><code><span class="keyword">import</span> * <span class="keyword">as</span> fs <span class="keyword">from</span> <span class="string">"fs/promises"</span>;
+
+adapter.<span class="function">registerTool</span>({
+  name: <span class="string">"read_file"</span>,
+  description: <span class="string">"Read a file from the filesystem"</span>,
+  inputSchema: {
+    type: <span class="string">"object"</span>,
+    properties: {
+      path: { type: <span class="string">"string"</span>, description: <span class="string">"File path"</span> },
+    },
+    required: [<span class="string">"path"</span>],
+  },
+  handler: <span class="keyword">async</span> (input) => {
+    <span class="keyword">try</span> {
+      <span class="keyword">const</span> content = <span class="keyword">await</span> fs.<span class="function">readFile</span>(input.path <span class="keyword">as</span> <span class="type">string</span>, <span class="string">"utf-8"</span>);
+      <span class="keyword">return</span> { success: <span class="keyword">true</span>, output: { content } };
+    } <span class="keyword">catch</span> (error) {
+      <span class="keyword">return</span> { success: <span class="keyword">false</span>, error: error.message };
+    }
+  },
+});</code></pre>
+
+        <h3>Adding Hooks</h3>
+        <pre class="code-block"><code><span class="keyword">const</span> originalExecute = adapter.execute.<span class="function">bind</span>(adapter);
+
+adapter.execute = <span class="keyword">async</span> (request, options) => {
+  <span class="comment">// Pre-hook</span>
+  console.<span class="function">log</span>(<span class="string">"Starting execution:"</span>, request.message);
+
+  <span class="keyword">const</span> result = <span class="keyword">await</span> <span class="function">originalExecute</span>(request, options);
+
+  <span class="comment">// Post-hook</span>
+  console.<span class="function">log</span>(<span class="string">"Completed:"</span>, result.usage.totalTokens, <span class="string">"tokens"</span>);
+
+  <span class="keyword">return</span> result;
+};</code></pre>
+      </section>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <p>Open Harness is open source. <a href="https://github.com/jeffrschneider/OpenHarness" target="_blank">View on GitHub</a></p>
+  </footer>
+</body>
+</html>

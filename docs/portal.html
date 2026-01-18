@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open Harness - Universal API for AI Agent Harnesses</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --bg-secondary: #161b22;
+      --bg-tertiary: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --text-subtle: #6e7681;
+      --accent: #58a6ff;
+      --accent-emphasis: #1f6feb;
+      --success: #3fb950;
+      --warning: #d29922;
+      --danger: #f85149;
+      --purple: #a371f7;
+      --pink: #db61a2;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Top Navigation */
+    .top-nav {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .top-nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      height: 56px;
+      gap: 32px;
+    }
+
+    .top-nav-brand {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .top-nav-brand:hover { text-decoration: none; }
+
+    .top-nav-brand .logo {
+      font-size: 24px;
+    }
+
+    .top-nav-links {
+      display: flex;
+      gap: 4px;
+    }
+
+    .top-nav-link {
+      padding: 8px 16px;
+      border-radius: 6px;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+
+    .top-nav-link:hover {
+      background: var(--bg-tertiary);
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .top-nav-link.active {
+      background: var(--bg-tertiary);
+      color: var(--text);
+    }
+
+    .top-nav-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .github-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .github-link:hover { color: var(--text); text-decoration: none; }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 80px 24px;
+      background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg) 100%);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 20px;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 32px;
+    }
+
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      margin-top: 32px;
+    }
+
+    .hero-stat {
+      text-align: center;
+    }
+
+    .hero-stat-value {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .hero-stat-label {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* Cards Grid */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 48px 24px;
+    }
+
+    .section-title {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .section-desc {
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+
+    .card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      transition: all 0.2s;
+    }
+
+    .card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+
+    .card-icon {
+      font-size: 32px;
+      margin-bottom: 16px;
+    }
+
+    .card h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .card p {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    .card-meta {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .card-tag {
+      font-size: 12px;
+      padding: 4px 10px;
+      background: var(--bg-tertiary);
+      border-radius: 12px;
+      color: var(--text-muted);
+    }
+
+    .card-tag.success { background: rgba(63, 185, 80, 0.15); color: var(--success); }
+    .card-tag.warning { background: rgba(210, 153, 34, 0.15); color: var(--warning); }
+    .card-tag.accent { background: rgba(88, 166, 255, 0.15); color: var(--accent); }
+
+    /* Adapters Section */
+    .adapters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .adapter-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      transition: all 0.2s;
+    }
+
+    .adapter-card:hover {
+      border-color: var(--border);
+      background: var(--bg-tertiary);
+      text-decoration: none;
+    }
+
+    .adapter-card.available:hover {
+      border-color: var(--accent);
+    }
+
+    .adapter-icon {
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+
+    .adapter-info h4 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--text);
+    }
+
+    .adapter-info p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .adapter-status {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 500;
+    }
+
+    .adapter-status.available {
+      background: rgba(63, 185, 80, 0.15);
+      color: var(--success);
+    }
+
+    .adapter-status.planned {
+      background: rgba(139, 148, 158, 0.15);
+      color: var(--text-muted);
+    }
+
+    /* Quick Start */
+    .quick-start {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 48px;
+    }
+
+    .quick-start h3 {
+      font-size: 18px;
+      margin-bottom: 16px;
+    }
+
+    .code-block {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      font-family: 'SF Mono', 'Consolas', monospace;
+      font-size: 13px;
+      overflow-x: auto;
+    }
+
+    .code-block .comment { color: var(--text-subtle); }
+    .code-block .keyword { color: var(--purple); }
+    .code-block .string { color: var(--success); }
+    .code-block .function { color: var(--accent); }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 24px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .footer a { color: var(--text-muted); }
+    .footer a:hover { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <div class="top-nav-inner">
+      <a href="portal.html" class="top-nav-brand">
+        <span class="logo">&#9881;</span>
+        Open Harness
+      </a>
+      <div class="top-nav-links">
+        <a href="portal.html" class="top-nav-link active">Home</a>
+        <a href="index.html" class="top-nav-link">API Reference</a>
+        <a href="matrix.html" class="top-nav-link">Compatibility</a>
+        <a href="adapters/anthropic-agent.html" class="top-nav-link">Adapters</a>
+      </div>
+      <div class="top-nav-right">
+        <a href="https://github.com/jeffrschneider/OpenHarness" class="github-link" target="_blank">
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>Open Harness</h1>
+    <p>A universal API specification for AI agent harnesses. Build once, run on Claude Code, Goose, LangChain, Letta, and more.</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-value">13</div>
+        <div class="hero-stat-label">Domains</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">107</div>
+        <div class="hero-stat-label">Capabilities</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">5</div>
+        <div class="hero-stat-label">Harnesses</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <div class="container">
+    <!-- Documentation Cards -->
+    <h2 class="section-title">Documentation</h2>
+    <p class="section-desc">Everything you need to build with Open Harness</p>
+
+    <div class="cards-grid">
+      <a href="index.html" class="card">
+        <div class="card-icon">&#128214;</div>
+        <h3>API Reference</h3>
+        <p>Complete API specification with all 13 domains, endpoints, types, and examples.</p>
+        <div class="card-meta">
+          <span class="card-tag accent">107 Capabilities</span>
+          <span class="card-tag">v0.2.0</span>
+        </div>
+      </a>
+
+      <a href="matrix.html" class="card">
+        <div class="card-icon">&#128202;</div>
+        <h3>Compatibility Matrix</h3>
+        <p>See which capabilities are supported across different harnesses and adapters.</p>
+        <div class="card-meta">
+          <span class="card-tag success">5 Harnesses</span>
+          <span class="card-tag">1 Adapter</span>
+        </div>
+      </a>
+
+      <a href="https://github.com/jeffrschneider/OpenHarness/tree/main/packages/client" class="card" target="_blank">
+        <div class="card-icon">&#128230;</div>
+        <h3>TypeScript SDK</h3>
+        <p>Official client library with full type safety, streaming support, and adapter interface.</p>
+        <div class="card-meta">
+          <span class="card-tag">@openharness/client</span>
+          <span class="card-tag success">Available</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Quick Start -->
+    <div class="quick-start">
+      <h3>Quick Start</h3>
+      <div class="code-block">
+<span class="comment">// Install the SDK and an adapter</span>
+npm install @openharness/client @openharness/adapter-anthropic-agent
+
+<span class="comment">// Use it</span>
+<span class="keyword">import</span> { AnthropicAgentAdapter } <span class="keyword">from</span> <span class="string">"@openharness/adapter-anthropic-agent"</span>;
+
+<span class="keyword">const</span> adapter = <span class="keyword">new</span> <span class="function">AnthropicAgentAdapter</span>({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+<span class="keyword">for await</span> (<span class="keyword">const</span> event <span class="keyword">of</span> adapter.<span class="function">executeStream</span>({ message: <span class="string">"Hello!"</span> })) {
+  <span class="keyword">if</span> (event.type === <span class="string">"text"</span>) process.stdout.<span class="function">write</span>(event.content);
+}
+      </div>
+    </div>
+
+    <!-- Adapters -->
+    <h2 class="section-title">Adapters</h2>
+    <p class="section-desc">Connect to your favorite AI agent harness</p>
+
+    <div class="adapters-grid">
+      <a href="adapters/anthropic-agent.html" class="adapter-card available">
+        <div class="adapter-icon">&#129302;</div>
+        <div class="adapter-info">
+          <h4>Anthropic Agent SDK</h4>
+          <p>Direct access to Claude with tool use, streaming, and conversations.</p>
+          <span class="adapter-status available">Available</span>
+        </div>
+      </a>
+
+      <div class="adapter-card">
+        <div class="adapter-icon">&#128187;</div>
+        <div class="adapter-info">
+          <h4>Claude Code</h4>
+          <p>Full-featured CLI with skills, MCP, and file operations.</p>
+          <span class="adapter-status planned">Planned</span>
+        </div>
+      </div>
+
+      <div class="adapter-card">
+        <div class="adapter-icon">&#129414;</div>
+        <div class="adapter-info">
+          <h4>Goose</h4>
+          <p>Multi-model support with MCP-first architecture.</p>
+          <span class="adapter-status planned">Planned</span>
+        </div>
+      </div>
+
+      <div class="adapter-card">
+        <div class="adapter-icon">&#9939;</div>
+        <div class="adapter-info">
+          <h4>LangChain Deep Agent</h4>
+          <p>Planning, subagents, and multi-model orchestration.</p>
+          <span class="adapter-status planned">Planned</span>
+        </div>
+      </div>
+
+      <div class="adapter-card">
+        <div class="adapter-icon">&#129504;</div>
+        <div class="adapter-info">
+          <h4>Letta</h4>
+          <p>Memory-first architecture with full agent lifecycle.</p>
+          <span class="adapter-status planned">Planned</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>Open Harness is open source. <a href="https://github.com/jeffrschneider/OpenHarness" target="_blank">View on GitHub</a></p>
+  </footer>
+</body>
+</html>
