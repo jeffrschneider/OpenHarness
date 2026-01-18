@@ -23,7 +23,7 @@ classifiers = [
 
 dependencies = [
     "openharness>=0.1.0",
-    "claude-agent-sdk>=1.0.0",
+    "claude-agent-sdk>=0.1.0",
 ]
 
 [project.optional-dependencies]

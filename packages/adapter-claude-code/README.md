@@ -24,7 +24,7 @@ pip install openharness-claude-code
 - Python 3.10+
 - Claude Code CLI installed (`npm install -g @anthropic-ai/claude-code`)
 - `openharness>=0.1.0`
-- `claude-agent-sdk>=1.0.0`
+- `claude-agent-sdk>=0.1.0`
 
 ## Quick Start
 
