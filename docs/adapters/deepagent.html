@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/svg+xml" href="../favicon.svg">
-  <title>Deep Agent Adapter - Open Harness</title>
+  <title>Langchain Deep Agents Adapter - Open Harness</title>
   <style>
     :root {
       --bg: #0d1117;
@@ -106,6 +106,58 @@
 
     .github-link:hover { color: var(--text); text-decoration: none; }
 
+    /* Adapter Sub-Navigation */
+    .adapter-subnav {
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+    }
+
+    .adapter-subnav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 48px;
+    }
+
+    .adapter-subnav-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-subtle);
+      margin-right: 8px;
+    }
+
+    .adapter-subnav-link {
+      padding: 6px 14px;
+      border-radius: 6px;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.15s;
+      border: 1px solid transparent;
+    }
+
+    .adapter-subnav-link:hover {
+      background: var(--bg-secondary);
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .adapter-subnav-link.active {
+      background: var(--bg-tertiary);
+      color: var(--accent);
+      border-color: var(--border);
+    }
+
+    .adapter-subnav-link.planned {
+      color: var(--text-subtle);
+      font-style: italic;
+    }
+
     /* Layout */
     .layout {
       display: flex;
@@ -118,8 +170,8 @@
       width: 240px;
       padding: 24px 0;
       position: sticky;
-      top: 56px;
-      height: calc(100vh - 56px);
+      top: 104px;
+      height: calc(100vh - 104px);
       overflow-y: auto;
       border-right: 1px solid var(--border);
       flex-shrink: 0;
@@ -367,20 +419,21 @@
     </div>
   </nav>
 
+  <!-- Adapter Sub-Navigation -->
+  <nav class="adapter-subnav">
+    <div class="adapter-subnav-inner">
+      <span class="adapter-subnav-label">Adapters:</span>
+      <a href="anthropic-agent.html" class="adapter-subnav-link">Anthropic Agent SDK</a>
+      <a href="letta.html" class="adapter-subnav-link">Letta</a>
+      <a href="goose.html" class="adapter-subnav-link">Goose</a>
+      <a href="deepagent.html" class="adapter-subnav-link active">Langchain Deep Agents</a>
+      <span class="adapter-subnav-link planned">Claude Code (Planned)</span>
+    </div>
+  </nav>
+
   <div class="layout">
     <!-- Sidebar -->
     <aside class="sidebar">
-      <div class="sidebar-section">
-        <div class="sidebar-title">Available Adapters</div>
-        <a href="anthropic-agent.html" class="sidebar-link">Anthropic Agent SDK</a>
-        <a href="letta.html" class="sidebar-link">Letta</a>
-        <a href="goose.html" class="sidebar-link">Goose</a>
-        <a href="deepagent.html" class="sidebar-link active">Deep Agent</a>
-      </div>
-      <div class="sidebar-section">
-        <div class="sidebar-title">Planned</div>
-        <span class="sidebar-link" style="color: var(--text-subtle);">Claude Code</span>
-      </div>
       <div class="sidebar-section">
         <div class="sidebar-title">On This Page</div>
         <a href="#installation" class="sidebar-link">Installation</a>
@@ -397,7 +450,7 @@
     <!-- Main Content -->
     <main class="main">
       <div class="page-header">
-        <h1>Deep Agent Adapter</h1>
+        <h1>Langchain Deep Agents Adapter</h1>
         <div class="package">openharness-deepagent (Python)</div>
         <p>Sophisticated AI agents with planning, subagents, and file system capabilities.</p>
         <div class="badge-row">
