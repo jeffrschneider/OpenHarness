@@ -309,6 +309,14 @@
       font-size: 13px;
       margin-top: 48px;
     }
+
+    code {
+      background: var(--bg-tertiary);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-family: 'SF Mono', Monaco, monospace;
+    }
   </style>
 </head>
 <body>
@@ -377,33 +385,33 @@
         <tbody>
           <tr>
             <td>Anthropic Agent SDK</td>
-            <td><code>@openharness/adapter-anthropic-agent</code></td>
+            <td><code>openharness-anthropic-agent</code></td>
             <td><span class="status-supported">&#10004;</span></td>
             <td>Tool use, streaming, conversations</td>
+          </tr>
+          <tr>
+            <td>Letta</td>
+            <td><code>openharness-letta</code></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td>Memory blocks, agent lifecycle, cloud API</td>
+          </tr>
+          <tr>
+            <td>Goose</td>
+            <td><code>openharness-goose</code></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td>CLI subprocess + Cloud REST API modes</td>
+          </tr>
+          <tr>
+            <td>LangChain Deep Agent</td>
+            <td><code>openharness-deepagent</code></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td>Planning, subagents, file operations</td>
           </tr>
           <tr>
             <td>Claude Code CLI</td>
             <td>-</td>
             <td><span class="status-planned">&#127919;</span></td>
             <td>No public API</td>
-          </tr>
-          <tr>
-            <td>Goose</td>
-            <td>-</td>
-            <td><span class="status-planned">&#127919;</span></td>
-            <td>Planned</td>
-          </tr>
-          <tr>
-            <td>LangChain Deep Agent</td>
-            <td>-</td>
-            <td><span class="status-planned">&#127919;</span></td>
-            <td>Planned</td>
-          </tr>
-          <tr>
-            <td>Letta</td>
-            <td>-</td>
-            <td><span class="status-planned">&#127919;</span></td>
-            <td>Planned</td>
           </tr>
         </tbody>
       </table>
@@ -416,44 +424,39 @@
         <thead>
           <tr>
             <th>Domain</th>
-            <th>Anthropic Agent</th>
-            <th>Claude Code</th>
+            <th>Anthropic</th>
+            <th>Letta</th>
             <th>Goose</th>
             <th>Deep Agent</th>
-            <th>Letta</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td><strong>Agents</strong></td>
             <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
           </tr>
           <tr>
             <td><strong>Skills</strong></td>
             <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
             <td><span class="status-partial">&#9888;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
           </tr>
           <tr>
             <td><strong>Tools</strong></td>
             <td><span class="status-supported">&#10004;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
           </tr>
           <tr>
             <td><strong>MCP</strong></td>
             <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
             <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
             <td><span class="status-partial">&#9888;</span></td>
           </tr>
           <tr>
@@ -462,60 +465,52 @@
             <td><span class="status-supported">&#10004;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
           </tr>
           <tr>
             <td><strong>Sessions</strong></td>
             <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
           </tr>
           <tr>
             <td><strong>Memory</strong></td>
             <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
           </tr>
           <tr>
             <td><strong>Subagents</strong></td>
             <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
             <td><span class="status-unsupported">&#10008;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-unsupported">&#10008;</span></td>
           </tr>
           <tr>
             <td><strong>Files</strong></td>
             <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
             <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
           </tr>
           <tr>
             <td><strong>Hooks</strong></td>
             <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
           </tr>
           <tr>
             <td><strong>Planning</strong></td>
             <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
           </tr>
           <tr>
             <td><strong>Models</strong></td>
             <td><span class="status-partial">&#9888;</span></td>
-            <td><span class="status-unsupported">&#10008;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
@@ -533,17 +528,15 @@
         <thead>
           <tr>
             <th>Operation</th>
-            <th>Anthropic Agent</th>
-            <th>Claude Code</th>
+            <th>Anthropic</th>
+            <th>Letta</th>
             <th>Goose</th>
             <th>Deep Agent</th>
-            <th>Letta</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>Sync</td>
-            <td><span class="status-supported">&#10004;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
@@ -555,11 +548,9 @@
             <td><span class="status-supported">&#10004;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
           </tr>
           <tr>
             <td>Cancel</td>
-            <td><span class="status-supported">&#10004;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
             <td><span class="status-partial">&#9888;</span></td>
             <td><span class="status-partial">&#9888;</span></td>
@@ -571,22 +562,12 @@
             <td><span class="status-supported">&#10004;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
           </tr>
           <tr>
             <td>Extended Thinking</td>
             <td><span class="status-supported">&#10004;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
             <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-          </tr>
-          <tr>
-            <td>Artifacts</td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
             <td><span class="status-partial">&#9888;</span></td>
           </tr>
         </tbody>
@@ -597,11 +578,10 @@
         <thead>
           <tr>
             <th>Operation</th>
-            <th>Anthropic Agent</th>
-            <th>Claude Code</th>
+            <th>Anthropic</th>
+            <th>Letta</th>
             <th>Goose</th>
             <th>Deep Agent</th>
-            <th>Letta</th>
           </tr>
         </thead>
         <tbody>
@@ -609,33 +589,115 @@
             <td>Register</td>
             <td><span class="status-supported">&#10004;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
           </tr>
           <tr>
             <td>Unregister</td>
             <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
           </tr>
           <tr>
             <td>List</td>
             <td><span class="status-supported">&#10004;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
           </tr>
           <tr>
             <td>Invoke</td>
             <td><span class="status-supported">&#10004;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Agents (Letta only)</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Operation</th>
+            <th>Anthropic</th>
+            <th>Letta</th>
+            <th>Goose</th>
+            <th>Deep Agent</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Create</td>
+            <td><span class="status-unsupported">&#10008;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+          </tr>
+          <tr>
+            <td>Get</td>
+            <td><span class="status-unsupported">&#10008;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+          </tr>
+          <tr>
+            <td>List</td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+          </tr>
+          <tr>
+            <td>Delete</td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Memory (Letta)</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Operation</th>
+            <th>Anthropic</th>
+            <th>Letta</th>
+            <th>Goose</th>
+            <th>Deep Agent</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>List Blocks</td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+          </tr>
+          <tr>
+            <td>Get Block</td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+          </tr>
+          <tr>
+            <td>Update Block</td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+          </tr>
+          <tr>
+            <td>Archive Search</td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
           </tr>
         </tbody>
       </table>
@@ -645,107 +707,31 @@
         <thead>
           <tr>
             <th>Operation</th>
-            <th>Anthropic Agent</th>
-            <th>Claude Code</th>
+            <th>Anthropic</th>
+            <th>Letta</th>
             <th>Goose</th>
             <th>Deep Agent</th>
-            <th>Letta</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>Create</td>
             <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
-          </tr>
-          <tr>
-            <td>Resume</td>
             <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-unsupported">&#10008;</span></td>
           </tr>
           <tr>
             <td>History</td>
             <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
-          </tr>
-          <tr>
-            <td>Delete</td>
-            <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
-          </tr>
-          <tr>
-            <td>Fork</td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h3>MCP</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Operation</th>
-            <th>Anthropic Agent</th>
-            <th>Claude Code</th>
-            <th>Goose</th>
-            <th>Deep Agent</th>
-            <th>Letta</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Connect</td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
-          </tr>
-          <tr>
-            <td>Disconnect</td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
-          </tr>
-          <tr>
-            <td>List Tools</td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
-            <td><span class="status-partial">&#9888;</span></td>
-          </tr>
-          <tr>
-            <td>Resources</td>
-            <td><span class="status-unsupported">&#10008;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
             <td><span class="status-supported">&#10004;</span></td>
             <td><span class="status-unsupported">&#10008;</span></td>
             <td><span class="status-unsupported">&#10008;</span></td>
           </tr>
           <tr>
-            <td>Prompts</td>
-            <td><span class="status-unsupported">&#10008;</span></td>
+            <td>Clear</td>
             <td><span class="status-supported">&#10004;</span></td>
-            <td><span class="status-supported">&#10004;</span></td>
+            <td><span class="status-partial">&#9888;</span></td>
             <td><span class="status-unsupported">&#10008;</span></td>
             <td><span class="status-unsupported">&#10008;</span></td>
           </tr>
@@ -759,94 +745,78 @@
       <div class="adapter-cards">
         <div class="adapter-card">
           <h4>Anthropic Agent SDK</h4>
-          <div class="package">@openharness/adapter-anthropic-agent</div>
+          <div class="package">openharness-anthropic-agent</div>
           <h5>Strengths</h5>
           <ul class="strengths">
             <li>Direct Anthropic Messages API access</li>
             <li>Native streaming with async generators</li>
             <li>Tool use with automatic agentic loop</li>
             <li>Extended thinking support</li>
-            <li>Cancellation via AbortSignal</li>
+            <li>In-memory conversation history</li>
           </ul>
           <h5>Limitations</h5>
           <ul class="limitations">
-            <li>In-memory only (no persistence)</li>
-            <li>Single provider (Anthropic)</li>
-            <li>No MCP support built-in</li>
+            <li>Single provider (Anthropic only)</li>
+            <li>No persistent memory</li>
+            <li>No MCP support</li>
             <li>No file operations</li>
           </ul>
         </div>
 
         <div class="adapter-card">
-          <h4>Claude Code (CLI)</h4>
-          <div class="package">Planned</div>
+          <h4>Letta</h4>
+          <div class="package">openharness-letta</div>
           <h5>Strengths</h5>
           <ul class="strengths">
-            <li>Native skills with API registration</li>
-            <li>Full MCP support</li>
-            <li>Comprehensive hooks system</li>
-            <li>Strong file operations</li>
+            <li>Memory-first architecture</li>
+            <li>Full agent lifecycle (CRUD)</li>
+            <li>Memory blocks with semantic search</li>
+            <li>Archival memory persistence</li>
+            <li>Cloud API support</li>
           </ul>
           <h5>Limitations</h5>
           <ul class="limitations">
-            <li>No public programmatic API</li>
-            <li>Single provider (Anthropic)</li>
-            <li>Agent lifecycle management</li>
+            <li>No subagent delegation</li>
+            <li>Limited file operations</li>
+            <li>No hooks system</li>
           </ul>
         </div>
 
         <div class="adapter-card">
           <h4>Goose</h4>
-          <div class="package">Planned</div>
+          <div class="package">openharness-goose</div>
           <h5>Strengths</h5>
           <ul class="strengths">
             <li>MCP-first architecture</li>
             <li>Multi-model support (25+ providers)</li>
-            <li>Strong session management</li>
-            <li>Native skills support</li>
+            <li>Local CLI + Cloud REST API modes</li>
+            <li>Working directory context</li>
+            <li>Native skills via MCP extensions</li>
           </ul>
           <h5>Limitations</h5>
           <ul class="limitations">
-            <li>No subagent spawning</li>
-            <li>Persistent memory limited</li>
-            <li>Skill versioning API</li>
+            <li>Stateless execution (no sessions)</li>
+            <li>Tools via config only</li>
+            <li>No persistent memory</li>
           </ul>
         </div>
 
         <div class="adapter-card">
           <h4>LangChain Deep Agent</h4>
-          <div class="package">Planned</div>
+          <div class="package">openharness-deepagent</div>
           <h5>Strengths</h5>
           <ul class="strengths">
             <li>Built-in planning/todos</li>
             <li>Native subagent delegation</li>
             <li>Flexible filesystem backends</li>
-            <li>Multi-model support</li>
+            <li>Multi-model via LangChain</li>
+            <li>File operations (read, write, glob, grep)</li>
           </ul>
           <h5>Limitations</h5>
           <ul class="limitations">
-            <li>Skills API (uses tools)</li>
-            <li>Full MCP integration</li>
-            <li>Hooks system</li>
-          </ul>
-        </div>
-
-        <div class="adapter-card">
-          <h4>Letta</h4>
-          <div class="package">Planned</div>
-          <h5>Strengths</h5>
-          <ul class="strengths">
-            <li>Memory-first architecture</li>
-            <li>Full agent lifecycle API</li>
-            <li>Cross-session persistence</li>
-            <li>Multi-model support</li>
-          </ul>
-          <h5>Limitations</h5>
-          <ul class="limitations">
-            <li>Native skills support</li>
-            <li>Subagent delegation</li>
-            <li>File operations</li>
-            <li>MCP integration</li>
+            <li>No native skills API</li>
+            <li>Stateless by default</li>
+            <li>No hooks system</li>
           </ul>
         </div>
       </div>
@@ -857,24 +827,20 @@
       <h2>Coverage Statistics</h2>
       <div class="stats-row">
         <div class="stat-card">
-          <div class="stat-value">24%</div>
+          <div class="stat-value">33%</div>
           <div class="stat-label">Anthropic Agent SDK</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value">59%</div>
-          <div class="stat-label">Claude Code</div>
+          <div class="stat-value">58%</div>
+          <div class="stat-label">Letta</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value">51%</div>
+          <div class="stat-value">42%</div>
           <div class="stat-label">Goose</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value">47%</div>
+          <div class="stat-value">50%</div>
           <div class="stat-label">Deep Agent</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value">51%</div>
-          <div class="stat-label">Letta</div>
         </div>
       </div>
       <p style="text-align: center; color: var(--text-muted); font-size: 13px;">
