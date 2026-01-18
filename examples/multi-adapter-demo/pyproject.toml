@@ -1,0 +1,31 @@
+[project]
+name = "openharness-demo"
+version = "0.1.0"
+description = "Multi-adapter demo showcasing Open Harness unified API"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+dependencies = [
+    "openharness>=0.1.0",
+    "openharness-letta>=0.1.0",
+    "openharness-goose>=0.1.0",
+    "openharness-deepagent>=0.1.0",
+    "rich>=13.0.0",
+    "click>=8.0.0",
+]
+
+[project.optional-dependencies]
+anthropic = ["openharness-adapter-anthropic-agent>=0.1.0"]
+all = [
+    "openharness-adapter-anthropic-agent>=0.1.0",
+]
+
+[project.scripts]
+harness-demo = "demo.main:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/demo"]
