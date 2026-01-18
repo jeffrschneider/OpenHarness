@@ -313,21 +313,28 @@ def chat(adapter_type: str):
 @click.option("--adapters", "-a", multiple=True, type=click.Choice(["anthropic", "letta", "goose", "deepagent"]))
 def compare(message: str, adapters: tuple[str, ...]):
     """Compare responses across multiple adapters."""
-    print_header()
+    # Save argv early - langgraph/deepagents parses sys.argv
+    original_argv = sys.argv
+    sys.argv = [sys.argv[0]]
 
-    available = get_available_adapters()
+    try:
+        print_header()
 
-    if not adapters:
-        adapters = tuple(available)
+        available = get_available_adapters()
 
-    if not adapters:
-        console.print("[yellow]No adapters available for comparison[/yellow]")
-        sys.exit(1)
+        if not adapters:
+            adapters = tuple(available)
 
-    console.print(f"[dim]Comparing {len(adapters)} adapter(s)...[/dim]")
-    console.print()
+        if not adapters:
+            console.print("[yellow]No adapters available for comparison[/yellow]")
+            sys.exit(1)
 
-    asyncio.run(compare_adapters(message, list(adapters)))
+        console.print(f"[dim]Comparing {len(adapters)} adapter(s)...[/dim]")
+        console.print()
+
+        asyncio.run(compare_adapters(message, list(adapters)))
+    finally:
+        sys.argv = original_argv
 
 
 def main():

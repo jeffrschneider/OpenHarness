@@ -1,0 +1,24 @@
+[project]
+name = "openharness-anthropic-agent"
+version = "0.1.0"
+description = "Open Harness adapter for Anthropic Claude API"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = [
+    "openharness>=0.1.0",
+    "anthropic>=0.40.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "pytest-asyncio"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/openharness_anthropic_agent"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
