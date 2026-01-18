@@ -308,33 +308,91 @@ def chat(adapter_type: str):
         sys.exit(1)
 
 
+def _run_single_adapter(adapter_name: str, message: str) -> str:
+    """Run a single adapter in isolation. Called via subprocess."""
+    import os
+
+    # Reset argv to prevent langgraph from parsing it
+    sys.argv = [sys.argv[0]]
+
+    try:
+        from openharness import ExecuteRequest
+        adapter = create_adapter(adapter_name)
+
+        response_parts = []
+
+        async def _execute():
+            async for event in adapter.execute_stream(ExecuteRequest(message=message)):
+                if event.type == "text":
+                    response_parts.append(event.content)
+
+        asyncio.run(_execute())
+        return "".join(response_parts)
+    except Exception as e:
+        return f"[ERROR] {e}"
+
+
 @cli.command()
 @click.option("--message", "-m", default="Explain the concept of recursion in one sentence.")
 @click.option("--adapters", "-a", multiple=True, type=click.Choice(["anthropic", "letta", "goose", "deepagent"]))
 def compare(message: str, adapters: tuple[str, ...]):
     """Compare responses across multiple adapters."""
-    # Save argv early - langgraph/deepagents parses sys.argv
-    original_argv = sys.argv
-    sys.argv = [sys.argv[0]]
+    import subprocess
+    import json
 
-    try:
-        print_header()
+    print_header()
 
-        available = get_available_adapters()
+    available = get_available_adapters()
 
-        if not adapters:
-            adapters = tuple(available)
+    if not adapters:
+        adapters = tuple(available)
 
-        if not adapters:
-            console.print("[yellow]No adapters available for comparison[/yellow]")
-            sys.exit(1)
+    if not adapters:
+        console.print("[yellow]No adapters available for comparison[/yellow]")
+        sys.exit(1)
 
-        console.print(f"[dim]Comparing {len(adapters)} adapter(s)...[/dim]")
-        console.print()
+    console.print(f"[dim]Comparing {len(adapters)} adapter(s)...[/dim]")
+    console.print()
+    console.print(f"[bold]Prompt:[/bold] {message}")
+    console.print()
 
-        asyncio.run(compare_adapters(message, list(adapters)))
-    finally:
-        sys.argv = original_argv
+    for adapter_name in adapters:
+        info = ADAPTER_INFO.get(adapter_name, {})
+        console.print(f"[bold blue]{info.get('name', adapter_name)}[/bold blue]")
+        console.print("[dim]" + "─" * 40 + "[/dim]")
+
+        # Run each adapter in a subprocess to isolate click context
+        script = f'''
+import sys
+sys.argv = [sys.argv[0]]  # Clear argv before imports
+import asyncio
+from demo.adapters import create_adapter
+from openharness import ExecuteRequest
+
+adapter = create_adapter("{adapter_name}")
+
+async def run():
+    async for event in adapter.execute_stream(ExecuteRequest(message="""{message.replace('"', '\\"')}""")):
+        if event.type == "text":
+            print(event.content, end="", flush=True)
+
+asyncio.run(run())
+'''
+        try:
+            result = subprocess.run(
+                [sys.executable, "-c", script],
+                capture_output=False,
+                text=True,
+                cwd="/Users/jeffschneider/Desktop/OpenHarness/examples/multi-adapter-demo",
+                env={**dict(__import__('os').environ), "PYTHONPATH": "src"},
+                timeout=120,
+            )
+        except subprocess.TimeoutExpired:
+            console.print("[red]Timeout[/red]")
+        except Exception as e:
+            console.print(f"[red]Error: {e}[/red]")
+
+        console.print("\n")
 
 
 def main():
