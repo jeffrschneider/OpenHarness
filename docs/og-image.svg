@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d1117"/>
+      <stop offset="100%" style="stop-color:#161b22"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#58a6ff"/>
+      <stop offset="50%" style="stop-color:#a371f7"/>
+      <stop offset="100%" style="stop-color:#db61a2"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="30%" r="60%">
+      <stop offset="0%" style="stop-color:#58a6ff;stop-opacity:0.15"/>
+      <stop offset="100%" style="stop-color:#58a6ff;stop-opacity:0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGrad)"/>
+
+  <!-- Glow effect -->
+  <ellipse cx="600" cy="200" rx="500" ry="300" fill="url(#glow)"/>
+
+  <!-- Border accent line at top -->
+  <rect x="0" y="0" width="1200" height="4" fill="url(#accentGrad)"/>
+
+  <!-- Logo gear icon -->
+  <g transform="translate(540, 160)">
+    <circle cx="60" cy="60" r="50" fill="#f0883e"/>
+    <circle cx="60" cy="60" r="28" fill="#0d1117"/>
+  </g>
+
+  <!-- Title -->
+  <text x="600" y="320" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="72" font-weight="800" fill="#e6edf3" text-anchor="middle">
+    Open Harness
+  </text>
+
+  <!-- Subtitle with gradient -->
+  <text x="600" y="390" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="32" font-weight="600" fill="url(#accentGrad)" text-anchor="middle">
+    One API for Every AI Agent
+  </text>
+
+  <!-- Description -->
+  <text x="600" y="460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="24" fill="#8b949e" text-anchor="middle">
+    Universal API for AI Agent Harnesses
+  </text>
+
+  <!-- Adapter icons row -->
+  <g transform="translate(350, 500)">
+    <!-- Letta -->
+    <text x="0" y="30" font-size="36">&#129504;</text>
+    <text x="50" y="28" font-family="sans-serif" font-size="16" fill="#8b949e">Letta</text>
+
+    <!-- Goose -->
+    <text x="140" y="30" font-size="36">&#129414;</text>
+    <text x="190" y="28" font-family="sans-serif" font-size="16" fill="#8b949e">Goose</text>
+
+    <!-- Deep Agents -->
+    <text x="280" y="30" font-size="36">&#9939;</text>
+    <text x="330" y="28" font-family="sans-serif" font-size="16" fill="#8b949e">LangChain</text>
+
+    <!-- Claude Code -->
+    <text x="440" y="30" font-size="36">&#128187;</text>
+    <text x="490" y="28" font-family="sans-serif" font-size="16" fill="#8b949e">Claude Code</text>
+  </g>
+
+  <!-- Bottom border line -->
+  <rect x="0" y="626" width="1200" height="4" fill="url(#accentGrad)"/>
+</svg>
