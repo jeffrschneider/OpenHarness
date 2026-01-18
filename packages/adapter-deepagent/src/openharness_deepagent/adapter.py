@@ -334,8 +334,12 @@ class DeepAgentAdapter(HarnessAdapter):
         try:
             # Use async streaming
             async for chunk in agent.astream({"messages": messages}):
+                # Messages are nested in 'model' key from LangGraph
+                model_data = chunk.get("model", {})
+                chunk_messages = model_data.get("messages", []) if isinstance(model_data, dict) else []
+
                 # Process chunk messages
-                for msg in chunk.get("messages", []):
+                for msg in chunk_messages:
                     # Handle AI message content
                     if hasattr(msg, "content"):
                         content = msg.content
