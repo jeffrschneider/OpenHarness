@@ -113,8 +113,10 @@ def create_adapter(adapter_type: str, **kwargs) -> HarnessAdapter:
     elif adapter_type == "goose":
         from openharness_goose import GooseAdapter
 
+        # Goose uses CLI by default, or REST API if GOOSE_SERVICE_URL is set
         return GooseAdapter(
-            base_url=kwargs.get("base_url", "http://localhost:3000"),
+            service_url=kwargs.get("service_url"),  # None = use CLI
+            working_directory=kwargs.get("working_directory"),
         )
 
     elif adapter_type == "deepagent":
