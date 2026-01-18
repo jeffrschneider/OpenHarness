@@ -1,10 +1,10 @@
 # Harness Support Matrix
 
-Version: 0.1.0
+Version: 0.2.0
 
 ## Overview
 
-This document tracks the current capability coverage across target harnesses. The matrix represents both current state and aspirational targets.
+This document tracks the current capability coverage across target harnesses and Open Harness adapters. The matrix represents both current state and aspirational targets.
 
 **Legend:**
 - ✅ Native support
@@ -14,21 +14,33 @@ This document tracks the current capability coverage across target harnesses. Th
 
 ---
 
+## Adapter Support
+
+| Adapter | Package | Status | Notes |
+|---------|---------|:------:|-------|
+| Anthropic Agent SDK | `@openharness/adapter-anthropic-agent` | ✅ | Tool use, streaming, conversations |
+| Claude Code CLI | - | 🎯 | No public API |
+| Goose | - | 🎯 | Planned |
+| LangChain Deep Agent | - | 🎯 | Planned |
+| Letta | - | 🎯 | Planned |
+
+---
+
 ## Domain-Level Support
 
-| Domain | Claude Code | Goose | Deep Agent | Letta |
-|--------|:-----------:|:-----:|:----------:|:-----:|
-| **Agents** | ⚠️ | ⚠️ | ⚠️ | ✅ |
-| **Skills** | ✅ | ✅ | ⚠️ | ⚠️ |
-| **MCP** | ✅ | ✅ | ⚠️ | ⚠️ |
-| **Execution** | ✅ | ✅ | ✅ | ✅ |
-| **Sessions** | ⚠️ | ✅ | ⚠️ | ✅ |
-| **Memory** | ⚠️ | ⚠️ | ⚠️ | ✅ |
-| **Subagents** | ⚠️ | ❌ | ✅ | ❌ |
-| **Files** | ✅ | ✅ | ✅ | ⚠️ |
-| **Hooks** | ✅ | ⚠️ | ⚠️ | ⚠️ |
-| **Planning** | ⚠️ | ⚠️ | ✅ | ⚠️ |
-| **Models** | ❌ | ✅ | ✅ | ✅ |
+| Domain | Anthropic Agent | Claude Code | Goose | Deep Agent | Letta |
+|--------|:---------------:|:-----------:|:-----:|:----------:|:-----:|
+| **Agents** | ❌ | ⚠️ | ⚠️ | ⚠️ | ✅ |
+| **Skills** | ❌ | ✅ | ✅ | ⚠️ | ⚠️ |
+| **MCP** | ❌ | ✅ | ✅ | ⚠️ | ⚠️ |
+| **Execution** | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Sessions** | ✅ | ⚠️ | ✅ | ⚠️ | ✅ |
+| **Memory** | ❌ | ⚠️ | ⚠️ | ⚠️ | ✅ |
+| **Subagents** | ❌ | ⚠️ | ❌ | ✅ | ❌ |
+| **Files** | ❌ | ✅ | ✅ | ✅ | ⚠️ |
+| **Hooks** | ❌ | ✅ | ⚠️ | ⚠️ | ⚠️ |
+| **Planning** | ❌ | ⚠️ | ⚠️ | ✅ | ⚠️ |
+| **Models** | ⚠️ | ❌ | ✅ | ✅ | ✅ |
 
 ---
 
@@ -36,118 +48,156 @@ This document tracks the current capability coverage across target harnesses. Th
 
 ### Agents
 
-| Operation | Claude Code | Goose | Deep Agent | Letta |
-|-----------|:-----------:|:-----:|:----------:|:-----:|
-| create | ❌ | ❌ | ⚠️ | ✅ |
-| update | ❌ | ❌ | ⚠️ | ✅ |
-| delete | ❌ | ❌ | ⚠️ | ✅ |
-| clone | ❌ | ❌ | ❌ | ✅ |
-| export | ⚠️ | ⚠️ | ⚠️ | ✅ |
-| import | ⚠️ | ⚠️ | ⚠️ | ✅ |
+| Operation | Anthropic Agent | Claude Code | Goose | Deep Agent | Letta |
+|-----------|:---------------:|:-----------:|:-----:|:----------:|:-----:|
+| create | ❌ | ❌ | ❌ | ⚠️ | ✅ |
+| update | ❌ | ❌ | ❌ | ⚠️ | ✅ |
+| delete | ❌ | ❌ | ❌ | ⚠️ | ✅ |
+| clone | ❌ | ❌ | ❌ | ❌ | ✅ |
+| export | ❌ | ⚠️ | ⚠️ | ⚠️ | ✅ |
+| import | ❌ | ⚠️ | ⚠️ | ⚠️ | ✅ |
 
 ### Skills
 
-| Operation | Claude Code | Goose | Deep Agent | Letta |
-|-----------|:-----------:|:-----:|:----------:|:-----:|
-| register | ✅ | ❌ | ❌ | ❌ |
-| install | ✅ | ✅ | ⚠️ | ⚠️ |
-| discover | ✅ | ✅ | ❌ | ❌ |
-| version | ✅ | ❌ | ❌ | ❌ |
-| rollback | ✅ | ❌ | ❌ | ❌ |
-| validate | ✅ | ⚠️ | ⚠️ | ⚠️ |
+| Operation | Anthropic Agent | Claude Code | Goose | Deep Agent | Letta |
+|-----------|:---------------:|:-----------:|:-----:|:----------:|:-----:|
+| register | ❌ | ✅ | ❌ | ❌ | ❌ |
+| install | ❌ | ✅ | ✅ | ⚠️ | ⚠️ |
+| discover | ❌ | ✅ | ✅ | ❌ | ❌ |
+| version | ❌ | ✅ | ❌ | ❌ | ❌ |
+| rollback | ❌ | ❌ | ❌ | ❌ | ❌ |
+| validate | ❌ | ✅ | ⚠️ | ⚠️ | ⚠️ |
+
+### Tools
+
+| Operation | Anthropic Agent | Claude Code | Goose | Deep Agent | Letta |
+|-----------|:---------------:|:-----------:|:-----:|:----------:|:-----:|
+| register | ✅ | ✅ | ✅ | ✅ | ✅ |
+| unregister | ✅ | ⚠️ | ⚠️ | ⚠️ | ⚠️ |
+| list | ✅ | ✅ | ✅ | ✅ | ✅ |
+| invoke | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 ### MCP
 
-| Operation | Claude Code | Goose | Deep Agent | Letta |
-|-----------|:-----------:|:-----:|:----------:|:-----:|
-| connect | ✅ | ✅ | ⚠️ | ⚠️ |
-| disconnect | ✅ | ✅ | ⚠️ | ⚠️ |
-| tools | ✅ | ✅ | ⚠️ | ⚠️ |
-| resources | ✅ | ✅ | ❌ | ❌ |
-| prompts | ✅ | ✅ | ❌ | ❌ |
+| Operation | Anthropic Agent | Claude Code | Goose | Deep Agent | Letta |
+|-----------|:---------------:|:-----------:|:-----:|:----------:|:-----:|
+| connect | ❌ | ✅ | ✅ | ⚠️ | ⚠️ |
+| disconnect | ❌ | ✅ | ✅ | ⚠️ | ⚠️ |
+| tools | ❌ | ✅ | ✅ | ⚠️ | ⚠️ |
+| resources | ❌ | ✅ | ✅ | ❌ | ❌ |
+| prompts | ❌ | ✅ | ✅ | ❌ | ❌ |
 
 ### Execution
 
-| Operation | Claude Code | Goose | Deep Agent | Letta |
-|-----------|:-----------:|:-----:|:----------:|:-----:|
-| sync | ✅ | ✅ | ✅ | ✅ |
-| stream | ✅ | ✅ | ✅ | ✅ |
-| cancel | ✅ | ⚠️ | ⚠️ | ⚠️ |
-| artifacts | ✅ | ✅ | ✅ | ⚠️ |
-| tool-calls | ✅ | ✅ | ✅ | ✅ |
+| Operation | Anthropic Agent | Claude Code | Goose | Deep Agent | Letta |
+|-----------|:---------------:|:-----------:|:-----:|:----------:|:-----:|
+| sync | ✅ | ✅ | ✅ | ✅ | ✅ |
+| stream | ✅ | ✅ | ✅ | ✅ | ✅ |
+| cancel | ✅ | ✅ | ⚠️ | ⚠️ | ⚠️ |
+| artifacts | ❌ | ✅ | ✅ | ✅ | ⚠️ |
+| tool-calls | ✅ | ✅ | ✅ | ✅ | ✅ |
+| thinking | ✅ | ✅ | ❌ | ❌ | ❌ |
 
 ### Sessions
 
-| Operation | Claude Code | Goose | Deep Agent | Letta |
-|-----------|:-----------:|:-----:|:----------:|:-----:|
-| create | ⚠️ | ✅ | ⚠️ | ✅ |
-| resume | ⚠️ | ✅ | ⚠️ | ✅ |
-| fork | ❌ | ❌ | ❌ | ⚠️ |
-| history | ⚠️ | ✅ | ⚠️ | ✅ |
-| named | ⚠️ | ✅ | ❌ | ✅ |
+| Operation | Anthropic Agent | Claude Code | Goose | Deep Agent | Letta |
+|-----------|:---------------:|:-----------:|:-----:|:----------:|:-----:|
+| create | ✅ | ⚠️ | ✅ | ⚠️ | ✅ |
+| resume | ❌ | ⚠️ | ✅ | ⚠️ | ✅ |
+| fork | ❌ | ❌ | ❌ | ❌ | ⚠️ |
+| history | ✅ | ⚠️ | ✅ | ⚠️ | ✅ |
+| named | ❌ | ⚠️ | ✅ | ❌ | ✅ |
+| delete | ✅ | ⚠️ | ✅ | ⚠️ | ✅ |
 
 ### Memory
 
-| Operation | Claude Code | Goose | Deep Agent | Letta |
-|-----------|:-----------:|:-----:|:----------:|:-----:|
-| blocks | ⚠️ | ❌ | ❌ | ✅ |
-| search | ❌ | ❌ | ❌ | ✅ |
-| archive | ❌ | ❌ | ❌ | ✅ |
-| cross-session | ❌ | ❌ | ⚠️ | ✅ |
-| read-only | ❌ | ❌ | ❌ | ✅ |
+| Operation | Anthropic Agent | Claude Code | Goose | Deep Agent | Letta |
+|-----------|:---------------:|:-----------:|:-----:|:----------:|:-----:|
+| blocks | ❌ | ⚠️ | ❌ | ❌ | ✅ |
+| search | ❌ | ❌ | ❌ | ❌ | ✅ |
+| archive | ❌ | ❌ | ❌ | ❌ | ✅ |
+| cross-session | ❌ | ❌ | ❌ | ⚠️ | ✅ |
+| read-only | ❌ | ❌ | ❌ | ❌ | ✅ |
 
 ### Subagents
 
-| Operation | Claude Code | Goose | Deep Agent | Letta |
-|-----------|:-----------:|:-----:|:----------:|:-----:|
-| spawn | ⚠️ | ❌ | ✅ | ❌ |
-| delegate | ⚠️ | ❌ | ✅ | ❌ |
-| terminate | ⚠️ | ❌ | ✅ | ❌ |
-| result | ⚠️ | ❌ | ✅ | ❌ |
-| custom | ⚠️ | ❌ | ✅ | ❌ |
+| Operation | Anthropic Agent | Claude Code | Goose | Deep Agent | Letta |
+|-----------|:---------------:|:-----------:|:-----:|:----------:|:-----:|
+| spawn | ❌ | ⚠️ | ❌ | ✅ | ❌ |
+| delegate | ❌ | ⚠️ | ❌ | ✅ | ❌ |
+| terminate | ❌ | ⚠️ | ❌ | ✅ | ❌ |
+| result | ❌ | ⚠️ | ❌ | ✅ | ❌ |
+| custom | ❌ | ⚠️ | ❌ | ✅ | ❌ |
 
 ### Files
 
-| Operation | Claude Code | Goose | Deep Agent | Letta |
-|-----------|:-----------:|:-----:|:----------:|:-----:|
-| read | ✅ | ✅ | ✅ | ⚠️ |
-| write | ✅ | ✅ | ✅ | ⚠️ |
-| delete | ✅ | ✅ | ✅ | ⚠️ |
-| search | ✅ | ✅ | ✅ | ❌ |
-| upload | ✅ | ⚠️ | ⚠️ | ⚠️ |
-| download | ✅ | ✅ | ✅ | ⚠️ |
+| Operation | Anthropic Agent | Claude Code | Goose | Deep Agent | Letta |
+|-----------|:---------------:|:-----------:|:-----:|:----------:|:-----:|
+| read | ❌ | ✅ | ✅ | ✅ | ⚠️ |
+| write | ❌ | ✅ | ✅ | ✅ | ⚠️ |
+| delete | ❌ | ✅ | ✅ | ✅ | ⚠️ |
+| search | ❌ | ✅ | ✅ | ✅ | ❌ |
+| upload | ❌ | ✅ | ⚠️ | ⚠️ | ⚠️ |
+| download | ❌ | ✅ | ✅ | ✅ | ⚠️ |
 
 ### Hooks
 
-| Operation | Claude Code | Goose | Deep Agent | Letta |
-|-----------|:-----------:|:-----:|:----------:|:-----:|
-| pre-tool | ✅ | ⚠️ | ⚠️ | ⚠️ |
-| post-tool | ✅ | ⚠️ | ⚠️ | ⚠️ |
-| stop | ✅ | ⚠️ | ⚠️ | ⚠️ |
-| custom | ✅ | ⚠️ | ⚠️ | ⚠️ |
-| events | ⚠️ | ⚠️ | ⚠️ | ⚠️ |
+| Operation | Anthropic Agent | Claude Code | Goose | Deep Agent | Letta |
+|-----------|:---------------:|:-----------:|:-----:|:----------:|:-----:|
+| pre-tool | ❌ | ✅ | ⚠️ | ⚠️ | ⚠️ |
+| post-tool | ❌ | ✅ | ⚠️ | ⚠️ | ⚠️ |
+| stop | ❌ | ✅ | ⚠️ | ⚠️ | ⚠️ |
+| custom | ❌ | ✅ | ⚠️ | ⚠️ | ⚠️ |
+| events | ❌ | ⚠️ | ⚠️ | ⚠️ | ⚠️ |
 
 ### Planning
 
-| Operation | Claude Code | Goose | Deep Agent | Letta |
-|-----------|:-----------:|:-----:|:----------:|:-----:|
-| todos | ⚠️ | ⚠️ | ✅ | ⚠️ |
-| task-tracking | ⚠️ | ⚠️ | ✅ | ⚠️ |
-| update | ⚠️ | ⚠️ | ✅ | ⚠️ |
+| Operation | Anthropic Agent | Claude Code | Goose | Deep Agent | Letta |
+|-----------|:---------------:|:-----------:|:-----:|:----------:|:-----:|
+| todos | ❌ | ⚠️ | ⚠️ | ✅ | ⚠️ |
+| task-tracking | ❌ | ⚠️ | ⚠️ | ✅ | ⚠️ |
+| update | ❌ | ⚠️ | ⚠️ | ✅ | ⚠️ |
 
 ### Models
 
-| Operation | Claude Code | Goose | Deep Agent | Letta |
-|-----------|:-----------:|:-----:|:----------:|:-----:|
-| multi-model | ❌ | ✅ | ✅ | ✅ |
-| model-list | ❌ | ✅ | ✅ | ✅ |
-| model-switch | ❌ | ✅ | ✅ | ✅ |
+| Operation | Anthropic Agent | Claude Code | Goose | Deep Agent | Letta |
+|-----------|:---------------:|:-----------:|:-----:|:----------:|:-----:|
+| multi-model | ❌ | ❌ | ✅ | ✅ | ✅ |
+| model-list | ❌ | ❌ | ✅ | ✅ | ✅ |
+| model-switch | ✅ | ❌ | ✅ | ✅ | ✅ |
 
 ---
 
 ## Harness Profiles
 
-### Claude Code (Anthropic Agent SDK)
+### Anthropic Agent SDK (`@openharness/adapter-anthropic-agent`)
+
+**Package:** `@openharness/adapter-anthropic-agent`
+
+**Strengths:**
+- Direct access to Anthropic Messages API
+- Native streaming with async generators
+- Tool use with agentic loop (auto tool execution)
+- Extended thinking support for complex reasoning
+- In-memory conversation management
+- Cancellation via AbortSignal
+
+**Limitations:**
+- No persistent state (conversations are in-memory only)
+- Single provider (Anthropic only)
+- No MCP support (requires `@anthropic-ai/mcp` separately)
+- No file operations (tools must be added)
+- No agent lifecycle management
+
+**Best For:**
+- Applications using Anthropic models exclusively
+- Custom tool integrations
+- Prototyping and simple agent workflows
+- Embedding Claude in applications
+
+---
+
+### Claude Code (CLI)
 
 **Strengths:**
 - Native skills with API registration
@@ -212,12 +262,15 @@ This document tracks the current capability coverage across target harnesses. Th
 
 | Harness | Supported | Partial | Not Supported | Coverage |
 |---------|:---------:|:-------:|:-------------:|:--------:|
-| Claude Code | 28 | 14 | 11 | 53% |
-| Goose | 24 | 12 | 17 | 45% |
-| Deep Agent | 19 | 18 | 16 | 36% |
-| Letta | 22 | 16 | 15 | 42% |
+| Anthropic Agent SDK | 14 | 0 | 45 | 24% |
+| Claude Code | 28 | 14 | 17 | 59% |
+| Goose | 24 | 12 | 23 | 51% |
+| Deep Agent | 19 | 18 | 22 | 47% |
+| Letta | 22 | 16 | 21 | 51% |
 
-*Coverage = (Supported + 0.5*Partial) / Total Operations*
+*Coverage = (Supported + 0.5×Partial) / Total Operations*
+
+**Note:** The Anthropic Agent SDK adapter intentionally focuses on core execution capabilities. It provides a minimal but complete foundation for tool use and streaming. Higher-level features (agents, skills, MCP, memory) can be added through composition with other libraries.
 
 ---
 
