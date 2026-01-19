@@ -323,16 +323,80 @@
       <div class="last-updated">Last run: January 18, 2026</div>
     </div>
 
-    <!-- Results by Adapter -->
+    <!-- Full Suite Coverage -->
     <div class="section">
-      <h2>Results by Adapter</h2>
-      <p class="section-description">Pass rates for each adapter across all applicable test categories.</p>
+      <h2>Full Suite Coverage</h2>
+      <p class="section-description">How each adapter performs against the complete test suite (85 tests). Measures overall capability and completeness.</p>
 
       <table>
         <thead>
           <tr>
             <th>Adapter</th>
-            <th>Pass Rate</th>
+            <th>Coverage</th>
+            <th>Passed</th>
+            <th>Not Implemented</th>
+            <th>Progress</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="adapter-name">Claude Code</td>
+            <td class="pass-rate pass-rate-medium">73%</td>
+            <td class="test-count">62 / 85</td>
+            <td class="test-count">21</td>
+            <td>
+              <div class="progress-bar">
+                <div class="progress-fill progress-fill-medium" style="width: 73%;"></div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="adapter-name">Deep Agents</td>
+            <td class="pass-rate pass-rate-medium">48%</td>
+            <td class="test-count">41 / 85</td>
+            <td class="test-count">38</td>
+            <td>
+              <div class="progress-bar">
+                <div class="progress-fill progress-fill-medium" style="width: 48%;"></div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="adapter-name">Goose</td>
+            <td class="pass-rate pass-rate-medium">46%</td>
+            <td class="test-count">39 / 85</td>
+            <td class="test-count">42</td>
+            <td>
+              <div class="progress-bar">
+                <div class="progress-fill progress-fill-medium" style="width: 46%;"></div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="adapter-name">Letta</td>
+            <td class="pass-rate pass-rate-low">41%</td>
+            <td class="test-count">35 / 85</td>
+            <td class="test-count">43</td>
+            <td>
+              <div class="progress-bar">
+                <div class="progress-fill progress-fill-low" style="width: 41%;"></div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Claimed Feature Reliability -->
+    <div class="section">
+      <h2>Claimed Feature Reliability</h2>
+      <p class="section-description">How well each adapter implements the features it claims to support. Only tests for declared capabilities.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Adapter</th>
+            <th>Reliability</th>
             <th>Passed</th>
             <th>Failed</th>
             <th>Progress</th>
@@ -341,30 +405,30 @@
         <tbody>
           <tr>
             <td class="adapter-name">Claude Code</td>
-            <td class="pass-rate pass-rate-high">96%</td>
-            <td class="test-count">52 / 54</td>
+            <td class="pass-rate pass-rate-high">97%</td>
+            <td class="test-count">62 / 64</td>
             <td class="test-count">2</td>
             <td>
               <div class="progress-bar">
-                <div class="progress-fill progress-fill-high" style="width: 96%;"></div>
+                <div class="progress-fill progress-fill-high" style="width: 97%;"></div>
               </div>
             </td>
           </tr>
           <tr>
             <td class="adapter-name">Letta</td>
-            <td class="pass-rate pass-rate-high">94%</td>
-            <td class="test-count">49 / 52</td>
+            <td class="pass-rate pass-rate-high">92%</td>
+            <td class="test-count">35 / 38</td>
             <td class="test-count">3</td>
             <td>
               <div class="progress-bar">
-                <div class="progress-fill progress-fill-high" style="width: 94%;"></div>
+                <div class="progress-fill progress-fill-high" style="width: 92%;"></div>
               </div>
             </td>
           </tr>
           <tr>
             <td class="adapter-name">Goose</td>
             <td class="pass-rate pass-rate-high">91%</td>
-            <td class="test-count">42 / 46</td>
+            <td class="test-count">39 / 43</td>
             <td class="test-count">4</td>
             <td>
               <div class="progress-bar">
@@ -374,12 +438,12 @@
           </tr>
           <tr>
             <td class="adapter-name">Deep Agents</td>
-            <td class="pass-rate pass-rate-high">88%</td>
-            <td class="test-count">47 / 53</td>
+            <td class="pass-rate pass-rate-high">87%</td>
+            <td class="test-count">41 / 47</td>
             <td class="test-count">6</td>
             <td>
               <div class="progress-bar">
-                <div class="progress-fill progress-fill-high" style="width: 88%;"></div>
+                <div class="progress-fill progress-fill-high" style="width: 87%;"></div>
               </div>
             </td>
           </tr>
@@ -514,12 +578,17 @@
 
     <!-- Notes -->
     <div class="notes">
-      <h3>Notes</h3>
+      <h3>Understanding the Metrics</h3>
       <ul>
-        <li><strong>--</strong> indicates the adapter does not declare support for this capability</li>
+        <li><strong>Full Suite Coverage</strong> measures how much of the complete API an adapter implements. An adapter that supports few capabilities will score lower here, regardless of how well those features work.</li>
+        <li><strong>Claimed Feature Reliability</strong> measures how well an adapter implements the features it claims to support. This validates that declared capabilities actually work as expected.</li>
+        <li><strong>--</strong> in the category table indicates the adapter does not declare support for that capability</li>
+      </ul>
+      <h3 style="margin-top: 16px;">Known Issues</h3>
+      <ul>
         <li>Some failures are due to missing API keys in the test environment (Goose, Deep Agents)</li>
         <li>Tools API register/unregister tests have a known test issue (async not awaited)</li>
-        <li>Session tests are skipped because no adapters currently expose session management through Open Harness</li>
+        <li>Session tests show no results because no adapters currently expose session management</li>
         <li>View the full test suite on <a href="https://github.com/jeffrschneider/OpenHarness/tree/main/tests/conformance">GitHub</a></li>
       </ul>
     </div>
