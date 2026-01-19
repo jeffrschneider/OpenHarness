@@ -92,8 +92,8 @@ class DeepAgentConfig:
     system_prompt: str | None = None
     tools: list[Callable[..., Any]] = field(default_factory=list)
     subagents: list[SubagentConfig] = field(default_factory=list)
-    backend_type: BackendType = BackendType.STATE
-    backend_root_dir: str | None = None  # For filesystem backend
+    backend_type: BackendType = BackendType.FILESYSTEM
+    backend_root_dir: str = "/"  # Root for filesystem access
     interrupt_on: list[InterruptConfig] = field(default_factory=list)
     middleware: list[Any] = field(default_factory=list)
 

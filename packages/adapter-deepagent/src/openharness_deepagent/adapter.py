@@ -141,19 +141,23 @@ class DeepAgentAdapter(HarnessAdapter):
 
     def _build_backend(self) -> Any:
         """Build the appropriate file backend."""
-        # Let Deep Agents use its default backend
-        # StateBackend now requires a runtime which is provided internally
-        if self._config.backend_type == BackendType.FILESYSTEM:
-            try:
-                from deepagents.backends import FilesystemBackend
-                root_dir = self._config.backend_root_dir or "/tmp/deepagent"
-                return FilesystemBackend(root_dir=root_dir)
-            except ImportError:
-                return None
+        # Default to FilesystemBackend with root access for real file operations
+        # StateBackend is ephemeral/in-memory and can't access real files
+        try:
+            from deepagents.backends import FilesystemBackend
 
-        # For STATE, STORE, and COMPOSITE, use default (None)
-        # Deep Agents will create the appropriate backend internally
-        return None
+            if self._config.backend_type == BackendType.FILESYSTEM:
+                root_dir = self._config.backend_root_dir or "/"
+                return FilesystemBackend(root_dir=root_dir)
+            elif self._config.backend_type == BackendType.STATE:
+                # Explicitly requested in-memory backend
+                return None
+            else:
+                # Default to filesystem with root access
+                root_dir = self._config.backend_root_dir or "/"
+                return FilesystemBackend(root_dir=root_dir)
+        except ImportError:
+            return None
 
     @property
     def id(self) -> str:

@@ -378,10 +378,11 @@ class LettaAdapter(HarnessAdapter):
 
             elif msg_type == "tool_call_message":
                 # Tool invocation
+                tool_call = getattr(msg, "tool_call", None)
                 tool_calls.append({
                     "id": getattr(msg, "id", ""),
-                    "name": getattr(msg, "tool_call", {}).get("name", ""),
-                    "input": getattr(msg, "tool_call", {}).get("arguments", {}),
+                    "name": getattr(tool_call, "name", "") if tool_call else "",
+                    "input": getattr(tool_call, "arguments", {}) if tool_call else {},
                 })
 
             elif msg_type == "tool_return_message":
@@ -461,14 +462,14 @@ class LettaAdapter(HarnessAdapter):
                         yield ThinkingEvent(thinking=thinking)
 
                 elif chunk_type == "tool_call_message":
-                    tool_call = getattr(chunk, "tool_call", {})
+                    tool_call = getattr(chunk, "tool_call", None)
                     tool_id = getattr(chunk, "id", "")
                     current_tool_call_id = tool_id
 
                     yield ToolCallStartEvent(
                         id=tool_id,
-                        name=tool_call.get("name", "unknown"),
-                        input=tool_call.get("arguments", {}),
+                        name=getattr(tool_call, "name", "unknown") if tool_call else "unknown",
+                        input=getattr(tool_call, "arguments", {}) if tool_call else {},
                     )
 
                 elif chunk_type == "tool_return_message":
