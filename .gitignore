@@ -22,3 +22,4 @@ venv/
 dist/
 build/
 .venv-py312/
+.env.local

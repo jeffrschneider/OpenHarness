@@ -68,7 +68,7 @@ What the user receives when the agent completes its work:
 
 ## Example Agent Cases
 
-See the `/examples/agent-cases/` directory for complete Agent Case documents:
+See the `/examples/` directory for complete agents with case, design, and package:
 
-- [Travel Research Agent](../examples/agent-cases/travel-research-agent.md)
-- [Sales Call Prep Agent](../examples/agent-cases/sales-call-prep-agent.md)
+- [Travel Research Agent](../examples/travel-research/case/)
+- [Sales Call Prep Agent](../examples/sales-call-prep/case/)
