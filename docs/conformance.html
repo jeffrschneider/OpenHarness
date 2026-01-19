@@ -155,45 +155,6 @@
       margin-top: 12px;
     }
 
-    /* Summary Cards */
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      margin-bottom: 40px;
-    }
-
-    .summary-card {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 20px;
-    }
-
-    .summary-card h3 {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 8px;
-    }
-
-    .summary-card .value {
-      font-size: 32px;
-      font-weight: 600;
-    }
-
-    .summary-card .subtext {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-
-    .value-success { color: var(--success); }
-    .value-warning { color: var(--warning); }
-    .value-danger { color: var(--danger); }
-
     /* Section */
     .section {
       margin-bottom: 48px;
@@ -360,30 +321,6 @@
       <h1>Conformance Test Results</h1>
       <p>Automated verification of adapter behavior across all supported harnesses</p>
       <div class="last-updated">Last run: January 18, 2026</div>
-    </div>
-
-    <!-- Summary Cards -->
-    <div class="summary-grid">
-      <div class="summary-card">
-        <h3>Total Tests</h3>
-        <div class="value">212</div>
-        <div class="subtext">across 13 categories</div>
-      </div>
-      <div class="summary-card">
-        <h3>Passed</h3>
-        <div class="value value-success">190</div>
-        <div class="subtext">90% pass rate</div>
-      </div>
-      <div class="summary-card">
-        <h3>Failed</h3>
-        <div class="value value-danger">15</div>
-        <div class="subtext">environment &amp; test issues</div>
-      </div>
-      <div class="summary-card">
-        <h3>Skipped</h3>
-        <div class="value" style="color: var(--text-muted);">7</div>
-        <div class="subtext">no adapters with capability</div>
-      </div>
     </div>
 
     <!-- Results by Adapter -->
