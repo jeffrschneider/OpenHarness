@@ -209,17 +209,43 @@ class LettaAdapter(HarnessAdapter):
             ],
         )
 
-    async def create_agent(self, config: LettaAgentConfig) -> str:
+    async def create_agent(self, config: LettaAgentConfig | dict[str, Any]) -> str:
         """
         Create a new Letta agent.
 
         Args:
-            config: Agent configuration
+            config: Agent configuration (LettaAgentConfig or dict)
 
         Returns:
             Agent ID
         """
         client = self._ensure_client()
+
+        # Convert dict to LettaAgentConfig if needed
+        if isinstance(config, dict):
+            # Extract memory_blocks if present, converting dicts to MemoryBlock
+            raw_blocks = config.get("memory_blocks", [])
+            memory_block_objs = []
+            for block in raw_blocks:
+                if isinstance(block, dict):
+                    memory_block_objs.append(MemoryBlock(
+                        label=block.get("label", ""),
+                        value=block.get("value", ""),
+                        limit=block.get("limit"),
+                    ))
+                else:
+                    memory_block_objs.append(block)
+
+            config = LettaAgentConfig(
+                name=config.get("name"),
+                model=config.get("model", "openai/gpt-4o-mini"),
+                embedding_model=config.get("embedding_model", "openai/text-embedding-ada-002"),
+                memory_blocks=memory_block_objs,
+                tools=config.get("tools", []),
+                system_prompt=config.get("system_prompt"),
+                include_base_tools=config.get("include_base_tools", True),
+                metadata=config.get("metadata", {}),
+            )
 
         # Convert memory blocks to Letta format
         memory_blocks = []
@@ -499,6 +525,7 @@ class LettaAdapter(HarnessAdapter):
                 id=tool.id,
                 name=tool.name,
                 description=getattr(tool, "description", "") or "",
+                source="builtin",
                 input_schema=getattr(tool, "json_schema", {}) or {},
             )
             for tool in tools

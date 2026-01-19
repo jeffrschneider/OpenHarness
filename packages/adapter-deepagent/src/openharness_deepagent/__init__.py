@@ -6,5 +6,6 @@ providing access to planning, subagents, and file system capabilities.
 """
 
 from .adapter import DeepAgentAdapter
+from .types import DeepAgentConfig, SubagentConfig, TodoStatus
 
-__all__ = ["DeepAgentAdapter"]
+__all__ = ["DeepAgentAdapter", "DeepAgentConfig", "SubagentConfig", "TodoStatus"]
