@@ -56,9 +56,9 @@ class SubagentConfig:
         result: dict[str, Any] = {
             "name": self.name,
             "description": self.description,
+            # system_prompt is required by Deep Agents SDK
+            "system_prompt": self.system_prompt or f"You are {self.name}. {self.description}",
         }
-        if self.system_prompt:
-            result["system_prompt"] = self.system_prompt
         if self.tools:
             result["tools"] = self.tools
         if self.model:

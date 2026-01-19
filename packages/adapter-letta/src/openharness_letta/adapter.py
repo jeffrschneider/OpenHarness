@@ -297,7 +297,7 @@ class LettaAdapter(HarnessAdapter):
             Agent details
         """
         client = self._ensure_client()
-        agent = client.agents.get(agent_id=agent_id)
+        agent = client.agents.retrieve(agent_id=agent_id)
         return {
             "id": agent.id,
             "name": agent.name,
