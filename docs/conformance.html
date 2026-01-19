@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <title>Conformance Tests - Open Harness</title>
+
+  <!-- Open Graph / Social Preview -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jeffrschneider.github.io/OpenHarness/conformance.html">
+  <meta property="og:title" content="Conformance Tests - Open Harness">
+  <meta property="og:description" content="Automated test results verifying adapter behavior across all supported AI agent harnesses.">
+  <meta property="og:image" content="https://jeffrschneider.github.io/OpenHarness/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Conformance Tests - Open Harness">
+  <meta name="twitter:description" content="Automated test results verifying adapter behavior across all supported AI agent harnesses.">
+  <meta name="twitter:image" content="https://jeffrschneider.github.io/OpenHarness/og-image.png">
+
+  <!-- General Meta -->
+  <meta name="description" content="Conformance test results for Open Harness adapters - automated verification of API behavior.">
+  <style>
+    :root {
+      --bg: #0d1117;
+      --bg-secondary: #161b22;
+      --bg-tertiary: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --text-subtle: #6e7681;
+      --accent: #58a6ff;
+      --accent-emphasis: #1f6feb;
+      --success: #3fb950;
+      --warning: #d29922;
+      --danger: #f85149;
+      --purple: #a371f7;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Top Navigation */
+    .top-nav {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .top-nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      height: 56px;
+      gap: 32px;
+    }
+
+    .top-nav-brand {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .top-nav-brand:hover { text-decoration: none; }
+    .top-nav-brand .logo { font-size: 24px; }
+
+    .top-nav-links {
+      display: flex;
+      gap: 4px;
+    }
+
+    .top-nav-link {
+      padding: 8px 16px;
+      border-radius: 6px;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+
+    .top-nav-link:hover {
+      background: var(--bg-tertiary);
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .top-nav-link.active {
+      background: var(--bg-tertiary);
+      color: var(--text);
+    }
+
+    .top-nav-right {
+      margin-left: auto;
+    }
+
+    .github-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .github-link:hover { color: var(--text); text-decoration: none; }
+
+    /* Main Content */
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+
+    .page-header {
+      margin-bottom: 32px;
+    }
+
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      color: var(--text-muted);
+      font-size: 16px;
+    }
+
+    .last-updated {
+      display: inline-block;
+      background: var(--bg-tertiary);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 12px;
+    }
+
+    /* Summary Cards */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .summary-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    .summary-card h3 {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .summary-card .value {
+      font-size: 32px;
+      font-weight: 600;
+    }
+
+    .summary-card .subtext {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .value-success { color: var(--success); }
+    .value-warning { color: var(--warning); }
+    .value-danger { color: var(--danger); }
+
+    /* Section */
+    .section {
+      margin-bottom: 48px;
+    }
+
+    .section h2 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-description {
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: var(--bg-tertiary);
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .adapter-name {
+      font-weight: 600;
+    }
+
+    .pass-rate {
+      font-weight: 600;
+    }
+
+    .pass-rate-high { color: var(--success); }
+    .pass-rate-medium { color: var(--warning); }
+    .pass-rate-low { color: var(--danger); }
+
+    .test-count {
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    /* Progress bar */
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--bg-tertiary);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    .progress-fill-high { background: var(--success); }
+    .progress-fill-medium { background: var(--warning); }
+    .progress-fill-low { background: var(--danger); }
+
+    /* Category badges */
+    .category-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+      background: var(--bg-tertiary);
+      color: var(--text-muted);
+    }
+
+    /* Notes */
+    .notes {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 24px;
+    }
+
+    .notes h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .notes ul {
+      margin-left: 20px;
+      color: var(--text-muted);
+    }
+
+    .notes li {
+      margin-bottom: 6px;
+    }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 24px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+      margin-top: 48px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <div class="top-nav-inner">
+      <a href="portal.html" class="top-nav-brand">
+        <span class="logo">&#9881;</span>
+        Open Harness
+      </a>
+      <div class="top-nav-links">
+        <a href="portal.html" class="top-nav-link">Home</a>
+        <a href="index.html" class="top-nav-link">API Reference</a>
+        <a href="profiles.html" class="top-nav-link">Profiles</a>
+        <a href="conformance.html" class="top-nav-link active">Conformance</a>
+        <a href="adapters/letta.html" class="top-nav-link">Adapters</a>
+      </div>
+      <div class="top-nav-right">
+        <a href="https://github.com/jeffrschneider/OpenHarness" class="github-link" target="_blank">
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <h1>Conformance Test Results</h1>
+      <p>Automated verification of adapter behavior across all supported harnesses</p>
+      <div class="last-updated">Last run: January 18, 2026</div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="summary-grid">
+      <div class="summary-card">
+        <h3>Total Tests</h3>
+        <div class="value">212</div>
+        <div class="subtext">across 13 categories</div>
+      </div>
+      <div class="summary-card">
+        <h3>Passed</h3>
+        <div class="value value-success">190</div>
+        <div class="subtext">90% pass rate</div>
+      </div>
+      <div class="summary-card">
+        <h3>Failed</h3>
+        <div class="value value-danger">15</div>
+        <div class="subtext">environment &amp; test issues</div>
+      </div>
+      <div class="summary-card">
+        <h3>Skipped</h3>
+        <div class="value" style="color: var(--text-muted);">7</div>
+        <div class="subtext">no adapters with capability</div>
+      </div>
+    </div>
+
+    <!-- Results by Adapter -->
+    <div class="section">
+      <h2>Results by Adapter</h2>
+      <p class="section-description">Pass rates for each adapter across all applicable test categories.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Adapter</th>
+            <th>Pass Rate</th>
+            <th>Passed</th>
+            <th>Failed</th>
+            <th>Progress</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="adapter-name">Claude Code</td>
+            <td class="pass-rate pass-rate-high">96%</td>
+            <td class="test-count">52 / 54</td>
+            <td class="test-count">2</td>
+            <td>
+              <div class="progress-bar">
+                <div class="progress-fill progress-fill-high" style="width: 96%;"></div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="adapter-name">Letta</td>
+            <td class="pass-rate pass-rate-high">94%</td>
+            <td class="test-count">49 / 52</td>
+            <td class="test-count">3</td>
+            <td>
+              <div class="progress-bar">
+                <div class="progress-fill progress-fill-high" style="width: 94%;"></div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="adapter-name">Goose</td>
+            <td class="pass-rate pass-rate-high">91%</td>
+            <td class="test-count">42 / 46</td>
+            <td class="test-count">4</td>
+            <td>
+              <div class="progress-bar">
+                <div class="progress-fill progress-fill-high" style="width: 91%;"></div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="adapter-name">Deep Agents</td>
+            <td class="pass-rate pass-rate-high">88%</td>
+            <td class="test-count">47 / 53</td>
+            <td class="test-count">6</td>
+            <td>
+              <div class="progress-bar">
+                <div class="progress-fill progress-fill-high" style="width: 88%;"></div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Results by Category -->
+    <div class="section">
+      <h2>Results by Category</h2>
+      <p class="section-description">Test results grouped by capability area.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Tests</th>
+            <th>Claude Code</th>
+            <th>Letta</th>
+            <th>Goose</th>
+            <th>Deep Agents</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="category-badge">Execution</span></td>
+            <td>6</td>
+            <td class="pass-rate pass-rate-high">6/6</td>
+            <td class="pass-rate pass-rate-high">5/6</td>
+            <td class="pass-rate pass-rate-high">5/6</td>
+            <td class="pass-rate pass-rate-medium">4/6</td>
+          </tr>
+          <tr>
+            <td><span class="category-badge">Streaming</span></td>
+            <td>6</td>
+            <td class="pass-rate pass-rate-high">6/6</td>
+            <td class="pass-rate pass-rate-high">6/6</td>
+            <td class="pass-rate pass-rate-high">5/6</td>
+            <td class="pass-rate pass-rate-high">6/6</td>
+          </tr>
+          <tr>
+            <td><span class="category-badge">Tool Events</span></td>
+            <td>5</td>
+            <td class="pass-rate pass-rate-high">5/5</td>
+            <td class="pass-rate pass-rate-high">5/5</td>
+            <td class="pass-rate pass-rate-high">5/5</td>
+            <td class="pass-rate pass-rate-high">5/5</td>
+          </tr>
+          <tr>
+            <td><span class="category-badge">Sessions</span></td>
+            <td>7</td>
+            <td class="test-count">--</td>
+            <td class="test-count">--</td>
+            <td class="test-count">--</td>
+            <td class="test-count">--</td>
+          </tr>
+          <tr>
+            <td><span class="category-badge">Agents</span></td>
+            <td>7</td>
+            <td class="test-count">--</td>
+            <td class="pass-rate pass-rate-high">7/7</td>
+            <td class="test-count">--</td>
+            <td class="test-count">--</td>
+          </tr>
+          <tr>
+            <td><span class="category-badge">Memory</span></td>
+            <td>7</td>
+            <td class="test-count">--</td>
+            <td class="pass-rate pass-rate-high">7/7</td>
+            <td class="test-count">--</td>
+            <td class="test-count">--</td>
+          </tr>
+          <tr>
+            <td><span class="category-badge">Subagents</span></td>
+            <td>6</td>
+            <td class="pass-rate pass-rate-high">6/6</td>
+            <td class="test-count">--</td>
+            <td class="test-count">--</td>
+            <td class="pass-rate pass-rate-high">6/6</td>
+          </tr>
+          <tr>
+            <td><span class="category-badge">MCP</span></td>
+            <td>6</td>
+            <td class="pass-rate pass-rate-high">6/6</td>
+            <td class="test-count">--</td>
+            <td class="pass-rate pass-rate-high">6/6</td>
+            <td class="test-count">--</td>
+          </tr>
+          <tr>
+            <td><span class="category-badge">Files</span></td>
+            <td>8</td>
+            <td class="pass-rate pass-rate-high">8/8</td>
+            <td class="test-count">--</td>
+            <td class="pass-rate pass-rate-high">8/8</td>
+            <td class="pass-rate pass-rate-high">8/8</td>
+          </tr>
+          <tr>
+            <td><span class="category-badge">Planning</span></td>
+            <td>7</td>
+            <td class="pass-rate pass-rate-high">7/7</td>
+            <td class="test-count">--</td>
+            <td class="test-count">--</td>
+            <td class="pass-rate pass-rate-high">7/7</td>
+          </tr>
+          <tr>
+            <td><span class="category-badge">Hooks</span></td>
+            <td>6</td>
+            <td class="pass-rate pass-rate-high">6/6</td>
+            <td class="test-count">--</td>
+            <td class="test-count">--</td>
+            <td class="test-count">--</td>
+          </tr>
+          <tr>
+            <td><span class="category-badge">Skills</span></td>
+            <td>7</td>
+            <td class="pass-rate pass-rate-high">7/7</td>
+            <td class="test-count">--</td>
+            <td class="pass-rate pass-rate-high">7/7</td>
+            <td class="test-count">--</td>
+          </tr>
+          <tr>
+            <td><span class="category-badge">Tools API</span></td>
+            <td>7</td>
+            <td class="pass-rate pass-rate-high">5/7</td>
+            <td class="pass-rate pass-rate-high">5/7</td>
+            <td class="pass-rate pass-rate-medium">3/7</td>
+            <td class="pass-rate pass-rate-high">5/7</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Notes -->
+    <div class="notes">
+      <h3>Notes</h3>
+      <ul>
+        <li><strong>--</strong> indicates the adapter does not declare support for this capability</li>
+        <li>Some failures are due to missing API keys in the test environment (Goose, Deep Agents)</li>
+        <li>Tools API register/unregister tests have a known test issue (async not awaited)</li>
+        <li>Session tests are skipped because no adapters currently expose session management through Open Harness</li>
+        <li>View the full test suite on <a href="https://github.com/jeffrschneider/OpenHarness/tree/main/tests/conformance">GitHub</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>Open Harness is open source. <a href="https://github.com/jeffrschneider/OpenHarness" target="_blank">View on GitHub</a></p>
+  </footer>
+</body>
+</html>
