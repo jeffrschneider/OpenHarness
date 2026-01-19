@@ -4,6 +4,38 @@ This file tracks the historical results of conformance test runs.
 
 ---
 
+## Run: 2026-01-18 18:30 PST
+
+**Summary:** 186 passed, 19 failed, 7 skipped (212 total tests)
+
+**Duration:** 18 minutes 3 seconds
+
+### Results by Adapter
+
+| Adapter | Passed | Failed | Skipped | Notes |
+|---------|--------|--------|---------|-------|
+| Claude Code | 52 | 2 | 0 | register/unregister tool tests (async API) |
+| Goose | 42 | 4 | 0 | Missing ANTHROPIC_API_KEY |
+| Letta | 47 | 3 | 0 | get_agent API method, empty message |
+| Deep Agents | 45 | 10 | 0 | Missing API key, subagent KeyError |
+
+### Changes from Previous Run
+
+**Fixed (9 tests):**
+- Letta: create_agent, list_agents, delete_agent, execute_with_agent_id now pass
+- Letta: list_tools, tool_has_required_fields, tool_source_values_valid, builtin_tools_present, tool_input_schema_structure now pass
+
+**New Tests (58 tests):**
+- Deep Agents now discovered and running
+
+**Remaining Failures (19):**
+- Letta: get_agent uses `.get()` but API requires `.retrieve()`
+- Deep Agents: Missing ANTHROPIC_API_KEY in environment
+- Deep Agents: Subagent config missing required `system_prompt` key
+- All: register/unregister_tool tests don't await async methods
+
+---
+
 ## Run: 2026-01-18 17:45 PST
 
 **Summary:** 119 passed, 28 failed, 7 skipped (154 total tests)
