@@ -477,12 +477,32 @@
         <pre class="code-block"><code>pip install openharness-claude-code</code></pre>
 
         <h3>Prerequisites</h3>
-        <p>Claude Code CLI must be installed and authenticated:</p>
-        <pre class="code-block"><code><span class="comment"># Install Claude Code CLI</span>
-npm install -g @anthropic-ai/claude-code
+        <p>The Claude Agent SDK requires the Claude Code CLI to be installed:</p>
+        <pre class="code-block"><code><span class="comment"># macOS/Linux/WSL</span>
+curl -fsSL https://claude.ai/install.sh | bash
 
-<span class="comment"># Authenticate (follow prompts)</span>
-claude auth login</code></pre>
+<span class="comment"># Or via Homebrew (macOS)</span>
+brew install --cask claude-code
+
+<span class="comment"># Or via WinGet (Windows)</span>
+winget install Anthropic.ClaudeCode</code></pre>
+
+        <h3>Authentication</h3>
+        <p>Set your Anthropic API key:</p>
+        <pre class="code-block"><code><span class="comment"># Required: Set your API key</span>
+export ANTHROPIC_API_KEY=<span class="string">"your-api-key"</span>
+
+<span class="comment"># Alternative: Use cloud providers</span>
+<span class="comment"># Amazon Bedrock</span>
+export CLAUDE_CODE_USE_BEDROCK=1  <span class="comment"># + AWS credentials</span>
+
+<span class="comment"># Google Vertex AI</span>
+export CLAUDE_CODE_USE_VERTEX=1   <span class="comment"># + GCP credentials</span>
+
+<span class="comment"># Microsoft Azure</span>
+export CLAUDE_CODE_USE_FOUNDRY=1  <span class="comment"># + Azure credentials</span></code></pre>
+
+        <p>Get your API key from the <a href="https://console.anthropic.com/" target="_blank">Anthropic Console</a>. For complete setup instructions, see the <a href="https://platform.claude.com/docs/en/agent-sdk/overview" target="_blank">official Claude Agent SDK documentation</a>.</p>
       </section>
 
       <!-- Quick Start -->

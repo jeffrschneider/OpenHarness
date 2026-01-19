@@ -481,6 +481,29 @@
         <h2>Installation</h2>
         <pre class="code-block"><code>pip install openharness-letta</code></pre>
         <p>This will install both <code>openharness</code> (the Python SDK) and <code>letta-client</code> (the official Letta SDK).</p>
+
+        <h3>Prerequisites: Running Letta Server</h3>
+        <p>Letta runs as a Docker container that bundles PostgreSQL for persistence. You must have Docker installed.</p>
+        <pre class="code-block"><code><span class="comment"># Start Letta server with Docker</span>
+docker run -d \
+  -p 8283:8283 \
+  -v ~/.letta/.persist/pgdata:/var/lib/postgresql/data \
+  -e OPENAI_API_KEY=<span class="string">"your-openai-key"</span> \
+  -e ANTHROPIC_API_KEY=<span class="string">"your-anthropic-key"</span> \
+  letta/letta:latest
+
+<span class="comment"># Or use an env file</span>
+docker run -d -p 8283:8283 \
+  -v ~/.letta/.persist/pgdata:/var/lib/postgresql/data \
+  --env-file .env \
+  letta/letta:latest</code></pre>
+
+        <div class="info-box warning">
+          <h4>Important: Embedding Model Required</h4>
+          <p>When using Docker, you <strong>must</strong> specify an embedding model when creating agents (e.g., <code>openai/text-embedding-ada-002</code>). This is required because Docker deployments handle embeddings differently than the managed Letta API.</p>
+        </div>
+
+        <p>For complete setup instructions, see the <a href="https://docs.letta.com/guides/docker" target="_blank">official Letta Docker guide</a>.</p>
       </section>
 
       <!-- Quick Start -->
@@ -717,13 +740,7 @@ agents = <span class="keyword">await</span> adapter.<span class="function">list_
         </ul>
 
         <h3>Running Letta Locally</h3>
-        <pre class="code-block"><code><span class="comment"># Install Letta server</span>
-pip install letta
-
-<span class="comment"># Start the server</span>
-letta server
-
-<span class="comment"># Server starts at http://localhost:8283</span></code></pre>
+        <p>See the <a href="#installation">Installation</a> section above for Docker setup instructions, or visit the <a href="https://docs.letta.com/quickstart" target="_blank">Letta Quickstart</a> for cloud options.</p>
       </section>
     </main>
   </div>

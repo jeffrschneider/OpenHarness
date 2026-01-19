@@ -483,8 +483,23 @@
         <pre class="code-block"><code>pip install openharness-deepagent
 
 <span class="comment"># With MCP support</span>
-pip install openharness-deepagent[mcp]</code></pre>
-        <p><strong>Note:</strong> Deep Agents requires Python 3.11+.</p>
+pip install openharness-deepagent[mcp]
+
+<span class="comment"># For web search capability (optional)</span>
+pip install tavily-python</code></pre>
+
+        <h3>Prerequisites</h3>
+        <p><strong>Python 3.11+</strong> is required. You must also set an LLM API key:</p>
+        <pre class="code-block"><code><span class="comment"># For Anthropic models (default: claude-sonnet-4-5-20250929)</span>
+export ANTHROPIC_API_KEY=<span class="string">"your-api-key"</span>
+
+<span class="comment"># Or for OpenAI models</span>
+export OPENAI_API_KEY=<span class="string">"your-api-key"</span>
+
+<span class="comment"># For web search (if using tavily)</span>
+export TAVILY_API_KEY=<span class="string">"your-api-key"</span></code></pre>
+
+        <p>For complete setup instructions, see the <a href="https://github.com/langchain-ai/deepagents" target="_blank">official Deep Agents GitHub repository</a>.</p>
       </section>
 
       <!-- Quick Start -->

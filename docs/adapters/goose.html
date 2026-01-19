@@ -483,12 +483,34 @@
         <pre class="code-block"><code>pip install openharness-goose</code></pre>
 
         <h3>Prerequisites</h3>
-        <p>Goose must be running as a server:</p>
-        <pre class="code-block"><code><span class="comment"># Install Goose</span>
-brew install block/tap/goose  <span class="comment"># macOS</span>
+        <p>Goose must be installed and configured with an LLM provider:</p>
+        <pre class="code-block"><code><span class="comment"># macOS - CLI</span>
+brew install block-goose-cli
 
-<span class="comment"># Start the server (default port 3000)</span>
-goose server</code></pre>
+<span class="comment"># macOS - Desktop app</span>
+brew install --cask block-goose
+
+<span class="comment"># Linux - CLI</span>
+curl -fsSL https://github.com/block/goose/releases/download/stable/download_cli.sh | bash</code></pre>
+
+        <h3>Configure LLM Provider</h3>
+        <p>Goose requires an LLM provider. Run the configuration wizard:</p>
+        <pre class="code-block"><code><span class="comment"># Configure your LLM provider (required)</span>
+goose configure
+
+<span class="comment"># Supports 20+ providers including:</span>
+<span class="comment"># - OpenAI, Anthropic, Google Gemini</span>
+<span class="comment"># - Ollama (local models)</span>
+<span class="comment"># - OpenRouter, Together AI, and more</span></code></pre>
+
+        <h3>Running Goose</h3>
+        <pre class="code-block"><code><span class="comment"># Interactive CLI session</span>
+goose session
+
+<span class="comment"># Or run as API server (for adapter use)</span>
+goose server --port 3000</code></pre>
+
+        <p>For complete setup instructions, see the <a href="https://block.github.io/goose/docs/getting-started/installation" target="_blank">official Goose installation guide</a>.</p>
       </section>
 
       <!-- Quick Start -->
