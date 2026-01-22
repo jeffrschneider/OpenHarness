@@ -148,4 +148,46 @@ Samples by composition pattern:
 1. **Minimal** (AGENTS.md only): `daily-affirmation`
 2. **Skills + Scripts**: `meeting-summarizer`
 3. **Skills + MCPs**: `recipe-finder`
-4. **Multi-Agent**: `sales-call-prep`, `travel-research`
+4. **Multi-Agent Package**: `travel-research`
+
+## OAF Multi-Agent Patterns
+
+There are two ways to have multiple agents in OAF:
+
+### Sub-Agents (within one AGENTS.md)
+Defined in the `## Sub-Agents` section of a single AGENTS.md. The parent agent orchestrates them.
+```
+my-agent/
+├── AGENTS.md          ← defines sub-agents inline
+└── skills/
+```
+
+### Multi-Agent Package (multiple top-level agents)
+Each agent is a separate directory with its own AGENTS.md. Agents are independent and bundled as a toolkit.
+```
+my-toolkit/
+├── PACKAGE.yaml       ← lists all agents
+├── agent-one/
+│   └── AGENTS.md
+├── agent-two/
+│   └── AGENTS.md
+└── agent-three/
+    └── AGENTS.md
+```
+
+The `travel-research` example demonstrates the multi-agent package pattern with 5 independent agents:
+- `trip-coordinator/` - main orchestrator
+- `flight-researcher/` - finds flights
+- `hotel-researcher/` - finds accommodations
+- `activity-curator/` - curates activities
+- `logistics-planner/` - handles logistics
+
+For multi-agent packages, create the zip manually (package_agent.py expects single-agent structure):
+```python
+import zipfile, os
+with zipfile.ZipFile('output.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
+    for root, dirs, files in os.walk('package_dir'):
+        for file in files:
+            path = os.path.join(root, file)
+            zf.write(path, os.path.relpath(path, 'package_dir'))
+```
