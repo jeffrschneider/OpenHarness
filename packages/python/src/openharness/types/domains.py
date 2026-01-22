@@ -119,7 +119,7 @@ class UpdateAgentRequest(BaseModel):
 
 
 class PackageContentsMode(str, Enum):
-    """Package contents mode for .oaf files."""
+    """Package contents mode for OAF ZIP files."""
     BUNDLED = "bundled"      # All skills included, works offline
     REFERENCED = "referenced"  # Skills fetched from URLs at install time
 

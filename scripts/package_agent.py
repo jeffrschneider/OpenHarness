@@ -2,7 +2,7 @@
 """
 OAF Package Utility
 
-Packages an agent directory into an OAF-compliant .oaf file.
+Packages an agent directory into an OAF-compliant .zip file.
 This is a local utility for testing - in production, use the API.
 """
 
@@ -82,7 +82,7 @@ def create_package_yaml(metadata: dict, agent_path: Path) -> str:
 
 
 def package_agent(agent_dir: Path, output_path: Path | None = None) -> Path:
-    """Package an agent directory into an .oaf file."""
+    """Package an agent directory into an OAF .zip file."""
 
     # Validate agent directory
     agents_md = agent_dir / "AGENTS.md"
@@ -111,9 +111,9 @@ def package_agent(agent_dir: Path, output_path: Path | None = None) -> Path:
     if output_path is None:
         agent_key = metadata.get("agentKey", agent_dir.name)
         version = metadata.get("version", "0.1.0")
-        output_path = agent_dir.parent / f"{agent_key}-{version}.oaf"
+        output_path = agent_dir.parent / f"{agent_key}-{version}.zip"
 
-    # Create the .oaf package
+    # Create the OAF package
     print(f"\nCreating package: {output_path}")
 
     with zipfile.ZipFile(output_path, "w", zipfile.ZIP_DEFLATED) as zf:
@@ -153,7 +153,7 @@ def package_agent(agent_dir: Path, output_path: Path | None = None) -> Path:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Package an agent directory into an OAF-compliant .oaf file"
+        description="Package an agent directory into an OAF-compliant .zip file"
     )
     parser.add_argument(
         "agent_dir",
@@ -163,7 +163,7 @@ def main():
     parser.add_argument(
         "-o", "--output",
         type=Path,
-        help="Output .oaf file path (default: <agentKey>-<version>.oaf)"
+        help="Output .zip file path (default: <agentKey>-<version>.zip)"
     )
 
     args = parser.parse_args()

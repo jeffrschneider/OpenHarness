@@ -188,7 +188,7 @@ class OpenHarnessClient:
         request: ExportAgentRequest | None = None,
     ) -> bytes:
         """
-        Export an agent as an OAF package (.oaf ZIP file).
+        Export an agent as an OAF package (.zip file).
 
         The exported package follows the Open Agent Format (OAF) specification
         and includes:
@@ -203,7 +203,7 @@ class OpenHarnessClient:
             request: Export options (include_memory, include_versions, contents_mode)
 
         Returns:
-            Raw bytes of the .oaf ZIP file
+            Raw bytes of the OAF ZIP file
         """
         params: dict[str, Any] = {}
         if request:
@@ -222,18 +222,18 @@ class OpenHarnessClient:
     async def import_agent(
         self,
         bundle: bytes,
-        filename: str = "agent.oaf",
+        filename: str = "agent.zip",
         request: ImportAgentRequest | None = None,
     ) -> ImportAgentResponse:
         """
-        Import an agent from an OAF package (.oaf ZIP file).
+        Import an agent from an OAF package (.zip file).
 
         The package must follow the Open Agent Format (OAF) specification
         with a valid AGENTS.md manifest at the root.
 
         Args:
-            bundle: Raw bytes of the .oaf ZIP file
-            filename: Filename for the upload (default: agent.oaf)
+            bundle: Raw bytes of the OAF ZIP file
+            filename: Filename for the upload (default: agent.zip)
             request: Import options (rename_to, merge_strategy)
 
         Returns:

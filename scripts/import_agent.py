@@ -2,7 +2,7 @@
 """
 OAF Import Utility
 
-Imports and validates an OAF package (.oaf file).
+Imports and validates an OAF package (.zip file).
 This is a local utility for testing - in production, use the API.
 """
 
@@ -217,12 +217,12 @@ def import_agent(oaf_path: Path, output_dir: Path, rename_to: str | None = None)
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Import and validate an OAF package (.oaf file)"
+        description="Import and validate an OAF package (.zip file)"
     )
     parser.add_argument(
         "oaf_file",
         type=Path,
-        help="Path to the .oaf file to import"
+        help="Path to the OAF .zip file to import"
     )
     parser.add_argument(
         "-o", "--output",

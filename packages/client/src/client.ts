@@ -219,7 +219,7 @@ export class OpenHarnessClient {
       }),
 
     /**
-     * Export an agent as an OAF package (.oaf file)
+     * Export an agent as an OAF package (.zip file)
      *
      * The exported package follows the Open Agent Format (OAF) specification.
      */
@@ -243,7 +243,7 @@ export class OpenHarnessClient {
     },
 
     /**
-     * Import an agent from an OAF package (.oaf file)
+     * Import an agent from an OAF package (.zip file)
      *
      * The package must follow the Open Agent Format (OAF) specification.
      */
@@ -254,7 +254,7 @@ export class OpenHarnessClient {
     ): Promise<ImportAgentResponse> => {
       const formData = new FormData();
       const blob = file instanceof ArrayBuffer ? new Blob([file], { type: "application/zip" }) : file;
-      formData.append("bundle", blob, "agent.oaf");
+      formData.append("bundle", blob, "agent.zip");
       if (options?.rename_to) formData.append("rename_to", options.rename_to);
       if (options?.merge_strategy) formData.append("merge_strategy", options.merge_strategy);
 

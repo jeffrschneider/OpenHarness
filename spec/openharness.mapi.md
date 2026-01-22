@@ -816,11 +816,11 @@ auth: required
 ~~~
 
 ### Intention
-Downloads the complete agent as an OAF package (.oaf file), following the Open Agent Format specification.
+Downloads the complete agent as an OAF package (.zip file), following the Open Agent Format specification.
 
 ### Logic Constraints
-- Content-Disposition header contains `{agentKey}.oaf` as filename
-- Package is a standard ZIP archive with `.oaf` extension
+- Content-Disposition header contains `{agentKey}.zip` as filename
+- Package is a standard ZIP archive
 - Root contains AGENTS.md manifest with full OAF frontmatter
 - Directory structure follows OAF specification:
   - `AGENTS.md` - Agent manifest (required)
@@ -844,7 +844,7 @@ interface ExportAgentRequest {
 ```
 
 ### Output
-Returns raw bytes with `Content-Type: application/zip` and `.oaf` extension.
+Returns raw bytes with `Content-Type: application/zip`.
 
 The package contains a `PACKAGE.yaml` manifest when multiple agents are bundled:
 ```yaml
@@ -870,7 +870,7 @@ auth: required
 ~~~
 
 ### Intention
-Imports an agent from an OAF package (.oaf file) following the Open Agent Format specification.
+Imports an agent from an OAF package (.zip file) following the Open Agent Format specification.
 
 ### Logic Constraints
 - Agent identity (vendorKey/agentKey) must be unique on this harness
@@ -885,7 +885,7 @@ Imports an agent from an OAF package (.oaf file) following the Open Agent Format
 ```typescript
 interface ImportAgentRequest {
   harnessId: HarnessId;                // path parameter
-  bundle: File;                        // .oaf ZIP file
+  bundle: File;                        // OAF ZIP file
   rename_to?: string;                  // Override agent name
   merge_strategy?: "fail" | "overwrite" | "skip";  // default: "fail"
 }
