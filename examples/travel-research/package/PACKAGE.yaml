@@ -1,0 +1,22 @@
+name: Travel Research Toolkit
+version: 0.1.0
+description: A toolkit of specialized travel planning agents
+author: OpenHarness Contributors
+license: MIT
+
+agents:
+  - slug: trip-coordinator
+    version: 0.1.0
+    path: trip-coordinator/
+  - slug: flight-researcher
+    version: 0.1.0
+    path: flight-researcher/
+  - slug: hotel-researcher
+    version: 0.1.0
+    path: hotel-researcher/
+  - slug: activity-curator
+    version: 0.1.0
+    path: activity-curator/
+  - slug: logistics-planner
+    version: 0.1.0
+    path: logistics-planner/

@@ -510,67 +510,43 @@
       </div>
     </section>
 
-    <!-- Pattern 4: Multi-Agent -->
+    <!-- Pattern 4: Multi-Agent Package -->
     <section class="pattern-section">
       <div class="pattern-header">
         <span class="pattern-badge">Pattern 4</span>
-        <h2>Multi-Agent Orchestration</h2>
+        <h2>Multi-Agent Package</h2>
       </div>
-      <p class="pattern-desc">Full-featured agents with sub-agents defined in <code>AGENTS.md</code>. Demonstrates parallel research, specialized roles, and coordinated workflows.</p>
+      <p class="pattern-desc">Multiple independent top-level agents bundled in a single package. Each agent has its own <code>AGENTS.md</code> in a separate directory. Ideal for distributing related agents as a toolkit.</p>
 
       <div class="agent-card">
         <div class="agent-header">
           <div>
-            <div class="agent-name">Sales Call Prep</div>
-            <div class="agent-meta">v0.1.0 • ~33 KB</div>
+            <div class="agent-name">Travel Research Toolkit</div>
+            <div class="agent-meta">v0.1.0 • 5 agents • ~12 KB</div>
           </div>
         </div>
-        <p class="agent-description">Researches prospects and prepares personalized briefings before sales calls. Uses batch-parallel architecture with sub-agents for company research, contact profiling, and briefing generation.</p>
-        <div class="agent-tags">
-          <span class="tag">sales</span>
-          <span class="tag">research</span>
-          <span class="tag">business</span>
-          <span class="tag">productivity</span>
-        </div>
-        <div class="agent-structure">
-<code>sales-call-prep/
-├── AGENTS.md              <span class="highlight">← defines 5 sub-agents</span>
-└── skills/
-    ├── briefing-format/
-    ├── objection-handling/
-    ├── pain-point-detection/
-    └── sales-research/</code>
-        </div>
-        <a href="samples/sales-call-prep-0.1.0.zip" class="download-btn">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-          </svg>
-          Download .zip
-        </a>
-      </div>
-
-      <div class="agent-card">
-        <div class="agent-header">
-          <div>
-            <div class="agent-name">Travel Research</div>
-            <div class="agent-meta">v0.1.0 • ~28 KB</div>
-          </div>
-        </div>
-        <p class="agent-description">Plans detailed trips with personalized day-by-day itineraries. Uses hub-and-spoke architecture with specialized sub-agents for flights, hotels, activities, and logistics.</p>
+        <p class="agent-description">A toolkit of specialized travel agents that work together: a coordinator, flight researcher, hotel researcher, activity curator, and logistics planner. Each is an independent agent with its own skills.</p>
         <div class="agent-tags">
           <span class="tag">travel</span>
           <span class="tag">planning</span>
-          <span class="tag">research</span>
-          <span class="tag">personal</span>
+          <span class="tag">toolkit</span>
+          <span class="tag">multi-agent</span>
         </div>
         <div class="agent-structure">
 <code>travel-research/
-├── AGENTS.md              <span class="highlight">← defines 5 sub-agents</span>
-└── skills/
-    ├── budget-optimization/
-    ├── destination-japan/
-    ├── family-travel/
-    └── travel-planning/</code>
+├── <span class="highlight">trip-coordinator/</span>
+│   ├── AGENTS.md
+│   └── skills/travel-planning/
+├── <span class="highlight">flight-researcher/</span>
+│   └── AGENTS.md
+├── <span class="highlight">hotel-researcher/</span>
+│   └── AGENTS.md
+├── <span class="highlight">activity-curator/</span>
+│   ├── AGENTS.md
+│   └── skills/destination-japan/
+└── <span class="highlight">logistics-planner/</span>
+    ├── AGENTS.md
+    └── skills/budget-optimization/</code>
         </div>
         <a href="samples/travel-research-0.1.0.zip" class="download-btn">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
