@@ -24,6 +24,9 @@ import type {
   Agent,
   CreateAgentRequest,
   UpdateAgentRequest,
+  ExportAgentRequest,
+  ImportAgentRequest,
+  ImportAgentResponse,
   Skill,
   RegisterSkillRequest,
   McpServer,
@@ -44,6 +47,9 @@ import type {
   MemoryBlock,
   CreateMemoryBlockRequest,
   MemorySearchResult,
+  ExportMemoryRequest,
+  ImportMemoryRequest,
+  ImportMemoryResponse,
   Subagent,
   SpawnSubagentRequest,
   DelegateTaskRequest,
@@ -211,6 +217,49 @@ export class OpenHarnessClient {
       this.rest.post(`/harnesses/${harnessId}/agents/${agentId}/clone`, {
         new_name: newName,
       }),
+
+    /**
+     * Export an agent as an OAF package (.oaf file)
+     *
+     * The exported package follows the Open Agent Format (OAF) specification.
+     */
+    export: async (
+      harnessId: HarnessId,
+      agentId: AgentId,
+      options?: ExportAgentRequest
+    ): Promise<{ data: ArrayBuffer; filename?: string }> => {
+      const query: Record<string, string> = {};
+      if (options?.include_memory) query.include_memory = "true";
+      if (options?.include_versions) query.include_versions = "true";
+      if (options?.contents_mode) query.contents_mode = options.contents_mode;
+
+      const queryString = Object.keys(query).length
+        ? `?${new URLSearchParams(query).toString()}`
+        : "";
+
+      return this.rest.download(
+        `/harnesses/${harnessId}/agents/${agentId}/export${queryString}`
+      );
+    },
+
+    /**
+     * Import an agent from an OAF package (.oaf file)
+     *
+     * The package must follow the Open Agent Format (OAF) specification.
+     */
+    import: async (
+      harnessId: HarnessId,
+      file: Blob | ArrayBuffer,
+      options?: ImportAgentRequest
+    ): Promise<ImportAgentResponse> => {
+      const formData = new FormData();
+      const blob = file instanceof ArrayBuffer ? new Blob([file], { type: "application/zip" }) : file;
+      formData.append("bundle", blob, "agent.oaf");
+      if (options?.rename_to) formData.append("rename_to", options.rename_to);
+      if (options?.merge_strategy) formData.append("merge_strategy", options.merge_strategy);
+
+      return this.rest.upload(`/harnesses/${harnessId}/agents/import`, formData);
+    },
   };
 
   // ==========================================================================
@@ -539,6 +588,48 @@ export class OpenHarnessClient {
         `/harnesses/${harnessId}/agents/${agentId}/memory/search`,
         { query, ...options }
       ),
+
+    /**
+     * Export agent memory as a ZIP snapshot
+     *
+     * Contains blocks.json and archive.json
+     */
+    export: async (
+      harnessId: HarnessId,
+      agentId: AgentId,
+      options?: ExportMemoryRequest
+    ): Promise<{ data: ArrayBuffer; filename?: string }> => {
+      const query: Record<string, string> = {};
+      if (options?.include_archive === false) query.include_archive = "false";
+
+      const queryString = Object.keys(query).length
+        ? `?${new URLSearchParams(query).toString()}`
+        : "";
+
+      return this.rest.download(
+        `/harnesses/${harnessId}/agents/${agentId}/memory/export${queryString}`
+      );
+    },
+
+    /**
+     * Import a memory snapshot into an agent
+     */
+    import: async (
+      harnessId: HarnessId,
+      agentId: AgentId,
+      file: Blob | ArrayBuffer,
+      options?: ImportMemoryRequest
+    ): Promise<ImportMemoryResponse> => {
+      const formData = new FormData();
+      const blob = file instanceof ArrayBuffer ? new Blob([file], { type: "application/zip" }) : file;
+      formData.append("snapshot", blob, "memory.zip");
+      if (options?.merge_strategy) formData.append("merge_strategy", options.merge_strategy);
+
+      return this.rest.upload(
+        `/harnesses/${harnessId}/agents/${agentId}/memory/import`,
+        formData
+      );
+    },
   };
 
   // ==========================================================================

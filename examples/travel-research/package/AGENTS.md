@@ -1,10 +1,22 @@
 ---
+# OAF Identity (required)
 name: Travel Research Agent
-slug: travel-research-agent
+vendorKey: openharness
+agentKey: travel-research
 version: 0.1.0
+slug: travel-research-agent
+
+# Metadata (required)
 description: Plans detailed trips with personalized day-by-day itineraries
-tags: [travel, planning, research, personal]
+author: OpenHarness Contributors
 license: MIT
+tags: [travel, planning, research, personal]
+
+# Model Configuration
+model: sonnet
+
+# Orchestration
+entrypoint: structured
 ---
 
 # Travel Research Agent

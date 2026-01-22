@@ -54,14 +54,30 @@ export interface CapabilityDeclaration {
 }
 
 // ============================================================================
-// 2. Agents
+// 2. Agents (OAF-compliant)
 // ============================================================================
+
+export interface ModelConfig {
+  provider: string;
+  name: string;
+  embedding?: string;
+}
 
 export interface Agent {
   id: AgentId;
+  // OAF identity fields
   name: string;
+  vendorKey: string;
+  agentKey: string;
+  version: string;
+  slug: string;
+  // Metadata
   description: string;
-  model: string;
+  author?: string;
+  license?: string;
+  tags: string[];
+  // Configuration
+  model: string | ModelConfig;
   system_prompt?: string;
   skills: SkillId[];
   created_at: ISO8601;
@@ -70,18 +86,54 @@ export interface Agent {
 
 export interface CreateAgentRequest {
   name: string;
+  vendorKey?: string;
+  agentKey?: string;
+  version?: string;
+  slug?: string;
   description?: string;
-  model: string;
+  author?: string;
+  license?: string;
+  tags?: string[];
+  model: string | ModelConfig;
   system_prompt?: string;
   skills?: SkillId[];
 }
 
 export interface UpdateAgentRequest {
   name?: string;
+  vendorKey?: string;
+  agentKey?: string;
+  version?: string;
+  slug?: string;
   description?: string;
-  model?: string;
+  author?: string;
+  license?: string;
+  tags?: string[];
+  model?: string | ModelConfig;
   system_prompt?: string;
   skills?: SkillId[];
+}
+
+// ============================================================================
+// Agent Import/Export (OAF-compliant)
+// ============================================================================
+
+export type PackageContentsMode = "bundled" | "referenced";
+
+export interface ExportAgentRequest {
+  include_memory?: boolean;
+  include_versions?: boolean;
+  contents_mode?: PackageContentsMode;
+}
+
+export interface ImportAgentRequest {
+  rename_to?: string;
+  merge_strategy?: "fail" | "overwrite" | "skip";
+}
+
+export interface ImportAgentResponse {
+  agent: Agent;
+  warnings: string[];
 }
 
 // ============================================================================
@@ -288,6 +340,27 @@ export interface ArchiveEntry {
   content: string;
   created_at: ISO8601;
   metadata?: Record<string, unknown>;
+}
+
+// ============================================================================
+// Memory Import/Export
+// ============================================================================
+
+export type MemoryMergeStrategy = "overwrite" | "skip" | "merge";
+
+export interface ExportMemoryRequest {
+  include_archive?: boolean;
+}
+
+export interface ImportMemoryRequest {
+  merge_strategy?: MemoryMergeStrategy;
+}
+
+export interface ImportMemoryResponse {
+  blocks_imported: number;
+  archive_entries_imported: number;
+  conflicts: number;
+  warnings: string[];
 }
 
 // ============================================================================

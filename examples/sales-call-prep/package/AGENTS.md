@@ -1,10 +1,22 @@
 ---
+# OAF Identity (required)
 name: Sales Call Prep Agent
-slug: sales-call-prep-agent
+vendorKey: openharness
+agentKey: sales-call-prep
 version: 0.1.0
+slug: sales-call-prep-agent
+
+# Metadata (required)
 description: Researches prospects and prepares personalized briefings before sales calls
-tags: [sales, research, business, productivity]
+author: OpenHarness Contributors
 license: MIT
+tags: [sales, research, business, productivity]
+
+# Model Configuration
+model: sonnet
+
+# Orchestration
+entrypoint: structured
 ---
 
 # Sales Call Prep Agent

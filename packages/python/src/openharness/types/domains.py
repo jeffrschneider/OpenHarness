@@ -35,39 +35,142 @@ class AgentState(str, Enum):
     ARCHIVED = "archived"
 
 
+class ModelConfig(BaseModel):
+    """Model configuration following OAF spec."""
+    provider: str | None = None
+    name: str | None = None
+    embedding: str | None = None
+
+
 class Agent(BaseModel):
-    """Agent definition."""
+    """Agent definition following Open Agent Format (OAF) spec."""
     id: AgentId
     name: str
+    # OAF identity fields
+    vendor_key: str | None = Field(default=None, alias="vendorKey")
+    agent_key: str | None = Field(default=None, alias="agentKey")
+    version: str | None = None
+    slug: str | None = None
+    # Metadata
     description: str | None = None
+    author: str | None = None
+    license: str | None = None
+    tags: list[str] = Field(default_factory=list)
+    # Configuration
     system_prompt: str | None = None
-    model: str | None = None
+    model: str | ModelConfig | None = None
     state: AgentState = AgentState.ACTIVE
     tools: list[str] = Field(default_factory=list)
     metadata: dict[str, Any] = Field(default_factory=dict)
     created_at: datetime
     updated_at: datetime
 
+    class Config:
+        populate_by_name = True
+
 
 class CreateAgentRequest(BaseModel):
     """Request to create an agent."""
     name: str
+    # OAF identity fields
+    vendor_key: str | None = Field(default=None, alias="vendorKey")
+    agent_key: str | None = Field(default=None, alias="agentKey")
+    version: str | None = None
+    slug: str | None = None
+    # Metadata
     description: str | None = None
+    author: str | None = None
+    license: str | None = None
+    tags: list[str] = Field(default_factory=list)
+    # Configuration
     system_prompt: str | None = None
-    model: str | None = None
+    model: str | ModelConfig | None = None
     tools: list[str] = Field(default_factory=list)
     metadata: dict[str, Any] = Field(default_factory=dict)
+
+    class Config:
+        populate_by_name = True
 
 
 class UpdateAgentRequest(BaseModel):
     """Request to update an agent."""
     name: str | None = None
+    vendor_key: str | None = Field(default=None, alias="vendorKey")
+    agent_key: str | None = Field(default=None, alias="agentKey")
+    version: str | None = None
+    slug: str | None = None
     description: str | None = None
+    author: str | None = None
+    license: str | None = None
+    tags: list[str] | None = None
     system_prompt: str | None = None
-    model: str | None = None
+    model: str | ModelConfig | None = None
     state: AgentState | None = None
     tools: list[str] | None = None
     metadata: dict[str, Any] | None = None
+
+    class Config:
+        populate_by_name = True
+
+
+# =============================================================================
+# Agent Import/Export (OAF-compliant)
+# =============================================================================
+
+
+class PackageContentsMode(str, Enum):
+    """Package contents mode for .oaf files."""
+    BUNDLED = "bundled"      # All skills included, works offline
+    REFERENCED = "referenced"  # Skills fetched from URLs at install time
+
+
+class ExportAgentRequest(BaseModel):
+    """Request to export an agent as OAF package."""
+    include_memory: bool = False
+    include_versions: bool = False
+    contents_mode: PackageContentsMode = PackageContentsMode.BUNDLED
+
+
+class ImportAgentRequest(BaseModel):
+    """Request to import an agent from OAF package."""
+    rename_to: str | None = None
+    merge_strategy: str = "fail"  # "fail", "overwrite", "skip"
+
+
+class ImportAgentResponse(BaseModel):
+    """Response from agent import."""
+    agent: "Agent"
+    warnings: list[str] = Field(default_factory=list)
+
+
+# =============================================================================
+# Memory Import/Export
+# =============================================================================
+
+
+class MemoryMergeStrategy(str, Enum):
+    """Memory import merge strategy."""
+    OVERWRITE = "overwrite"
+    SKIP = "skip"
+    MERGE = "merge"
+
+
+class ExportMemoryRequest(BaseModel):
+    """Request to export agent memory."""
+    include_archive: bool = True
+
+
+class ImportMemoryRequest(BaseModel):
+    """Request to import agent memory."""
+    merge_strategy: MemoryMergeStrategy = MemoryMergeStrategy.OVERWRITE
+
+
+class ImportMemoryResponse(BaseModel):
+    """Response from memory import."""
+    blocks_imported: int
+    archive_entries_imported: int
+    conflicts: int = 0
+    warnings: list[str] = Field(default_factory=list)
 
 
 # =============================================================================

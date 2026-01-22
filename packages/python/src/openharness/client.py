@@ -18,14 +18,21 @@ from .types import (
     ExecuteRequest,
     Execution,
     ExecutionEvent,
+    ExportAgentRequest,
+    ExportMemoryRequest,
     FileInfo,
     Harness,
     Hook,
+    ImportAgentRequest,
+    ImportAgentResponse,
+    ImportMemoryRequest,
+    ImportMemoryResponse,
     InstallSkillRequest,
     McpPrompt,
     McpResource,
     McpServer,
     MemoryBlock,
+    MemoryMergeStrategy,
     Message,
     ModelInfo,
     PaginatedResponse,
@@ -174,6 +181,79 @@ class OpenHarnessClient:
             json_data={"name": name} if name else None,
         )
         return Agent.model_validate(response)
+
+    async def export_agent(
+        self,
+        agent_id: str,
+        request: ExportAgentRequest | None = None,
+    ) -> bytes:
+        """
+        Export an agent as an OAF package (.oaf ZIP file).
+
+        The exported package follows the Open Agent Format (OAF) specification
+        and includes:
+        - AGENTS.md manifest with full frontmatter
+        - skills/ directory (if bundled mode)
+        - mcp-configs/ directory
+        - versions/ directory (if include_versions=True)
+        - Optional memory export (if include_memory=True)
+
+        Args:
+            agent_id: The agent ID to export
+            request: Export options (include_memory, include_versions, contents_mode)
+
+        Returns:
+            Raw bytes of the .oaf ZIP file
+        """
+        params: dict[str, Any] = {}
+        if request:
+            if request.include_memory:
+                params["include_memory"] = "true"
+            if request.include_versions:
+                params["include_versions"] = "true"
+            if request.contents_mode:
+                params["contents_mode"] = request.contents_mode.value
+
+        return await self._transport.download(
+            f"/agents/{agent_id}/export",
+            params=params if params else None,
+        )
+
+    async def import_agent(
+        self,
+        bundle: bytes,
+        filename: str = "agent.oaf",
+        request: ImportAgentRequest | None = None,
+    ) -> ImportAgentResponse:
+        """
+        Import an agent from an OAF package (.oaf ZIP file).
+
+        The package must follow the Open Agent Format (OAF) specification
+        with a valid AGENTS.md manifest at the root.
+
+        Args:
+            bundle: Raw bytes of the .oaf ZIP file
+            filename: Filename for the upload (default: agent.oaf)
+            request: Import options (rename_to, merge_strategy)
+
+        Returns:
+            ImportAgentResponse containing the imported Agent and any warnings
+        """
+        params: dict[str, Any] = {}
+        if request:
+            if request.rename_to:
+                params["rename_to"] = request.rename_to
+            if request.merge_strategy:
+                params["merge_strategy"] = request.merge_strategy
+
+        response = await self._transport.upload(
+            "/agents/import",
+            bundle,
+            filename,
+            content_type="application/zip",
+            params=params if params else None,
+        )
+        return ImportAgentResponse.model_validate(response)
 
     # =========================================================================
     # Skills Domain
@@ -479,6 +559,78 @@ class OpenHarnessClient:
             json_data={"content": content, "metadata": metadata or {}},
         )
         return ArchiveEntry.model_validate(response)
+
+    async def export_memory(
+        self,
+        agent_id: str,
+        request: ExportMemoryRequest | None = None,
+    ) -> bytes:
+        """
+        Export agent memory as a ZIP snapshot.
+
+        The exported ZIP contains:
+        - blocks.json: All memory blocks
+        - archive.json: Archival memory entries (if include_archive=True)
+
+        Args:
+            agent_id: The agent ID whose memory to export
+            request: Export options (include_archive)
+
+        Returns:
+            Raw bytes of the memory snapshot ZIP file
+        """
+        params: dict[str, Any] = {}
+        if request and not request.include_archive:
+            params["include_archive"] = "false"
+
+        # Memory export uses POST per the spec
+        response = await self._transport.request(
+            "POST",
+            f"/agents/{agent_id}/memory/export",
+            params=params if params else None,
+        )
+        # The response includes the raw bytes - we need to handle this specially
+        # For now, use the download method pattern
+        return await self._transport.download(
+            f"/agents/{agent_id}/memory/export",
+            params=params if params else None,
+        )
+
+    async def import_memory(
+        self,
+        agent_id: str,
+        snapshot: bytes,
+        filename: str = "memory.zip",
+        request: ImportMemoryRequest | None = None,
+    ) -> ImportMemoryResponse:
+        """
+        Import a memory snapshot into an agent.
+
+        The snapshot ZIP should contain:
+        - blocks.json: Memory blocks to import
+        - archive.json: Archival entries to import (optional)
+
+        Args:
+            agent_id: The agent ID to import memory into
+            snapshot: Raw bytes of the memory snapshot ZIP file
+            filename: Filename for the upload (default: memory.zip)
+            request: Import options (merge_strategy)
+
+        Returns:
+            ImportMemoryResponse with import statistics
+        """
+        params: dict[str, Any] = {}
+        if request and request.merge_strategy:
+            params["merge_strategy"] = request.merge_strategy.value
+
+        response = await self._transport.upload(
+            f"/agents/{agent_id}/memory/import",
+            snapshot,
+            filename,
+            content_type="application/zip",
+            params=params if params else None,
+        )
+        return ImportMemoryResponse.model_validate(response)
 
     # =========================================================================
     # Subagents Domain

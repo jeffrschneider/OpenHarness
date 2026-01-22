@@ -75,24 +75,46 @@ interface DomainCapability {
   limitations?: string[];
 }
 
-// Agent types
+// Agent types (OAF-compliant)
 interface Agent {
   id: AgentId;
+  // OAF identity fields
   name: string;
+  vendorKey: string;                   // Organization/vendor identifier (kebab-case)
+  agentKey: string;                    // Agent identifier (kebab-case)
+  version: string;                     // Semantic version (e.g., "1.0.0")
+  slug: string;                        // URL-friendly identifier
+  // Metadata
   description: string;
-  version: string;
+  author?: string;
+  license?: string;                    // SPDX license identifier
+  tags: string[];
+  // Composition
   skills: SkillReference[];
   mcp_servers: McpServerReference[];
+  // Configuration
   config: AgentConfig;
   created_at: ISO8601;
   updated_at: ISO8601;
 }
 
 interface AgentConfig {
-  model?: string;
+  model?: string | ModelConfig;        // Model alias ("sonnet") or full config
   temperature?: number;                // 0.0-1.0
   max_tokens?: number;
   system_prompt?: string;
+  tools_access?: ToolsAccessControl;
+}
+
+interface ModelConfig {
+  provider: string;                    // e.g., "anthropic", "openai"
+  name: string;                        // e.g., "claude-sonnet-4-5"
+  embedding?: string;                  // e.g., "voyage-2"
+}
+
+interface ToolsAccessControl {
+  allow?: string[];                    // Allowed tool patterns
+  deny?: string[];                     // Denied tool patterns
 }
 
 interface SkillReference {
@@ -794,23 +816,47 @@ auth: required
 ~~~
 
 ### Intention
-Downloads the complete agent bundle as a ZIP file, including AGENTS.md and all supporting files.
+Downloads the complete agent as an OAF package (.oaf file), following the Open Agent Format specification.
 
 ### Logic Constraints
-- Content-Disposition header contains the agent name as filename
-- ZIP preserves directory structure
+- Content-Disposition header contains `{agentKey}.oaf` as filename
+- Package is a standard ZIP archive with `.oaf` extension
+- Root contains AGENTS.md manifest with full OAF frontmatter
+- Directory structure follows OAF specification:
+  - `AGENTS.md` - Agent manifest (required)
+  - `skills/` - Local skills following AgentSkills.io spec
+  - `mcp-configs/` - MCP server configurations (ActiveMCP.json + config.yaml per server)
+  - `versions/` - Historical versions (if include_versions=true)
+  - `examples/` - Usage examples
+  - `tests/` - Test scenarios
+  - `docs/` - Additional documentation
+  - `assets/` - Media files
 
 ### Input
 ```typescript
 interface ExportAgentRequest {
   harnessId: HarnessId;                // path parameter
   agentId: AgentId;                    // path parameter
-  include_memory?: boolean;            // default: false, query parameter
+  include_memory?: boolean;            // default: false, include memory snapshot
+  include_versions?: boolean;          // default: false, include version history
+  contents_mode?: "bundled" | "referenced";  // default: "bundled"
 }
 ```
 
 ### Output
-Returns raw ZIP bytes with `Content-Type: application/zip`.
+Returns raw bytes with `Content-Type: application/zip` and `.oaf` extension.
+
+The package contains a `PACKAGE.yaml` manifest when multiple agents are bundled:
+```yaml
+# PACKAGE.yaml
+name: "package-name"
+version: "1.0.0"
+contents_mode: "bundled"  # or "referenced"
+agents:
+  - path: "agent-name/"
+    name: "agent-name"
+    version: "1.0.0"
+```
 
 ---
 
@@ -824,19 +870,24 @@ auth: required
 ~~~
 
 ### Intention
-Imports an agent from a previously exported bundle or external source.
+Imports an agent from an OAF package (.oaf file) following the Open Agent Format specification.
 
 ### Logic Constraints
-- Agent name must be unique on this harness
-- Bundle must contain valid AGENTS.md at root
+- Agent identity (vendorKey/agentKey) must be unique on this harness
+- Bundle must contain valid AGENTS.md at root with required OAF frontmatter:
+  - `name`, `vendorKey`, `agentKey`, `version`, `slug` (required)
+  - `description`, `author`, `license`, `tags` (required metadata)
 - Maximum bundle size: 50MB
+- If contents_mode is "referenced", skills are fetched from well-known URLs
+- SPDX license identifier must be valid if provided
 
 ### Input
 ```typescript
 interface ImportAgentRequest {
   harnessId: HarnessId;                // path parameter
-  bundle: File;                        // ZIP file
+  bundle: File;                        // .oaf ZIP file
   rename_to?: string;                  // Override agent name
+  merge_strategy?: "fail" | "overwrite" | "skip";  // default: "fail"
 }
 ```
 
@@ -844,6 +895,7 @@ interface ImportAgentRequest {
 ```typescript
 interface ImportAgentResponse {
   agent: Agent;
+  warnings: string[];                  // Non-fatal import warnings
 }
 ```
 
@@ -2649,11 +2701,14 @@ auth: required
 ~~~
 
 ### Intention
-Exports the complete memory state as a downloadable snapshot.
+Exports the agent's complete memory state as a downloadable snapshot. This snapshot can be included in an OAF package when exporting an agent with `include_memory=true`.
 
 ### Logic Constraints
-- Content-Disposition header contains agent name and timestamp
-- ZIP contains blocks.json and archive.json
+- Content-Disposition header contains `{agentKey}-memory-{timestamp}.zip`
+- ZIP structure:
+  - `blocks.json` - All memory blocks with labels and content
+  - `archive.json` - Archival memory entries with embeddings (if include_archive=true)
+  - `metadata.json` - Export metadata (timestamp, agent version, block count)
 
 ### Input
 ```typescript
@@ -2679,11 +2734,17 @@ auth: required
 ~~~
 
 ### Intention
-Imports a previously exported memory snapshot.
+Imports a previously exported memory snapshot into an agent. Used for restoring memory state or transferring memory between agents.
 
 ### Logic Constraints
-- Existing blocks with same labels will be overwritten
-- Archive entries are appended, not replaced
+- ZIP must contain valid `blocks.json` at minimum
+- Block labels are used as unique identifiers for merge operations
+- Archive entries are identified by content hash to prevent duplicates
+
+### Merge Strategies
+- `overwrite` (default): Replace existing blocks with same labels
+- `skip`: Keep existing blocks, only import new ones
+- `merge`: Attempt to merge content (concatenate for compatible blocks)
 
 ### Input
 ```typescript
@@ -2700,7 +2761,8 @@ interface ImportMemoryRequest {
 interface ImportMemoryResponse {
   blocks_imported: number;
   archive_entries_imported: number;
-  conflicts: string[];                 // Labels that had conflicts
+  conflicts: number;                   // Number of conflicts encountered
+  warnings: string[];                  // Non-fatal import warnings
 }
 ```
 
