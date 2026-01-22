@@ -91,3 +91,61 @@ This works across all adapters regardless of their specific capabilities.
 - Assume Letta can list files (it's memory-focused, not filesystem-focused)
 - Connect to Letta cloud when local Docker is available
 - Run filesystem tests on adapters that don't have filesystem tools
+
+## Documentation Website Structure
+
+The `/docs/` folder is a GitHub Pages site with a **dark theme**.
+
+### HTML Files That Share Navigation
+All these files have identical `<nav class="top-nav">` structure - update ALL when adding nav items:
+- `docs/portal.html` (home)
+- `docs/index.html` (API reference)
+- `docs/profiles.html`
+- `docs/conformance.html`
+- `docs/samples.html`
+- `docs/adapters/letta.html`
+- `docs/adapters/goose.html`
+- `docs/adapters/claude-code.html`
+- `docs/adapters/deepagent.html`
+
+**Adapter pages use relative paths** - links use `../` prefix (e.g., `../samples.html`).
+
+### Site Theme (CSS Variables)
+```css
+--bg: #0d1117;
+--bg-secondary: #161b22;
+--bg-tertiary: #21262d;
+--border: #30363d;
+--text: #e6edf3;
+--text-muted: #8b949e;
+--accent: #58a6ff;
+--success: #3fb950;
+--warning: #d29922;
+```
+
+## Utility Scripts
+
+### Package Agent Script
+```bash
+# Correct syntax - use -o flag for output path
+python scripts/package_agent.py <agent_dir> -o <output.zip>
+
+# Example:
+python scripts/package_agent.py examples/daily-affirmation/package -o docs/samples/daily-affirmation-0.1.0.zip
+```
+
+### Import Agent Script
+```bash
+python scripts/import_agent.py <package.zip> [--validate-only]
+```
+
+## Sample Agents Location
+
+- Source packages: `examples/<name>/package/`
+- Built .zip files: `docs/samples/<name>-<version>.zip`
+
+Samples by composition pattern:
+1. **Minimal** (AGENTS.md only): `daily-affirmation`
+2. **Skills + Scripts**: `meeting-summarizer`
+3. **Skills + MCPs**: `recipe-finder`
+4. **Multi-Agent**: `sales-call-prep`, `travel-research`

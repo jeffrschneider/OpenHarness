@@ -1,0 +1,28 @@
+{
+  "name": "recipe-api",
+  "description": "Recipe database API for searching and retrieving recipes",
+  "enabled_tools": [
+    "recipes.search",
+    "recipes.get",
+    "recipes.random"
+  ],
+  "disabled_tools": [
+    "recipes.create",
+    "recipes.update",
+    "recipes.delete",
+    "admin.*"
+  ],
+  "tool_config": {
+    "recipes.search": {
+      "max_results": 10,
+      "default_sort": "relevance"
+    },
+    "recipes.get": {
+      "include_nutrition": true,
+      "include_reviews": false
+    },
+    "recipes.random": {
+      "count": 3
+    }
+  }
+}

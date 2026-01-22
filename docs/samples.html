@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <title>Sample Agents - Open Harness</title>
+
+  <!-- Open Graph / Social Preview -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jeffrschneider.github.io/OpenHarness/samples.html">
+  <meta property="og:title" content="Sample Agents - Open Harness">
+  <meta property="og:description" content="Learn the Open Agent Format through progressively complex examples with downloadable sample agents.">
+  <meta property="og:image" content="https://jeffrschneider.github.io/OpenHarness/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Sample Agents - Open Harness">
+  <meta name="twitter:description" content="Learn the Open Agent Format through progressively complex examples with downloadable sample agents.">
+  <meta name="twitter:image" content="https://jeffrschneider.github.io/OpenHarness/og-image.png">
+
+  <!-- General Meta -->
+  <meta name="description" content="Download sample OAF agents demonstrating composition patterns - minimal, skills with scripts, skills with MCPs, and multi-agent orchestration.">
+  <style>
+    :root {
+      --bg: #0d1117;
+      --bg-secondary: #161b22;
+      --bg-tertiary: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --text-subtle: #6e7681;
+      --accent: #58a6ff;
+      --accent-emphasis: #1f6feb;
+      --success: #3fb950;
+      --warning: #d29922;
+      --danger: #f85149;
+      --purple: #a371f7;
+      --pink: #db61a2;
+      --orange: #f0883e;
+      --cyan: #79c0ff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Top Navigation */
+    .top-nav {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .top-nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      height: 56px;
+      gap: 32px;
+    }
+
+    .top-nav-brand {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .top-nav-brand:hover { text-decoration: none; }
+    .top-nav-brand .logo { font-size: 24px; }
+
+    .top-nav-links {
+      display: flex;
+      gap: 4px;
+    }
+
+    .top-nav-link {
+      padding: 8px 16px;
+      border-radius: 6px;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+
+    .top-nav-link:hover {
+      background: var(--bg-tertiary);
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .top-nav-link.active {
+      background: var(--bg-tertiary);
+      color: var(--text);
+    }
+
+    .top-nav-right {
+      margin-left: auto;
+    }
+
+    .github-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .github-link:hover { color: var(--text); text-decoration: none; }
+
+    /* Main Content */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 48px 24px;
+    }
+
+    .page-header {
+      margin-bottom: 40px;
+    }
+
+    .page-header h1 {
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .page-header p {
+      color: var(--text-muted);
+      font-size: 18px;
+      max-width: 700px;
+    }
+
+    .intro {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 40px;
+    }
+
+    .intro p {
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .intro p:last-child {
+      margin-bottom: 0;
+    }
+
+    .intro code {
+      background: var(--bg-tertiary);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 13px;
+      color: var(--accent);
+    }
+
+    /* Pattern Sections */
+    .pattern-section {
+      margin-bottom: 48px;
+    }
+
+    .pattern-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .pattern-header h2 {
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .pattern-badge {
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--accent-emphasis);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .pattern-desc {
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .pattern-desc code {
+      background: var(--bg-tertiary);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 13px;
+      color: var(--cyan);
+    }
+
+    /* Agent Cards */
+    .agent-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 16px;
+      transition: border-color 0.2s;
+    }
+
+    .agent-card:hover {
+      border-color: var(--accent);
+    }
+
+    .agent-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .agent-name {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .agent-meta {
+      font-size: 13px;
+      color: var(--text-subtle);
+    }
+
+    .agent-description {
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+
+    .agent-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .tag {
+      font-size: 12px;
+      background: var(--bg-tertiary);
+      color: var(--text-muted);
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    .agent-structure {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px;
+      margin-bottom: 16px;
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 13px;
+      overflow-x: auto;
+    }
+
+    .agent-structure code {
+      color: var(--text-muted);
+      white-space: pre;
+    }
+
+    .highlight {
+      color: var(--success);
+      font-weight: 500;
+    }
+
+    .note {
+      background: rgba(210, 153, 34, 0.1);
+      border: 1px solid rgba(210, 153, 34, 0.3);
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .note strong {
+      color: var(--warning);
+    }
+
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent-emphasis);
+      color: white;
+      padding: 10px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+
+    .download-btn:hover {
+      background: var(--accent);
+      text-decoration: none;
+    }
+
+    .download-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 24px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+      margin-top: 48px;
+    }
+
+    @media (max-width: 768px) {
+      .top-nav-links {
+        display: none;
+      }
+
+      .page-header h1 {
+        font-size: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <div class="top-nav-inner">
+      <a href="portal.html" class="top-nav-brand">
+        <span class="logo">&#9881;</span>
+        Open Harness
+      </a>
+      <div class="top-nav-links">
+        <a href="portal.html" class="top-nav-link">Home</a>
+        <a href="index.html" class="top-nav-link">API Reference</a>
+        <a href="profiles.html" class="top-nav-link">Profiles</a>
+        <a href="conformance.html" class="top-nav-link">Conformance</a>
+        <a href="samples.html" class="top-nav-link active">Samples</a>
+        <a href="adapters/letta.html" class="top-nav-link">Adapters</a>
+      </div>
+      <div class="top-nav-right">
+        <a href="https://github.com/jeffrschneider/OpenHarness" class="github-link" target="_blank">
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <h1>Sample Agents</h1>
+      <p>Learn the Open Agent Format through progressively complex examples with downloadable sample agents.</p>
+    </div>
+
+    <div class="intro">
+      <p>These samples demonstrate the different composition patterns available in the <strong>Open Agent Format (OAF)</strong>. Each builds on the previous, introducing new capabilities.</p>
+      <p>Download any sample as a <code>.zip</code> file, extract it, and explore the structure. All samples are OAF-compliant and ready to import into any compatible harness.</p>
+    </div>
+
+    <!-- Pattern 1: Minimal -->
+    <section class="pattern-section">
+      <div class="pattern-header">
+        <span class="pattern-badge">Pattern 1</span>
+        <h2>Minimal</h2>
+      </div>
+      <p class="pattern-desc">The simplest possible agent—just an <code>AGENTS.md</code> file. No skills, no MCPs, no sub-agents. Perfect for single-purpose conversational agents.</p>
+
+      <div class="agent-card">
+        <div class="agent-header">
+          <div>
+            <div class="agent-name">Daily Affirmation</div>
+            <div class="agent-meta">v0.1.0 • ~1.5 KB</div>
+          </div>
+        </div>
+        <p class="agent-description">Generates personalized motivational affirmations based on user goals and current mindset. A focused agent that needs nothing beyond its core instructions.</p>
+        <div class="agent-tags">
+          <span class="tag">wellness</span>
+          <span class="tag">motivation</span>
+          <span class="tag">personal-development</span>
+        </div>
+        <div class="agent-structure">
+<code>daily-affirmation/
+└── <span class="highlight">AGENTS.md</span></code>
+        </div>
+        <a href="samples/daily-affirmation-0.1.0.zip" class="download-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Download .zip
+        </a>
+      </div>
+    </section>
+
+    <!-- Pattern 2: Skills with Scripts -->
+    <section class="pattern-section">
+      <div class="pattern-header">
+        <span class="pattern-badge">Pattern 2</span>
+        <h2>Skills with Scripts</h2>
+      </div>
+      <p class="pattern-desc">Adds a <code>skills/</code> directory containing reusable knowledge modules. This example includes <code>scripts/</code> for structured output formatting.</p>
+
+      <div class="agent-card">
+        <div class="agent-header">
+          <div>
+            <div class="agent-name">Meeting Summarizer</div>
+            <div class="agent-meta">v0.1.0 • ~5.4 KB</div>
+          </div>
+        </div>
+        <p class="agent-description">Transforms meeting notes or transcripts into structured summaries with action items, decisions, and next steps. Uses a Python script to ensure consistent output formatting.</p>
+        <div class="agent-tags">
+          <span class="tag">productivity</span>
+          <span class="tag">meetings</span>
+          <span class="tag">summarization</span>
+        </div>
+        <div class="note">
+          <strong>Note:</strong> This sample demonstrates the <code>scripts/</code> pattern—executable code that the agent can invoke for precise formatting or calculations.
+        </div>
+        <div class="agent-structure">
+<code>meeting-summarizer/
+├── AGENTS.md
+└── <span class="highlight">skills/</span>
+    └── summarization/
+        ├── SKILL.md
+        ├── resources/
+        │   └── output-format.md
+        └── <span class="highlight">scripts/</span>
+            └── formatter.py</code>
+        </div>
+        <a href="samples/meeting-summarizer-0.1.0.zip" class="download-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Download .zip
+        </a>
+      </div>
+    </section>
+
+    <!-- Pattern 3: Skills + MCPs -->
+    <section class="pattern-section">
+      <div class="pattern-header">
+        <span class="pattern-badge">Pattern 3</span>
+        <h2>Skills + MCP Servers</h2>
+      </div>
+      <p class="pattern-desc">Introduces <code>mcp-configs/</code> for connecting to external services via the Model Context Protocol. Combines domain knowledge with API integrations.</p>
+
+      <div class="agent-card">
+        <div class="agent-header">
+          <div>
+            <div class="agent-name">Recipe Finder</div>
+            <div class="agent-meta">v0.1.0 • ~5.4 KB</div>
+          </div>
+        </div>
+        <p class="agent-description">Finds recipes based on available ingredients while respecting dietary restrictions. Uses a skill for dietary knowledge and an MCP server to query a recipe database.</p>
+        <div class="agent-tags">
+          <span class="tag">cooking</span>
+          <span class="tag">recipes</span>
+          <span class="tag">food</span>
+        </div>
+        <div class="agent-structure">
+<code>recipe-finder/
+├── AGENTS.md
+├── skills/
+│   └── dietary-preferences/
+│       ├── SKILL.md
+│       └── resources/
+│           └── substitutions.md
+└── <span class="highlight">mcp-configs/</span>
+    └── recipe-api/
+        ├── ActiveMCP.json
+        └── config.yaml</code>
+        </div>
+        <a href="samples/recipe-finder-0.1.0.zip" class="download-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Download .zip
+        </a>
+      </div>
+    </section>
+
+    <!-- Pattern 4: Multi-Agent -->
+    <section class="pattern-section">
+      <div class="pattern-header">
+        <span class="pattern-badge">Pattern 4</span>
+        <h2>Multi-Agent Orchestration</h2>
+      </div>
+      <p class="pattern-desc">Full-featured agents with sub-agents defined in <code>AGENTS.md</code>. Demonstrates parallel research, specialized roles, and coordinated workflows.</p>
+
+      <div class="agent-card">
+        <div class="agent-header">
+          <div>
+            <div class="agent-name">Sales Call Prep</div>
+            <div class="agent-meta">v0.1.0 • ~33 KB</div>
+          </div>
+        </div>
+        <p class="agent-description">Researches prospects and prepares personalized briefings before sales calls. Uses batch-parallel architecture with sub-agents for company research, contact profiling, and briefing generation.</p>
+        <div class="agent-tags">
+          <span class="tag">sales</span>
+          <span class="tag">research</span>
+          <span class="tag">business</span>
+          <span class="tag">productivity</span>
+        </div>
+        <div class="agent-structure">
+<code>sales-call-prep/
+├── AGENTS.md              <span class="highlight">← defines 5 sub-agents</span>
+└── skills/
+    ├── briefing-format/
+    ├── objection-handling/
+    ├── pain-point-detection/
+    └── sales-research/</code>
+        </div>
+        <a href="samples/sales-call-prep-0.1.0.zip" class="download-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Download .zip
+        </a>
+      </div>
+
+      <div class="agent-card">
+        <div class="agent-header">
+          <div>
+            <div class="agent-name">Travel Research</div>
+            <div class="agent-meta">v0.1.0 • ~28 KB</div>
+          </div>
+        </div>
+        <p class="agent-description">Plans detailed trips with personalized day-by-day itineraries. Uses hub-and-spoke architecture with specialized sub-agents for flights, hotels, activities, and logistics.</p>
+        <div class="agent-tags">
+          <span class="tag">travel</span>
+          <span class="tag">planning</span>
+          <span class="tag">research</span>
+          <span class="tag">personal</span>
+        </div>
+        <div class="agent-structure">
+<code>travel-research/
+├── AGENTS.md              <span class="highlight">← defines 5 sub-agents</span>
+└── skills/
+    ├── budget-optimization/
+    ├── destination-japan/
+    ├── family-travel/
+    └── travel-planning/</code>
+        </div>
+        <a href="samples/travel-research-0.1.0.zip" class="download-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Download .zip
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <footer class="footer">
+    <p>Open Harness is open source. <a href="https://github.com/jeffrschneider/OpenHarness" target="_blank">View on GitHub</a></p>
+    <p>Learn more about the <a href="https://openagentformat.com" target="_blank">Open Agent Format</a> specification.</p>
+  </footer>
+</body>
+</html>

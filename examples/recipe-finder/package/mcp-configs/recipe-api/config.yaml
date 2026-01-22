@@ -1,0 +1,39 @@
+# Recipe API MCP Server Configuration
+#
+# This file defines the connection settings for the recipe API MCP server.
+# Replace placeholder values with your actual configuration.
+
+server:
+  name: recipe-api
+  description: Recipe database for searching and retrieving recipes
+
+connection:
+  type: http
+  url: https://api.example-recipes.com/mcp
+  timeout: 30
+
+authentication:
+  type: api-key
+  header: X-API-Key
+  env_var: RECIPE_API_KEY  # Set this environment variable with your API key
+
+rate_limiting:
+  requests_per_minute: 60
+  burst_limit: 10
+
+retry:
+  max_attempts: 3
+  backoff_multiplier: 2
+  initial_delay_ms: 1000
+
+# Permissions control what the agent can do with this MCP server
+permissions:
+  read: true
+  write: false
+  delete: false
+
+# Health check endpoint (optional)
+health_check:
+  enabled: true
+  endpoint: /health
+  interval_seconds: 60
