@@ -98,8 +98,8 @@ The `/docs/` folder is a GitHub Pages site with a **dark theme**.
 
 ### HTML Files That Share Navigation
 All these files have identical `<nav class="top-nav">` structure - update ALL when adding nav items:
-- `docs/portal.html` (home)
-- `docs/index.html` (API reference)
+- `docs/index.html` (home/landing page)
+- `docs/api-reference.html` (API reference, links to MAPI spec)
 - `docs/profiles.html`
 - `docs/conformance.html`
 - `docs/samples.html`
@@ -107,6 +107,8 @@ All these files have identical `<nav class="top-nav">` structure - update ALL wh
 - `docs/adapters/goose.html`
 - `docs/adapters/claude-code.html`
 - `docs/adapters/deepagent.html`
+
+**MAPI Spec:** `docs/openharness.mapi.md` - raw markdown, linked from api-reference.html
 
 **Adapter pages use relative paths** - links use `../` prefix (e.g., `../samples.html`).
 
